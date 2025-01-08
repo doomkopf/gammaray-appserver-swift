@@ -1,0 +1,98 @@
+import XCTest
+
+@testable import Gammaray
+
+final class NodeJsAppProcessTest: XCTestCase {
+    func testCom() async throws {
+        let scheduler = Scheduler()
+        let nodeProc = try NodeJsAppProcessImpl(
+            localHost: "127.0.0.1",
+            localPort: 123,
+            requestTimeoutMillis: 4000,
+            sendTimeoutMillis: 3000,
+            sendIntervalMillis: 2000,
+            nodeJsProcessPort: 1234)
+        defer {
+            nodeProc.shutdownProcess()
+        }
+        await nodeProc.start(scheduler: scheduler)
+
+        let code = try readStringFile(
+            name: "NodeJsAppProcessTest", ext: "js", module: Bundle.module)
+
+        _ = try await nodeProc.setApp(NodeJsSetAppRequest(id: "test", code: code))
+
+        let appDef = try await nodeProc.getAppDefinition(
+            NodeJsGetAppDefinitionRequest(appId: "test"))
+        XCTAssertEqual(NodeJsFuncVisibility.PRI, appDef.sfunc["test"]?.vis)
+        XCTAssertEqual(NodeJsFuncVisibility.PRI, appDef.entity["person"]?.efunc["test"]?.vis)
+
+        let entityFuncResponse = try await nodeProc.entityFunc(
+            NodeJsEntityFuncRequest(
+                appId: "test",
+                requestId: "123",
+                requestingUserId: nil,
+                persistentLocalClientId: nil,
+                id: "",
+                type: "person",
+                efunc: "test",
+                entityJson: "{\"name\":\"Timo\"}",
+                paramsJson: "{\"moreTest\":\"er\"}"))
+
+        XCTAssertEqual(NodeJsEntityAction.SET_ENTITY, entityFuncResponse.action)
+
+        XCTAssertEqual(entityFuncResponse.entityJson, "{\"name\":\"Timoer\"}")
+
+        XCTAssertEqual(entityFuncResponse.general.responseSender?.requestId, "123")
+        XCTAssertEqual(
+            entityFuncResponse.general.responseSender?.objJson, "{\"response\":\"someResponse\"}")
+
+        XCTAssertEqual(entityFuncResponse.general.entityFuncInvokes?[0].type, "theType")
+        XCTAssertEqual(entityFuncResponse.general.entityFuncInvokes?[0]._func, "theFunc")
+        XCTAssertEqual(entityFuncResponse.general.entityFuncInvokes?[0].entityId, "theEntityId")
+        XCTAssertEqual(
+            entityFuncResponse.general.entityFuncInvokes?[0].paramsJson, "{\"testJson\":123}")
+
+        XCTAssertEqual(entityFuncResponse.general.entityFuncInvokes?[1].type, "theType2")
+        XCTAssertEqual(entityFuncResponse.general.entityFuncInvokes?[1]._func, "theFunc2")
+        XCTAssertEqual(entityFuncResponse.general.entityFuncInvokes?[1].entityId, "theEntityId2")
+        XCTAssertEqual(
+            entityFuncResponse.general.entityFuncInvokes?[1].paramsJson, "{\"testJson\":124}")
+
+        let statelessFuncResponse = try await nodeProc.statelessFunc(
+            NodeJsStatelessFuncRequest(
+                appId: "test",
+                requestId: "123",
+                requestingUserId: nil,
+                persistentLocalClientId: nil,
+                sfunc: "test",
+                paramsJson: "{\"text\":\"stuff\"}"))
+
+        XCTAssertEqual(statelessFuncResponse.general.responseSender?.requestId, "123")
+        XCTAssertEqual(
+            statelessFuncResponse.general.responseSender?.objJson,
+            "{\"response\":\"statelessFuncResponsestuff\"}")
+
+        XCTAssertEqual(
+            statelessFuncResponse.general.entityFuncInvokes?[0].type, "theTypeStatelessFunc")
+        XCTAssertEqual(
+            statelessFuncResponse.general.entityFuncInvokes?[0]._func, "theFuncStatelessFunc")
+        XCTAssertEqual(
+            statelessFuncResponse.general.entityFuncInvokes?[0].entityId, "theEntityIdStatelessFunc"
+        )
+        XCTAssertEqual(
+            statelessFuncResponse.general.entityFuncInvokes?[0].paramsJson, "{\"testJson\":123}")
+
+        XCTAssertEqual(
+            statelessFuncResponse.general.entityFuncInvokes?[1].type, "theType2StatelessFunc")
+        XCTAssertEqual(
+            statelessFuncResponse.general.entityFuncInvokes?[1]._func, "theFunc2StatelessFunc")
+        XCTAssertEqual(
+            statelessFuncResponse.general.entityFuncInvokes?[1].entityId,
+            "theEntityId2StatelessFunc")
+        XCTAssertEqual(
+            statelessFuncResponse.general.entityFuncInvokes?[1].paramsJson, "{\"testJson\":124}")
+
+        try await nodeProc.shutdown()
+    }
+}

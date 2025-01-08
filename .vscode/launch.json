@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:gammaray-appserver-swift}",
+            "name": "Debug Gammaray",
+            "program": "${workspaceFolder:gammaray-appserver-swift}/.build/debug/Gammaray",
+            "preLaunchTask": "swift: Build Debug Gammaray"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:gammaray-appserver-swift}",
+            "name": "Release Gammaray",
+            "program": "${workspaceFolder:gammaray-appserver-swift}/.build/release/Gammaray",
+            "preLaunchTask": "swift: Build Release Gammaray"
+        }
+    ]
+}
