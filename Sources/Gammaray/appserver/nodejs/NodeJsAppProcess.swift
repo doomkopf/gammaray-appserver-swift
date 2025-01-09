@@ -18,6 +18,8 @@ final class NodeJsAppProcessImpl: NodeJsAppProcess {
     private let process: NodeJsProcess
 
     init(
+        config: Config,
+        // TODO move all those values to Config
         localHost: String,
         localPort: Int,
         requestTimeoutMillis: Int64,
@@ -38,7 +40,8 @@ final class NodeJsAppProcessImpl: NodeJsAppProcess {
             sendIntervalMillis: sendIntervalMillis,
             listener: cmdProc)
 
-        process = try NodeJsProcess(jsFile: "Resources/NodeJsAppProcess", module: Bundle.module)
+        process = try NodeJsProcess(
+            jsFile: "Resources/NodeJsAppProcess", module: Bundle.module, config: config)
     }
 
     func start(scheduler: Scheduler) async {

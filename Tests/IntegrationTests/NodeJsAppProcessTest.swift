@@ -1,3 +1,4 @@
+import Foundation
 import XCTest
 
 @testable import Gammaray
@@ -5,7 +6,13 @@ import XCTest
 final class NodeJsAppProcessTest: XCTestCase {
     func testCom() async throws {
         let scheduler = Scheduler()
+
+        let reader = ResourceFileReaderImpl(module: Bundle.module)
+
+        let config = try Config(reader: reader)
+
         let nodeProc = try NodeJsAppProcessImpl(
+            config: config,
             localHost: "127.0.0.1",
             localPort: 123,
             requestTimeoutMillis: 4000,
@@ -17,8 +24,7 @@ final class NodeJsAppProcessTest: XCTestCase {
         }
         await nodeProc.start(scheduler: scheduler)
 
-        let code = try readStringFile(
-            name: "NodeJsAppProcessTest", ext: "js", module: Bundle.module)
+        let code = try reader.readStringFile(name: "NodeJsAppProcessTest", ext: "js")
 
         _ = try await nodeProc.setApp(NodeJsSetAppRequest(id: "test", code: code))
 

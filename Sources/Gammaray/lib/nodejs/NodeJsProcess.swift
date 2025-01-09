@@ -4,7 +4,7 @@ import Foundation
 final class NodeJsProcess: Sendable {
     private let proc: Process
 
-    init(jsFile: String, module: Bundle) throws {
+    init(jsFile: String, module: Bundle, config: Config) throws {
         guard
             let resourceUrl = module.url(
                 forResource: jsFile,
@@ -14,7 +14,7 @@ final class NodeJsProcess: Sendable {
         }
 
         proc = Process()
-        proc.launchPath = "todo-path-to-node-binary"
+        proc.launchPath = config.get(ConfigProperty.nodeJsBinaryPath)
         proc.arguments = [resourceUrl.path]
         try proc.run()
     }

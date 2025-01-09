@@ -1,11 +1,16 @@
+import Foundation
 import XCTest
 
 @testable import Gammaray
 
 final class NodeJsCommunicationTest: XCTestCase {
     func testCom() async throws {
+        let reader = ResourceFileReaderImpl(module: Bundle.module)
+
+        let config = try Config(reader: reader)
+
         let p = try NodeJsProcess(
-            jsFile: "Resources/NodeJsCommunicationTest", module: Bundle.module)
+            jsFile: "Resources/NodeJsCommunicationTest", module: Bundle.module, config: config)
         defer {
             p.shutdown()
         }
