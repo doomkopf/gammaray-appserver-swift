@@ -10,7 +10,8 @@ final class NodeJsCommunicationTest: XCTestCase {
         let config = try Config(reader: reader)
 
         let p = try NodeJsProcess(
-            jsFile: "Resources/NodeJsCommunicationTest", module: Bundle.module, config: config)
+            jsFile: "Resources/NodeJsCommunicationTest", module: Bundle.module,
+            nodeJsBinaryPath: config.get(ConfigProperty.nodeJsBinaryPath))
         defer {
             p.shutdown()
         }

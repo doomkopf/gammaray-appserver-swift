@@ -41,7 +41,8 @@ final class NodeJsAppProcessImpl: NodeJsAppProcess {
             listener: cmdProc)
 
         process = try NodeJsProcess(
-            jsFile: "Resources/NodeJsAppProcess", module: Bundle.module, config: config)
+            jsFile: "Resources/NodeJsAppProcess", module: Bundle.module,
+            nodeJsBinaryPath: config.get(ConfigProperty.nodeJsBinaryPath))
     }
 
     func start(scheduler: Scheduler) async {
