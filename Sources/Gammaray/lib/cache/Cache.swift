@@ -1,5 +1,3 @@
-import Foundation
-
 protocol CacheListener<V> {
     associatedtype V
     func onEntryEvicted(key: String, value: V)
