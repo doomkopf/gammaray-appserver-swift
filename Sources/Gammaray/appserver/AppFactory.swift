@@ -4,14 +4,14 @@ class AppFactory {
     private let loggerFactory: LoggerFactory
     private let scheduler: Scheduler
     private let responseSender: ResponseSender
-    private let nodeProcess: NodeJsAppProcess
+    private let nodeProcess: NodeJsAppApi
 
     init(
         db: AppserverDatabase,
         loggerFactory: LoggerFactory,
         scheduler: Scheduler,
         responseSender: ResponseSender,
-        nodeProcess: NodeJsAppProcess
+        nodeProcess: NodeJsAppApi
     ) {
         self.db = db
         self.loggerFactory = loggerFactory

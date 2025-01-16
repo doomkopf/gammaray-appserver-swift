@@ -3,13 +3,13 @@ class NodeJsStatelessFunctions: StatelessFunctions {
     private let log: Logger
     private let appId: String
     private let funcResponseHandler: NodeJsFuncResponseHandler
-    private let nodeProcess: NodeJsAppProcess
+    private let nodeProcess: NodeJsAppApi
 
     init(
         loggerFactory: LoggerFactory,
         appId: String,
         funcResponseHandler: NodeJsFuncResponseHandler,
-        nodeProcess: NodeJsAppProcess
+        nodeProcess: NodeJsAppApi
     ) {
         log = loggerFactory.createForClass(NodeJsStatelessFunctions.self)
 

@@ -1,6 +1,6 @@
 import Foundation
 
-protocol NodeJsAppProcess: Sendable {
+protocol NodeJsAppApi: Sendable {
     func setApp(_ request: NodeJsSetAppRequest) async throws -> NodeJsSetAppResponse
     func getAppDefinition(_ request: NodeJsGetAppDefinitionRequest) async throws
         -> NodeJsGammarayApp
@@ -10,7 +10,7 @@ protocol NodeJsAppProcess: Sendable {
 }
 
 @available(macOS 10.15, *)
-final class NodeJsAppProcessImpl: NodeJsAppProcess {
+final class NodeJsAppApiImpl: NodeJsAppApi {
     private let jsonEncoder = StringJSONEncoder()
     private let jsonDecoder = StringJSONDecoder()
     private let resultCallbacks: ResultCallbacks

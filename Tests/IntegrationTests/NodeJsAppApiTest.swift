@@ -3,7 +3,7 @@ import XCTest
 
 @testable import Gammaray
 
-final class NodeJsAppProcessTest: XCTestCase {
+final class NodeJsAppApiTest: XCTestCase {
     func testCom() async throws {
         let scheduler = Scheduler()
 
@@ -11,7 +11,7 @@ final class NodeJsAppProcessTest: XCTestCase {
 
         let config = try Config(reader: reader)
 
-        let nodeProc = try NodeJsAppProcessImpl(
+        let nodeProc = try NodeJsAppApiImpl(
             config: config,
             localHost: "127.0.0.1",
             localPort: 123,
@@ -24,7 +24,7 @@ final class NodeJsAppProcessTest: XCTestCase {
         }
         await nodeProc.start(scheduler: scheduler)
 
-        let code = try reader.readStringFile(name: "NodeJsAppProcessTest", ext: "js")
+        let code = try reader.readStringFile(name: "NodeJsAppApiTest", ext: "js")
 
         _ = try await nodeProc.setApp(NodeJsSetAppRequest(id: "test", code: code))
 

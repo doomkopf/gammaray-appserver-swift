@@ -4,7 +4,7 @@ import XCTest
 
 final class NodeJsEntityTest: XCTestCase {
     func testInvokeFunction() async {
-        final class NodeJsAppProcessMock: NodeJsAppProcess {
+        final class NodeJsAppProcessMock: NodeJsAppApi {
             func entityFunc(_ request: NodeJsEntityFuncRequest) async throws
                 -> NodeJsEntityFuncResponse
             {

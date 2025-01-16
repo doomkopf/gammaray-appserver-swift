@@ -10,7 +10,7 @@ actor NodeJsEntity: Entity {
     private let appId: String
     private let entityId: String
     private let entityType: String
-    private let nodeJs: NodeJsAppProcess
+    private let nodeJs: NodeJsAppApi
     private let funcResponseHandler: NodeJsFuncResponseHandler
     private var e: String?
 
@@ -21,7 +21,7 @@ actor NodeJsEntity: Entity {
         appId: String,
         entityId: String,
         entityType: String,
-        nodeJs: NodeJsAppProcess,
+        nodeJs: NodeJsAppApi,
         funcResponseHandler: NodeJsFuncResponseHandler,
         e: String?
     ) {
