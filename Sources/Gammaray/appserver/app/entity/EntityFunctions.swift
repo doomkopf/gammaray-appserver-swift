@@ -15,7 +15,8 @@ final class EntityFunctions: Sendable {
         self.appId = appId
         self.entitiesContainers = entitiesContainers
 
-        cleanEntitiesTask = scheduler.scheduleInterval(millis: 60000) {
+        cleanEntitiesTask = scheduler.scheduleInterval(millis: 60000)
+        cleanEntitiesTask.setFuncNotAwaiting {
             await entitiesContainers.cleanEntities()
         }
     }

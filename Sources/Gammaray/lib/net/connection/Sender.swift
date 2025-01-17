@@ -37,20 +37,22 @@ actor Sender {
     private var connected = false
     private var connecting = false
     private var channel: Channel?
-    private var sendTask: ScheduledTask?
+    private var sendTask: ScheduledTask
 
     init(
         host: String,
         port: Int,
         sendTimeoutMillis: Int64,
         sendIntervalMillis: Int64,
+        scheduler: Scheduler,
         receptionListener: ReceptionListener
     ) throws {
         self.host = host
         self.port = port
         self.sendIntervalMillis = sendIntervalMillis
 
-        sendQueue = try SendQueue(sendTimeoutMillis: sendTimeoutMillis)
+        sendQueue = try SendQueue(sendTimeoutMillis: sendTimeoutMillis, scheduler: scheduler)
+        sendTask = scheduler.scheduleInterval(millis: sendIntervalMillis)
 
         eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 
@@ -61,13 +63,10 @@ actor Sender {
             .channelInitializer { channel in
                 channel.pipeline.addHandler(SenderHandler(receptionListener))
             }
-    }
 
-    func start(scheduler: Scheduler) async {
-        sendTask = scheduler.scheduleInterval(millis: sendIntervalMillis) {
+        sendTask.setFuncNotAwaiting {
             await self.checkSendQueueAndTryConnectAndSend()
         }
-        await sendQueue.start(scheduler: scheduler)
     }
 
     func send(_ frame: String) async -> SendError? {
@@ -156,7 +155,7 @@ actor Sender {
     }
 
     func shutdown() async throws {
-        await sendTask?.cancel()
+        await sendTask.cancel()
         await sendQueue.shutdown()
         try await eventLoopGroup.shutdownGracefully()
     }

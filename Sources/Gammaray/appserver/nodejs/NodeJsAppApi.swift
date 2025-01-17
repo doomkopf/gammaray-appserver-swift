@@ -25,10 +25,12 @@ final class NodeJsAppApiImpl: NodeJsAppApi {
         requestTimeoutMillis: Int64,
         sendTimeoutMillis: Int64,
         sendIntervalMillis: Int64,
-        nodeJsProcessPort: Int
+        nodeJsProcessPort: Int,
+        scheduler: Scheduler
     ) throws {
         let idGen = RequestIdGenerator(localHost: localHost, localPort: localPort)
-        resultCallbacks = try ResultCallbacks(requestTimeoutMillis: requestTimeoutMillis)
+        resultCallbacks = try ResultCallbacks(
+            requestTimeoutMillis: requestTimeoutMillis, scheduler: scheduler)
         let cmdProc = CommandProcessor(resultCallbacks: resultCallbacks)
 
         remoteProcess = try RemoteHost(
@@ -38,6 +40,7 @@ final class NodeJsAppApiImpl: NodeJsAppApi {
             port: nodeJsProcessPort,
             sendTimeoutMillis: sendTimeoutMillis,
             sendIntervalMillis: sendIntervalMillis,
+            scheduler: scheduler,
             listener: cmdProc)
 
         process = try NodeJsProcess(
@@ -47,8 +50,6 @@ final class NodeJsAppApiImpl: NodeJsAppApi {
 
     func start(scheduler: Scheduler) async {
         await process.start()
-        await resultCallbacks.start(scheduler: scheduler)
-        await remoteProcess.start(scheduler: scheduler)
     }
 
     func setApp(_ request: NodeJsSetAppRequest) async throws -> NodeJsSetAppResponse {

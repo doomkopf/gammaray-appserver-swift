@@ -15,18 +15,17 @@ actor ResultCallbacks: CacheListener {
     typealias V = ResultCallback
 
     private let cache: Cache<ResultCallback>
-    private var cacheCleanTask: ScheduledTask?
+    private let cacheCleanTask: ScheduledTask
 
-    init(requestTimeoutMillis: Int64) throws {
+    init(requestTimeoutMillis: Int64, scheduler: Scheduler) throws {
         cache = try Cache<ResultCallback>(
             entryEvictionTimeMillis: requestTimeoutMillis,
             maxEntries: 100000
         )
-        cache.setListener(self)
-    }
+        cacheCleanTask = scheduler.scheduleInterval(millis: 500)
 
-    func start(scheduler: Scheduler) {
-        cacheCleanTask = scheduler.scheduleInterval(millis: 500) {
+        cache.setListener(self)
+        cacheCleanTask.setFuncNotAwaiting {
             await self.cleanCache()
         }
     }
@@ -48,6 +47,6 @@ actor ResultCallbacks: CacheListener {
     }
 
     func shutdown() async {
-        await cacheCleanTask?.cancel()
+        await cacheCleanTask.cancel()
     }
 }

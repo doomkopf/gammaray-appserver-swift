@@ -18,7 +18,9 @@ final class NodeJsAppApiTest: XCTestCase {
             requestTimeoutMillis: 4000,
             sendTimeoutMillis: 3000,
             sendIntervalMillis: 2000,
-            nodeJsProcessPort: 1234)
+            nodeJsProcessPort: 1234,
+            scheduler: scheduler
+        )
         defer {
             nodeProc.shutdownProcess()
         }

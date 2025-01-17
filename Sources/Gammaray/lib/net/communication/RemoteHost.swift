@@ -12,6 +12,7 @@ final class RemoteHost: Sendable {
         port: Int,
         sendTimeoutMillis: Int64,
         sendIntervalMillis: Int64,
+        scheduler: Scheduler,
         listener: ReceptionListener
     ) throws {
         self.requestIdGenerator = requestIdGenerator
@@ -22,11 +23,8 @@ final class RemoteHost: Sendable {
             port: port,
             sendTimeoutMillis: sendTimeoutMillis,
             sendIntervalMillis: sendIntervalMillis,
+            scheduler: scheduler,
             receptionListener: listener)
-    }
-
-    func start(scheduler: Scheduler) async {
-        await sender.start(scheduler: scheduler)
     }
 
     func request(cmd: Int, payload: String) async -> RequestResult {

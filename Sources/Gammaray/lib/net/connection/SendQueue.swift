@@ -20,18 +20,17 @@ actor SendQueue: CacheListener {
     typealias V = SendQueueEntry
 
     private let cache: Cache<SendQueueEntry>
-    private var cacheCleanTask: ScheduledTask?
+    private let cacheCleanTask: ScheduledTask
 
     private var keyCounter = 0
 
-    init(sendTimeoutMillis: Int64) throws {
+    init(sendTimeoutMillis: Int64, scheduler: Scheduler) throws {
         cache = try Cache<SendQueueEntry>(
             entryEvictionTimeMillis: sendTimeoutMillis, maxEntries: 100000)
-        cache.setListener(self)
-    }
+        cacheCleanTask = scheduler.scheduleInterval(millis: 500)
 
-    func start(scheduler: Scheduler) {
-        cacheCleanTask = scheduler.scheduleInterval(millis: 500) {
+        cache.setListener(self)
+        cacheCleanTask.setFuncNotAwaiting {
             await self.cleanCache()
         }
     }
@@ -67,6 +66,6 @@ actor SendQueue: CacheListener {
     }
 
     func shutdown() async {
-        await cacheCleanTask?.cancel()
+        await cacheCleanTask.cancel()
     }
 }
