@@ -1,3 +1,4 @@
+@available(macOS 10.15, *)
 final class EntitiesContainers: Sendable {
     private let typeToEntities: [String: EntitiesContainer]
 

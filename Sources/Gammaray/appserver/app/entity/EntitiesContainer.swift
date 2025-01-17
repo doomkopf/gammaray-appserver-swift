@@ -1,4 +1,7 @@
-actor EntitiesContainer {
+@available(macOS 10.15, *)
+actor EntitiesContainer: CacheListener {
+    typealias V = EntityContainer
+
     private let appId: String
     private let type: String
     private let entityFactory: EntityFactory
@@ -20,6 +23,17 @@ actor EntitiesContainer {
             entryEvictionTimeMillis: 600000,
             maxEntries: 100000
         )
+    }
+
+    nonisolated func onEntryEvicted(key: String, value: EntityContainer) {
+        Task {
+            await value.store(
+                appId: appId,
+                entityType: type,
+                entityId: key,
+                db: db
+            )
+        }
     }
 
     func cleanEntities() {
