@@ -3,24 +3,15 @@ final class EntityFunctions: Sendable {
     private let log: Logger
     private let appId: String
     private let entitiesContainers: EntitiesContainers
-    private let cleanEntitiesTask: ScheduledTask
 
     init(
         loggerFactory: LoggerFactory,
         appId: String,
-        entitiesContainers: EntitiesContainers,
-        scheduler: Scheduler,
-        config: Config
+        entitiesContainers: EntitiesContainers
     ) {
         log = loggerFactory.createForClass(EntityFunctions.self)
         self.appId = appId
         self.entitiesContainers = entitiesContainers
-
-        cleanEntitiesTask = scheduler.scheduleInterval(
-            millis: config.getInt64(ConfigProperty.entityCacheCleanupIntervalMillis))
-        cleanEntitiesTask.setFuncNotAwaiting {
-            await entitiesContainers.cleanEntities()
-        }
     }
 
     func invoke(params: FunctionParams, entityParams: EntityParams) async {
@@ -47,9 +38,5 @@ final class EntityFunctions: Sendable {
                 "Error executing entity function: appId=\(appId), type=\(entityParams.type), func=\(params.theFunc)",
                 error)
         }
-    }
-
-    func shutdown() async {
-        await cleanEntitiesTask.cancel()
     }
 }

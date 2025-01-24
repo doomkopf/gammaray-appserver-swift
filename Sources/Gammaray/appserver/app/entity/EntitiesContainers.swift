@@ -1,13 +1,15 @@
 @available(macOS 10.15, *)
 final class EntitiesContainers: Sendable {
     private let typeToEntities: [String: EntitiesContainer]
+    private let cleanEntitiesTask: ScheduledTask
 
     init(
         appId: String,
         appDef: GammarayApp,
         entityFactory: EntityFactory,
         db: AppserverDatabase,
-        config: Config
+        config: Config,
+        scheduler: Scheduler
     ) throws {
         var typeToEntities: [String: EntitiesContainer] = [:]
         for entry in appDef.entity {
@@ -20,9 +22,15 @@ final class EntitiesContainers: Sendable {
             )
         }
         self.typeToEntities = typeToEntities
+
+        cleanEntitiesTask = scheduler.scheduleInterval(
+            millis: config.getInt64(ConfigProperty.entityCacheCleanupIntervalMillis))
+        cleanEntitiesTask.setFuncNotAwaiting {
+            await self.cleanEntities()
+        }
     }
 
-    func cleanEntities() async {
+    private func cleanEntities() async {
         for entry in typeToEntities {
             await entry.value.cleanEntities()
         }
@@ -30,5 +38,9 @@ final class EntitiesContainers: Sendable {
 
     func getEntitiesContainerByType(_ type: String) -> EntitiesContainer? {
         typeToEntities[type]
+    }
+
+    func shutdown() async {
+        await cleanEntitiesTask.cancel()
     }
 }
