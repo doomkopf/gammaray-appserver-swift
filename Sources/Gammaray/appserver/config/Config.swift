@@ -4,6 +4,9 @@ enum ConfigProperty: String {
     case nodeJsAppApiRequestTimeoutMillis
     case nodeJsAppApiSendTimeoutMillis
     case nodeJsAppApiSendIntervalMillis
+    case entityCacheEvictionTimeMillis
+    case entityCacheMaxEntries
+    case entityCacheCleanupIntervalMillis
 }
 
 private func defaultValue(_ configProperty: ConfigProperty) -> String {
@@ -13,10 +16,13 @@ private func defaultValue(_ configProperty: ConfigProperty) -> String {
     case .nodeJsAppApiRequestTimeoutMillis: "4000"
     case .nodeJsAppApiSendTimeoutMillis: "3000"
     case .nodeJsAppApiSendIntervalMillis: "2000"
+    case .entityCacheEvictionTimeMillis: "600000"
+    case .entityCacheMaxEntries: "100000"
+    case .entityCacheCleanupIntervalMillis: "60000"
     }
 }
 
-class Config {
+final class Config: Sendable {
     private let config: [ConfigProperty: String]
 
     init(reader: ResourceFileReader) throws {
@@ -44,8 +50,11 @@ class Config {
         return defaultValue(configProperty)
     }
 
-    func getInt(_ configProperty: ConfigProperty) -> Int64 {
-        // There will always be a default value and a throws declaration would only increase the complexity of using this method
+    func getInt64(_ configProperty: ConfigProperty) -> Int64 {
         Int64(getString(configProperty)) ?? 0
+    }
+
+    func getInt(_ configProperty: ConfigProperty) -> Int {
+        Int(getString(configProperty)) ?? 0
     }
 }

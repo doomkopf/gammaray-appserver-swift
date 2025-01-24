@@ -26,7 +26,7 @@ final class NodeJsAppApiImpl: NodeJsAppApi {
             localPort: NODE_JS_PROCESS_LOCAL_PORT
         )
         resultCallbacks = try ResultCallbacks(
-            requestTimeoutMillis: config.getInt(ConfigProperty.nodeJsAppApiRequestTimeoutMillis),
+            requestTimeoutMillis: config.getInt64(ConfigProperty.nodeJsAppApiRequestTimeoutMillis),
             scheduler: scheduler
         )
         let cmdProc = CommandProcessor(resultCallbacks: resultCallbacks)
@@ -36,8 +36,8 @@ final class NodeJsAppApiImpl: NodeJsAppApi {
             resultCallbacks: resultCallbacks,
             host: LOCAL_HOST,
             port: NODE_JS_PROCESS_PORT,
-            sendTimeoutMillis: config.getInt(ConfigProperty.nodeJsAppApiSendTimeoutMillis),
-            sendIntervalMillis: config.getInt(ConfigProperty.nodeJsAppApiSendIntervalMillis),
+            sendTimeoutMillis: config.getInt64(ConfigProperty.nodeJsAppApiSendTimeoutMillis),
+            sendIntervalMillis: config.getInt64(ConfigProperty.nodeJsAppApiSendIntervalMillis),
             scheduler: scheduler,
             listener: cmdProc
         )

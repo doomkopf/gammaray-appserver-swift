@@ -12,7 +12,8 @@ actor EntitiesContainer: CacheListener {
         appId: String,
         type: String,
         entityFactory: EntityFactory,
-        db: AppserverDatabase
+        db: AppserverDatabase,
+        config: Config
     ) throws {
         self.appId = appId
         self.type = type
@@ -20,8 +21,8 @@ actor EntitiesContainer: CacheListener {
         self.db = db
 
         cache = try Cache(
-            entryEvictionTimeMillis: 600000,
-            maxEntries: 100000
+            entryEvictionTimeMillis: config.getInt64(ConfigProperty.entityCacheEvictionTimeMillis),
+            maxEntries: config.getInt(ConfigProperty.entityCacheMaxEntries)
         )
     }
 

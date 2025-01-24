@@ -9,13 +9,15 @@ final class EntityFunctions: Sendable {
         loggerFactory: LoggerFactory,
         appId: String,
         entitiesContainers: EntitiesContainers,
-        scheduler: Scheduler
+        scheduler: Scheduler,
+        config: Config
     ) {
         log = loggerFactory.createForClass(EntityFunctions.self)
         self.appId = appId
         self.entitiesContainers = entitiesContainers
 
-        cleanEntitiesTask = scheduler.scheduleInterval(millis: 60000)
+        cleanEntitiesTask = scheduler.scheduleInterval(
+            millis: config.getInt64(ConfigProperty.entityCacheCleanupIntervalMillis))
         cleanEntitiesTask.setFuncNotAwaiting {
             await entitiesContainers.cleanEntities()
         }

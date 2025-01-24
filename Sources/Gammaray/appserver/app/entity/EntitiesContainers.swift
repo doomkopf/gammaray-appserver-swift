@@ -6,7 +6,8 @@ final class EntitiesContainers: Sendable {
         appId: String,
         appDef: GammarayApp,
         entityFactory: EntityFactory,
-        db: AppserverDatabase
+        db: AppserverDatabase,
+        config: Config
     ) throws {
         var typeToEntities: [String: EntitiesContainer] = [:]
         for entry in appDef.entity {
@@ -14,7 +15,8 @@ final class EntitiesContainers: Sendable {
                 appId: appId,
                 type: entry.key,
                 entityFactory: entityFactory,
-                db: db
+                db: db,
+                config: config
             )
         }
         self.typeToEntities = typeToEntities
