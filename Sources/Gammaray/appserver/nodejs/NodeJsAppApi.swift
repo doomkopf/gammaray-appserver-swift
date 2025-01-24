@@ -19,33 +19,34 @@ final class NodeJsAppApiImpl: NodeJsAppApi {
 
     init(
         config: Config,
-        // TODO move all those values to Config
-        localHost: String,
-        localPort: Int,
-        requestTimeoutMillis: Int64,
-        sendTimeoutMillis: Int64,
-        sendIntervalMillis: Int64,
-        nodeJsProcessPort: Int,
         scheduler: Scheduler
     ) throws {
-        let idGen = RequestIdGenerator(localHost: localHost, localPort: localPort)
+        let idGen = RequestIdGenerator(
+            localHost: LOCAL_HOST,
+            localPort: NODE_JS_PROCESS_LOCAL_PORT
+        )
         resultCallbacks = try ResultCallbacks(
-            requestTimeoutMillis: requestTimeoutMillis, scheduler: scheduler)
+            requestTimeoutMillis: config.getInt(ConfigProperty.nodeJsAppApiRequestTimeoutMillis),
+            scheduler: scheduler
+        )
         let cmdProc = CommandProcessor(resultCallbacks: resultCallbacks)
 
         remoteProcess = try RemoteHost(
             requestIdGenerator: idGen,
             resultCallbacks: resultCallbacks,
-            host: localHost,
-            port: nodeJsProcessPort,
-            sendTimeoutMillis: sendTimeoutMillis,
-            sendIntervalMillis: sendIntervalMillis,
+            host: LOCAL_HOST,
+            port: NODE_JS_PROCESS_PORT,
+            sendTimeoutMillis: config.getInt(ConfigProperty.nodeJsAppApiSendTimeoutMillis),
+            sendIntervalMillis: config.getInt(ConfigProperty.nodeJsAppApiSendIntervalMillis),
             scheduler: scheduler,
-            listener: cmdProc)
+            listener: cmdProc
+        )
 
         process = try NodeJsProcess(
-            jsFile: "Resources/NodeJsAppProcess", module: Bundle.module,
-            nodeJsBinaryPath: config.get(ConfigProperty.nodeJsBinaryPath))
+            jsFile: "Resources/NodeJsAppProcess",
+            module: Bundle.module,
+            nodeJsBinaryPath: config.getString(ConfigProperty.nodeJsBinaryPath)
+        )
     }
 
     func start(scheduler: Scheduler) async {

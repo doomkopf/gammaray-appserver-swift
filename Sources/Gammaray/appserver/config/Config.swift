@@ -1,12 +1,18 @@
 enum ConfigProperty: String {
     case dummy
     case nodeJsBinaryPath
+    case nodeJsAppApiRequestTimeoutMillis
+    case nodeJsAppApiSendTimeoutMillis
+    case nodeJsAppApiSendIntervalMillis
 }
 
 private func defaultValue(_ configProperty: ConfigProperty) -> String {
     switch configProperty {
     case .dummy: "dummyDefaultValue"
     case .nodeJsBinaryPath: "pathNotConfigured"
+    case .nodeJsAppApiRequestTimeoutMillis: "4000"
+    case .nodeJsAppApiSendTimeoutMillis: "3000"
+    case .nodeJsAppApiSendIntervalMillis: "2000"
     }
 }
 
@@ -30,11 +36,16 @@ class Config {
         self.config = config
     }
 
-    func get(_ configProperty: ConfigProperty) -> String {
+    func getString(_ configProperty: ConfigProperty) -> String {
         if let configValue = config[configProperty] {
             return configValue
         }
 
         return defaultValue(configProperty)
+    }
+
+    func getInt(_ configProperty: ConfigProperty) -> Int64 {
+        // There will always be a default value and a throws declaration would only increase the complexity of using this method
+        Int64(getString(configProperty)) ?? 0
     }
 }

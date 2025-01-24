@@ -8,6 +8,7 @@ import { EntityFuncCommandHandler } from "./command-handlers/EntityFuncCommandHa
 import { SetAppCommandHandler } from "./command-handlers/SetAppCommandHandler"
 import { StatelessFuncCommandHandler } from "./command-handlers/StatelessFuncCommandHandler"
 import { Commands } from "./Commands"
+import { LOCAL_PORT } from "./constants"
 
 export class Apps {
   private readonly rec: Receiver
@@ -22,7 +23,7 @@ export class Apps {
     commandHandlers.set(Commands.APP_DEFINITION, new AppDefinitionCommandHandler(this, lib))
     commandHandlers.set(Commands.SET_APP, new SetAppCommandHandler(this, lib))
 
-    this.rec = new Receiver(1234, new CommandProcessor(commandHandlers))
+    this.rec = new Receiver(LOCAL_PORT, new CommandProcessor(commandHandlers))
   }
 
   setApp(id: string, appRoot: GammarayApp) {

@@ -19,15 +19,19 @@ final class ConfigTest: XCTestCase {
         let readerWithEmptyFile = ResourceFileReaderMock("")
         let configExpectedToUseDefaultValue = try Config(reader: readerWithEmptyFile)
         XCTAssertEqual(
-            "dummyDefaultValue", configExpectedToUseDefaultValue.get(ConfigProperty.dummy))
+            "dummyDefaultValue", configExpectedToUseDefaultValue.getString(ConfigProperty.dummy))
 
         let readerWithContent = ResourceFileReaderMock(
             "dummy=the=dummyValue\nnodeJsBinaryPath=some/path\n")
         let configExpectedToUseConfiguredValue = try Config(reader: readerWithContent)
         XCTAssertEqual(
-            "the=dummyValue", configExpectedToUseConfiguredValue.get(ConfigProperty.dummy))
+            "the=dummyValue", configExpectedToUseConfiguredValue.getString(ConfigProperty.dummy))
         XCTAssertEqual(
             "some/path",
-            configExpectedToUseConfiguredValue.get(ConfigProperty.nodeJsBinaryPath))
+            configExpectedToUseConfiguredValue.getString(ConfigProperty.nodeJsBinaryPath))
+        XCTAssertEqual(
+            4000,
+            configExpectedToUseConfiguredValue.getInt(
+                ConfigProperty.nodeJsAppApiRequestTimeoutMillis))
     }
 }

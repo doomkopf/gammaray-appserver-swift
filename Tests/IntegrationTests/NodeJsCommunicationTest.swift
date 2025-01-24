@@ -11,22 +11,22 @@ final class NodeJsCommunicationTest: XCTestCase {
 
         let p = try NodeJsProcess(
             jsFile: "Resources/NodeJsCommunicationTest", module: Bundle.module,
-            nodeJsBinaryPath: config.get(ConfigProperty.nodeJsBinaryPath))
+            nodeJsBinaryPath: config.getString(ConfigProperty.nodeJsBinaryPath))
         defer {
             p.shutdown()
         }
         await p.start()
 
         let scheduler = Scheduler()
-        let idGen = RequestIdGenerator(localHost: "127.0.0.1", localPort: 123)
+        let idGen = RequestIdGenerator(localHost: LOCAL_HOST, localPort: NODE_JS_PROCESS_LOCAL_PORT)
         let resultCallbacks = try ResultCallbacks(requestTimeoutMillis: 4000, scheduler: scheduler)
         let cmdProc = CommandProcessor(resultCallbacks: resultCallbacks)
 
         let remoteHost = try RemoteHost(
             requestIdGenerator: idGen,
             resultCallbacks: resultCallbacks,
-            host: "127.0.0.1",
-            port: 1234,
+            host: LOCAL_HOST,
+            port: NODE_JS_PROCESS_PORT,
             sendTimeoutMillis: 3000,
             sendIntervalMillis: 2000,
             scheduler: scheduler,

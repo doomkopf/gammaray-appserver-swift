@@ -13,12 +13,6 @@ final class NodeJsAppApiTest: XCTestCase {
 
         let nodeProc = try NodeJsAppApiImpl(
             config: config,
-            localHost: "127.0.0.1",
-            localPort: 123,
-            requestTimeoutMillis: 4000,
-            sendTimeoutMillis: 3000,
-            sendIntervalMillis: 2000,
-            nodeJsProcessPort: 1234,
             scheduler: scheduler
         )
         defer {
