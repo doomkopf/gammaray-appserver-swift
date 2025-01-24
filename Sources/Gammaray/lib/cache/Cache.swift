@@ -63,12 +63,10 @@ class Cache<V> {
             var minKey: String?
             var minTs = Int64.max
 
-            for k in map.keys {
-                if let v = map[k] {
-                    if v.ts < minTs {
-                        minTs = v.ts
-                        minKey = k
-                    }
+            for entry in map {
+                if entry.value.ts < minTs {
+                    minTs = entry.value.ts
+                    minKey = entry.key
                 }
             }
 
@@ -111,11 +109,9 @@ class Cache<V> {
 
     func cleanupAt(_ now: Int64) {
         var keysToDelete: [String] = []
-        for key in map.keys {
-            if let entry = map[key] {
-                if entry.ts + entryEvictionTimeMillis < now {
-                    keysToDelete.append(key)
-                }
+        for entry in map {
+            if entry.value.ts + entryEvictionTimeMillis < now {
+                keysToDelete.append(entry.key)
             }
         }
 
