@@ -6,7 +6,7 @@ enum ConfigProperty: String {
     case nodeJsAppApiSendIntervalMillis
     case entityCacheEvictionTimeMillis
     case entityCacheMaxEntries
-    case entityCacheCleanupIntervalMillis
+    case entityScheduledTasksIntervalMillis
 }
 
 private func defaultValue(_ configProperty: ConfigProperty) -> String {
@@ -18,7 +18,7 @@ private func defaultValue(_ configProperty: ConfigProperty) -> String {
     case .nodeJsAppApiSendIntervalMillis: "2000"
     case .entityCacheEvictionTimeMillis: "600000"
     case .entityCacheMaxEntries: "100000"
-    case .entityCacheCleanupIntervalMillis: "60000"
+    case .entityScheduledTasksIntervalMillis: "3000"
     }
 }
 

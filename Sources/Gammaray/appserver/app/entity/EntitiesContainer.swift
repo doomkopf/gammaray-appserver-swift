@@ -37,8 +37,22 @@ actor EntitiesContainer: CacheListener {
         }
     }
 
-    func cleanEntities() {
+    func scheduledTasks() {
         cache.cleanup()
+        storeEntities()
+    }
+
+    private func storeEntities() {
+        cache.forEachEntry { key, value in
+            Task {
+                await value.store(
+                    appId: self.appId,
+                    entityType: self.type,
+                    entityId: key,
+                    db: self.db
+                )
+            }
+        }
     }
 
     func retrieveEntity(_ key: EntityId) async -> EntityContainer {

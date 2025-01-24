@@ -142,4 +142,10 @@ class Cache<V> {
 
         return nil
     }
+
+    func forEachEntry(fun: (_ key: String, _ value: V) -> Void) {
+        for entry in map {
+            fun(entry.key, entry.value.v)
+        }
+    }
 }

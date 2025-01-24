@@ -24,15 +24,15 @@ final class EntitiesContainers: Sendable {
         self.typeToEntities = typeToEntities
 
         cleanEntitiesTask = scheduler.scheduleInterval(
-            millis: config.getInt64(ConfigProperty.entityCacheCleanupIntervalMillis))
+            millis: config.getInt64(ConfigProperty.entityScheduledTasksIntervalMillis))
         cleanEntitiesTask.setFuncNotAwaiting {
-            await self.cleanEntities()
+            await self.scheduledTasks()
         }
     }
 
-    private func cleanEntities() async {
+    private func scheduledTasks() async {
         for entry in typeToEntities {
-            await entry.value.cleanEntities()
+            await entry.value.scheduledTasks()
         }
     }
 
