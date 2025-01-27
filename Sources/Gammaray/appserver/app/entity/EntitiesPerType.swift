@@ -1,5 +1,5 @@
 @available(macOS 10.15, *)
-actor EntitiesContainer: CacheListener {
+actor EntitiesPerType: CacheListener {
     typealias V = EntityContainer
 
     private let appId: String

@@ -45,7 +45,7 @@ class AppFactory {
             responseSender: responseSender
         )
 
-        let entitiesContainers = try EntitiesContainers(
+        let appEntities = try AppEntities(
             appId: appId,
             appDef: map(appDef),
             entityFactory: NodeJsEntityFactory(
@@ -60,7 +60,7 @@ class AppFactory {
         let entityFunctions = EntityFunctions(
             loggerFactory: loggerFactory,
             appId: appId,
-            entitiesContainers: entitiesContainers
+            appEntities: appEntities
         )
 
         await funcResponseHandler.lateBind(entityFuncs: entityFunctions)
@@ -73,7 +73,7 @@ class AppFactory {
                 nodeProcess: nodeProcess
             ),
             entityFunctions: entityFunctions,
-            entitiesContainers: entitiesContainers
+            appEntities: appEntities
         )
     }
 

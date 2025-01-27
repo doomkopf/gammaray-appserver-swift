@@ -1,6 +1,6 @@
 @available(macOS 10.15, *)
-final class EntitiesContainers: Sendable {
-    private let typeToEntities: [String: EntitiesContainer]
+final class AppEntities: Sendable {
+    private let typeToEntities: [String: EntitiesPerType]
     private let cleanEntitiesTask: ScheduledTask
 
     init(
@@ -11,9 +11,9 @@ final class EntitiesContainers: Sendable {
         config: Config,
         scheduler: Scheduler
     ) throws {
-        var typeToEntities: [String: EntitiesContainer] = [:]
+        var typeToEntities: [String: EntitiesPerType] = [:]
         for entry in appDef.entity {
-            typeToEntities[entry.key] = try EntitiesContainer(
+            typeToEntities[entry.key] = try EntitiesPerType(
                 appId: appId,
                 type: entry.key,
                 entityFactory: entityFactory,
@@ -36,7 +36,7 @@ final class EntitiesContainers: Sendable {
         }
     }
 
-    func getEntitiesContainerByType(_ type: String) -> EntitiesContainer? {
+    func getEntitiesByType(_ type: String) -> EntitiesPerType? {
         typeToEntities[type]
     }
 

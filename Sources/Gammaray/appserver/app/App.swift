@@ -2,16 +2,16 @@
 class App {
     private let statelessFunctions: StatelessFunctions
     private let entityFunctions: EntityFunctions
-    private let entitiesContainers: EntitiesContainers
+    private let appEntities: AppEntities
 
     init(
         statelessFunctions: StatelessFunctions,
         entityFunctions: EntityFunctions,
-        entitiesContainers: EntitiesContainers
+        appEntities: AppEntities
     ) {
         self.statelessFunctions = statelessFunctions
         self.entityFunctions = entityFunctions
-        self.entitiesContainers = entitiesContainers
+        self.appEntities = appEntities
     }
 
     func handleFunc(params: FunctionParams, entityParams: EntityParams?) async {
@@ -24,6 +24,6 @@ class App {
     }
 
     func shutdown() async {
-        await entitiesContainers.shutdown()
+        await appEntities.shutdown()
     }
 }
