@@ -12,10 +12,10 @@ final class AppEntities: Sendable {
         scheduler: Scheduler
     ) throws {
         var typeToEntities: [String: EntitiesPerType] = [:]
-        for entry in appDef.entity {
-            typeToEntities[entry.key] = try EntitiesPerType(
+        for key in appDef.entity.keys {
+            typeToEntities[key] = try EntitiesPerType(
                 appId: appId,
-                type: entry.key,
+                type: key,
                 entityFactory: entityFactory,
                 db: db,
                 config: config
@@ -31,8 +31,8 @@ final class AppEntities: Sendable {
     }
 
     private func scheduledTasks() async {
-        for entry in typeToEntities {
-            await entry.value.scheduledTasks()
+        for value in typeToEntities.values {
+            await value.scheduledTasks()
         }
     }
 
