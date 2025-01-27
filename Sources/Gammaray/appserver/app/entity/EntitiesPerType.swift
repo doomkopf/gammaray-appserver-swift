@@ -6,7 +6,22 @@ actor EntitiesPerType: CacheListener {
     private let type: String
     private let entityFactory: EntityFactory
     private let db: AppserverDatabase
-    private let cache: Cache<EntityContainer>
+    private let cache: any Cache<EntityContainer>
+
+    init(
+        appId: String,
+        type: String,
+        entityFactory: EntityFactory,
+        db: AppserverDatabase,
+        config: Config,
+        cache: any Cache<EntityContainer>
+    ) {
+        self.appId = appId
+        self.type = type
+        self.entityFactory = entityFactory
+        self.db = db
+        self.cache = cache
+    }
 
     init(
         appId: String,
@@ -15,14 +30,13 @@ actor EntitiesPerType: CacheListener {
         db: AppserverDatabase,
         config: Config
     ) throws {
-        self.appId = appId
-        self.type = type
-        self.entityFactory = entityFactory
-        self.db = db
-
-        cache = try Cache(
-            entryEvictionTimeMillis: config.getInt64(ConfigProperty.entityCacheEvictionTimeMillis),
-            maxEntries: config.getInt(ConfigProperty.entityCacheMaxEntries)
+        self.init(
+            appId: appId, type: type, entityFactory: entityFactory, db: db, config: config,
+            cache: try CacheImpl(
+                entryEvictionTimeMillis: config.getInt64(
+                    ConfigProperty.entityCacheEvictionTimeMillis),
+                maxEntries: config.getInt(ConfigProperty.entityCacheMaxEntries)
+            )
         )
     }
 

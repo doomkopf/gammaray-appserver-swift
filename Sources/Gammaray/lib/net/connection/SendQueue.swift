@@ -19,13 +19,13 @@ struct SendQueueEntry: Sendable {
 actor SendQueue: CacheListener {
     typealias V = SendQueueEntry
 
-    private let cache: Cache<SendQueueEntry>
+    private let cache: any Cache<SendQueueEntry>
     private let cacheCleanTask: ScheduledTask
 
     private var keyCounter = 0
 
     init(sendTimeoutMillis: Int64, scheduler: Scheduler) throws {
-        cache = try Cache<SendQueueEntry>(
+        cache = try CacheImpl<SendQueueEntry>(
             entryEvictionTimeMillis: sendTimeoutMillis, maxEntries: 100000)
         cacheCleanTask = scheduler.scheduleInterval(millis: 500)
 

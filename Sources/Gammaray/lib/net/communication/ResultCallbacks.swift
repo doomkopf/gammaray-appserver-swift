@@ -14,11 +14,11 @@ typealias ResultCallback = @Sendable (_ result: RequestResult) -> Void
 actor ResultCallbacks: CacheListener {
     typealias V = ResultCallback
 
-    private let cache: Cache<ResultCallback>
+    private let cache: any Cache<ResultCallback>
     private let cacheCleanTask: ScheduledTask
 
     init(requestTimeoutMillis: Int64, scheduler: Scheduler) throws {
-        cache = try Cache<ResultCallback>(
+        cache = try CacheImpl<ResultCallback>(
             entryEvictionTimeMillis: requestTimeoutMillis,
             maxEntries: 100000
         )

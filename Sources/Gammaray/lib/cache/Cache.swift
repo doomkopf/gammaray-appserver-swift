@@ -22,7 +22,22 @@ struct CacheEntry<V> {
     let ts: Int64
 }
 
-class Cache<V> {
+protocol Cache<V> {
+    associatedtype V
+    func setListener(_ listener: any CacheListener<V>)
+    func put(key: String, value: V)
+    func get(key: String) -> V?
+    func remove(_ key: String) -> V?
+    var size: Int { get }
+    func cleanup()
+    func clear()
+    func removeAnyEntry() -> CacheEntry<V>?
+    func forEachEntry(fun: (_ key: String, _ value: V) -> Void)
+}
+
+class CacheImpl<V>: Cache {
+    typealias V = V
+
     private let entryEvictionTimeMillis: Int64
     private let maxEntries: Int
     private var listener: (any CacheListener<V>)?

@@ -1,4 +1,12 @@
-final class AppserverDatabase: Sendable {
+protocol AppserverDatabase: Sendable {
+    func getAppEntity(appId: String, entityType: String, entityId: EntityId) async -> String?
+    func putAppEntity(appId: String, entityType: String, entityId: EntityId, entityStr: String)
+        async
+    func removeAppEntity(appId: String, entityType: String, entityId: EntityId) async
+    func getApp(_ appId: String) async throws -> DatabaseApp?
+}
+
+final class AppserverDatabaseImpl: AppserverDatabase {
     private let db: Database
     private let jsonDecoder: StringJSONDecoder
 
