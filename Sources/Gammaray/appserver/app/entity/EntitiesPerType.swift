@@ -13,7 +13,6 @@ actor EntitiesPerType: CacheListener {
         type: String,
         entityFactory: EntityFactory,
         db: AppserverDatabase,
-        config: Config,
         cache: any Cache<EntityContainer>
     ) {
         self.appId = appId
@@ -31,7 +30,7 @@ actor EntitiesPerType: CacheListener {
         config: Config
     ) throws {
         self.init(
-            appId: appId, type: type, entityFactory: entityFactory, db: db, config: config,
+            appId: appId, type: type, entityFactory: entityFactory, db: db,
             cache: try CacheImpl(
                 entryEvictionTimeMillis: config.getInt64(
                     ConfigProperty.entityCacheEvictionTimeMillis),
