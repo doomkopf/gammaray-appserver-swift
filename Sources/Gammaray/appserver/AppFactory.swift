@@ -34,8 +34,14 @@ class AppFactory {
     }
 
     private func createNodeJs(appId: String, code: String) async throws -> App {
-        _ = try await nodeProcess.setApp(
+        let setAppResponse = try await nodeProcess.setApp(
             NodeJsSetAppRequest(id: appId, code: code))
+
+        if let setAppError = setAppResponse.error {
+            throw AppserverError.NodeJsApp(
+                "Error creating nodeJs app - error type: \(setAppError.type), message: \(setAppError.message)"
+            )
+        }
 
         let appDef = try await nodeProcess.getAppDefinition(
             NodeJsGetAppDefinitionRequest(appId: appId))
