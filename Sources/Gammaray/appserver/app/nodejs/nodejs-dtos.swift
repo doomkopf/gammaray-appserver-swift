@@ -4,6 +4,16 @@ struct NodeJsSetAppRequest: Encodable {
 }
 
 struct NodeJsSetAppResponse: Decodable {
+    let error: NodeJsSetAppErrorResponse?
+}
+
+struct NodeJsSetAppErrorResponse: Decodable {
+    let type: NodeJsSetAppErrorResponseType
+    let message: String
+}
+
+enum NodeJsSetAppErrorResponseType: Int, Decodable {
+    case SCRIPT_EVALUATION = 0
 }
 
 struct NodeJsGetAppDefinitionRequest: Encodable {

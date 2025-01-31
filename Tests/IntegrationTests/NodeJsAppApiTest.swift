@@ -20,6 +20,10 @@ final class NodeJsAppApiTest: XCTestCase {
         }
         await nodeProc.start(scheduler: scheduler)
 
+        let response = try await nodeProc.setApp(
+            NodeJsSetAppRequest(id: "test", code: "not js code"))
+        XCTAssertEqual(NodeJsSetAppErrorResponseType.SCRIPT_EVALUATION, response.error?.type)
+
         let code = try reader.readStringFile(name: "NodeJsAppApiTest", ext: "js")
 
         _ = try await nodeProc.setApp(NodeJsSetAppRequest(id: "test", code: code))

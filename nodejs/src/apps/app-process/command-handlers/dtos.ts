@@ -4,6 +4,16 @@ export interface NodeJsSetAppRequest {
 }
 
 export interface NodeJsSetAppResponse {
+    error?: NodeJsSetAppErrorResponse
+}
+
+export interface NodeJsSetAppErrorResponse {
+    type: NodeJsSetAppErrorResponseType,
+    message: string,
+}
+
+export enum NodeJsSetAppErrorResponseType {
+    SCRIPT_EVALUATION = 0,
 }
 
 export interface NodeJsGetAppDefinitionRequest {

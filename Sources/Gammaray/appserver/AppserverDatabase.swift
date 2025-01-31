@@ -4,17 +4,21 @@ protocol AppserverDatabase: Sendable {
         async
     func removeAppEntity(appId: String, entityType: String, entityId: EntityId) async
     func getApp(_ appId: String) async throws -> DatabaseApp?
+    func putApp(appId: String, app: DatabaseApp) async
 }
 
 final class AppserverDatabaseImpl: AppserverDatabase {
     private let db: Database
+    private let jsonEncoder: StringJSONEncoder
     private let jsonDecoder: StringJSONDecoder
 
     init(
         db: Database,
+        jsonEncoder: StringJSONEncoder,
         jsonDecoder: StringJSONDecoder
     ) {
         self.db = db
+        self.jsonEncoder = jsonEncoder
         self.jsonDecoder = jsonDecoder
     }
 
@@ -47,6 +51,10 @@ final class AppserverDatabaseImpl: AppserverDatabase {
         }
 
         return try jsonDecoder.decode(DatabaseApp.self, result)
+    }
+
+    func putApp(appId: String, app: DatabaseApp) async {
+        await db.put(appCodeKey(appId), jsonEncoder.encode(app))
     }
 }
 
