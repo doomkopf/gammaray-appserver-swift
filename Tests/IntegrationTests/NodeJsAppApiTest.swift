@@ -4,36 +4,55 @@ import XCTest
 @testable import Gammaray
 
 final class NodeJsAppApiTest: XCTestCase {
-    func testCom() async throws {
+    let reader = ResourceFileReaderImpl(module: Bundle.module)
+
+    func testAll() async throws {
+        let nodeApi = try await setup()
+        defer {
+            nodeApi.shutdownProcess()
+        }
+
+        try await failWhenSettingInvalidAppCode(nodeApi)
+        try await getAppDefinitionReturnsAllDefinitionsFromAppCode(nodeApi)
+        try await entityFuncReturnsAllResultingActions(nodeApi)
+        try await statelessFuncReturnsAllResultingActions(nodeApi)
+
+        try await nodeApi.shutdown()
+    }
+
+    private func setup() async throws -> NodeJsAppApiImpl {
         let scheduler = Scheduler()
-
-        let reader = ResourceFileReaderImpl(module: Bundle.module)
-
         let config = try Config(reader: reader)
 
-        let nodeProc = try NodeJsAppApiImpl(
+        let nodeApi = try NodeJsAppApiImpl(
             config: config,
             scheduler: scheduler
         )
-        defer {
-            nodeProc.shutdownProcess()
-        }
-        await nodeProc.start(scheduler: scheduler)
+        await nodeApi.start(scheduler: scheduler)
 
-        let response = try await nodeProc.setApp(
+        return nodeApi
+    }
+
+    private func failWhenSettingInvalidAppCode(_ nodeApi: NodeJsAppApi) async throws {
+        let response = try await nodeApi.setApp(
             NodeJsSetAppRequest(id: "test", code: "not js code"))
         XCTAssertEqual(NodeJsSetAppErrorResponseType.SCRIPT_EVALUATION, response.error?.type)
+    }
 
+    private func getAppDefinitionReturnsAllDefinitionsFromAppCode(_ nodeApi: NodeJsAppApi)
+        async throws
+    {
         let code = try reader.readStringFile(name: "NodeJsAppApiTest", ext: "js")
+        _ = try await nodeApi.setApp(NodeJsSetAppRequest(id: "test", code: code))
 
-        _ = try await nodeProc.setApp(NodeJsSetAppRequest(id: "test", code: code))
-
-        let appDef = try await nodeProc.getAppDefinition(
+        let appDef = try await nodeApi.getAppDefinition(
             NodeJsGetAppDefinitionRequest(appId: "test"))
         XCTAssertEqual(NodeJsFuncVisibility.PRI, appDef.sfunc["test"]?.vis)
         XCTAssertEqual(NodeJsFuncVisibility.PRI, appDef.entity["person"]?.efunc["test"]?.vis)
+    }
 
-        let entityFuncResponse = try await nodeProc.entityFunc(
+    private func entityFuncReturnsAllResultingActions(_ nodeApi: NodeJsAppApi) async throws {
+        let entityFuncResponse = try await nodeApi.entityFunc(
             NodeJsEntityFuncRequest(
                 appId: "test",
                 requestId: "123",
@@ -43,7 +62,9 @@ final class NodeJsAppApiTest: XCTestCase {
                 type: "person",
                 efunc: "test",
                 entityJson: "{\"name\":\"Timo\"}",
-                paramsJson: "{\"moreTest\":\"er\"}"))
+                paramsJson: "{\"moreTest\":\"er\"}"
+            )
+        )
 
         XCTAssertEqual(NodeJsEntityAction.SET_ENTITY, entityFuncResponse.action)
 
@@ -64,15 +85,19 @@ final class NodeJsAppApiTest: XCTestCase {
         XCTAssertEqual(entityFuncResponse.general.entityFuncInvokes?[1].entityId, "theEntityId2")
         XCTAssertEqual(
             entityFuncResponse.general.entityFuncInvokes?[1].paramsJson, "{\"testJson\":124}")
+    }
 
-        let statelessFuncResponse = try await nodeProc.statelessFunc(
+    private func statelessFuncReturnsAllResultingActions(_ nodeApi: NodeJsAppApi) async throws {
+        let statelessFuncResponse = try await nodeApi.statelessFunc(
             NodeJsStatelessFuncRequest(
                 appId: "test",
                 requestId: "123",
                 requestingUserId: nil,
                 persistentLocalClientId: nil,
                 sfunc: "test",
-                paramsJson: "{\"text\":\"stuff\"}"))
+                paramsJson: "{\"text\":\"stuff\"}"
+            )
+        )
 
         XCTAssertEqual(statelessFuncResponse.general.responseSender?.requestId, "123")
         XCTAssertEqual(
@@ -98,7 +123,5 @@ final class NodeJsAppApiTest: XCTestCase {
             "theEntityId2StatelessFunc")
         XCTAssertEqual(
             statelessFuncResponse.general.entityFuncInvokes?[1].paramsJson, "{\"testJson\":124}")
-
-        try await nodeProc.shutdown()
     }
 }

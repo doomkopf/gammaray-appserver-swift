@@ -21,7 +21,6 @@ const funcTest = {
 }
 
 const app = {
-    test: "hello",
     func: {
         test: funcTest,
     },
