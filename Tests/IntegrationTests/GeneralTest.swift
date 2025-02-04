@@ -4,6 +4,8 @@ import XCTest
 
 /// An ongoing integration test for testing all general use cases on the highest possible level
 final class GeneralTest: XCTestCase {
+    private let appId = "test"
+
     actor LastObjResponseSender: ResponseSender {
         private var lastObjJson: String?
 
@@ -35,41 +37,41 @@ final class GeneralTest: XCTestCase {
             jsonDecoder: StringJSONDecoder()
         )
 
-        let nodeProc = try NodeJsAppApiImpl(
+        let nodeApi = try NodeJsAppApiImpl(
             config: config,
             scheduler: scheduler
         )
         defer {
-            nodeProc.shutdownProcess()
+            nodeApi.shutdownProcess()
         }
-        await nodeProc.start(scheduler: scheduler)
+        await nodeApi.start(scheduler: scheduler)
 
-        let appFactory = AppFactory(
-            db: db,
-            config: config,
+        let apps = Apps(
             loggerFactory: loggerFactory,
-            scheduler: scheduler,
-            responseSender: responseSender,
-            nodeProcess: nodeProc
+            appFactory: AppFactory(
+                db: db,
+                config: config,
+                loggerFactory: loggerFactory,
+                scheduler: scheduler,
+                responseSender: responseSender,
+                nodeProcess: nodeApi
+            )
         )
 
         let code = try reader.readStringFile(name: "GeneralTest", ext: "js")
-        await db.putApp(appId: "test", app: DatabaseApp(type: .NODEJS, code: code))
+        await db.putApp(appId: appId, app: DatabaseApp(type: .NODEJS, code: code))
 
-        guard let app = try await appFactory.create("test") else {
-            XCTFail()
-            return
-        }
+        await echoFuncResponds(apps: apps, responseSender: responseSender)
+        await createPersonEntityAndStoreToDatabase(apps: apps, db: db, config: config)
 
-        await echoFuncResponds(app: app, responseSender: responseSender)
-        await createPersonEntityAndStoreToDatabase(app: app, db: db, config: config)
-
-        await app.shutdown()
+        await apps.shutdown()
+        try await nodeApi.shutdown()
     }
 
-    private func echoFuncResponds(app: App, responseSender: LastObjResponseSender) async {
+    private func echoFuncResponds(apps: Apps, responseSender: LastObjResponseSender) async {
         let echoParamsJson = "{\"test\":123}"
-        await app.handleFunc(
+        await apps.handleFunc(
+            appId: appId,
             params: FunctionParams(
                 theFunc: "echo",
                 ctx: RequestContext(
@@ -87,10 +89,11 @@ final class GeneralTest: XCTestCase {
     }
 
     private func createPersonEntityAndStoreToDatabase(
-        app: App, db: AppserverDatabase, config: Config
+        apps: Apps, db: AppserverDatabase, config: Config
     ) async {
         let createPersonParamsJson = "{\"entityName\":\"TestName\"}"
-        await app.handleFunc(
+        await apps.handleFunc(
+            appId: appId,
             params: FunctionParams(
                 theFunc: "createPerson",
                 ctx: RequestContext(
@@ -109,13 +112,8 @@ final class GeneralTest: XCTestCase {
         // sleep twice the amount to be sure the entity was stored
         await gammaraySleep(config.getInt64(.entityScheduledTasksIntervalMillis) * 2)
 
-        guard
-            let dbEntity = await db.getAppEntity(
-                appId: "test", entityType: "person", entityId: "theEntityId")
-        else {
-            XCTFail()
-            return
-        }
+        let dbEntity = await db.getAppEntity(
+            appId: appId, entityType: "person", entityId: "theEntityId")
 
         XCTAssertEqual("{\"name\":\"TestName\"}", dbEntity)
     }
