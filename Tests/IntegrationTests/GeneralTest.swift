@@ -44,15 +44,16 @@ final class GeneralTest: XCTestCase {
         defer {
             nodeApi.shutdownProcess()
         }
-        await nodeApi.start(scheduler: scheduler)
+        await nodeApi.start()
 
         let apps = Apps(
             loggerFactory: loggerFactory,
+            config: config,
+            scheduler: scheduler,
             appFactory: AppFactory(
                 db: db,
                 config: config,
                 loggerFactory: loggerFactory,
-                scheduler: scheduler,
                 responseSender: responseSender,
                 nodeProcess: nodeApi
             )
@@ -110,7 +111,7 @@ final class GeneralTest: XCTestCase {
         )
 
         // sleep twice the amount to be sure the entity was stored
-        await gammaraySleep(config.getInt64(.entityScheduledTasksIntervalMillis) * 2)
+        await gammaraySleep(config.getInt64(.appScheduledTasksIntervalMillis) * 2)
 
         let dbEntity = await db.getAppEntity(
             appId: appId, entityType: "person", entityId: "theEntityId")

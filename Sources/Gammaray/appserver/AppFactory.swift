@@ -1,9 +1,8 @@
 @available(macOS 10.15, *)
-class AppFactory {
+final class AppFactory: Sendable {
     private let db: AppserverDatabase
     private let config: Config
     private let loggerFactory: LoggerFactory
-    private let scheduler: Scheduler
     private let responseSender: ResponseSender
     private let nodeProcess: NodeJsAppApi
 
@@ -11,14 +10,12 @@ class AppFactory {
         db: AppserverDatabase,
         config: Config,
         loggerFactory: LoggerFactory,
-        scheduler: Scheduler,
         responseSender: ResponseSender,
         nodeProcess: NodeJsAppApi
     ) {
         self.db = db
         self.config = config
         self.loggerFactory = loggerFactory
-        self.scheduler = scheduler
         self.responseSender = responseSender
         self.nodeProcess = nodeProcess
     }
@@ -59,8 +56,7 @@ class AppFactory {
                 funcResponseHandler: funcResponseHandler
             ),
             db: db,
-            config: config,
-            scheduler: scheduler
+            config: config
         )
 
         let entityFunctions = EntityFunctions(

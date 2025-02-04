@@ -49,7 +49,7 @@ final class NodeJsAppApiImpl: NodeJsAppApi {
         )
     }
 
-    func start(scheduler: Scheduler) async {
+    func start() async {
         await process.start()
     }
 

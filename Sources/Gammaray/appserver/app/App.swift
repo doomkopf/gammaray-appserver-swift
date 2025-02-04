@@ -1,5 +1,5 @@
 @available(macOS 10.15, *)
-class App {
+final class App: Sendable {
     private let statelessFunctions: StatelessFunctions
     private let entityFunctions: EntityFunctions
     private let appEntities: AppEntities
@@ -23,7 +23,7 @@ class App {
         await statelessFunctions.invoke(params)
     }
 
-    func shutdown() async {
-        await appEntities.shutdown()
+    func scheduledTasks() async {
+        await appEntities.scheduledTasks()
     }
 }

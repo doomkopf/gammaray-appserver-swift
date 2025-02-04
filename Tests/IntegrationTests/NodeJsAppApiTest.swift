@@ -28,7 +28,7 @@ final class NodeJsAppApiTest: XCTestCase {
             config: config,
             scheduler: scheduler
         )
-        await nodeApi.start(scheduler: scheduler)
+        await nodeApi.start()
 
         return nodeApi
     }

@@ -1,16 +1,30 @@
 @available(macOS 10.15, *)
-class Apps {
+actor Apps {
     private let log: Logger
     private let appFactory: AppFactory
+    private let appsTask: ScheduledTask
 
     private var apps: [String: App] = [:]
 
     init(
         loggerFactory: LoggerFactory,
+        config: Config,
+        scheduler: Scheduler,
         appFactory: AppFactory
     ) {
         log = loggerFactory.createForClass(Apps.self)
         self.appFactory = appFactory
+        appsTask = scheduler.scheduleInterval(
+            millis: config.getInt64(ConfigProperty.appScheduledTasksIntervalMillis))
+        appsTask.setFuncNotAwaiting {
+            await self.scheduledTasks()
+        }
+    }
+
+    private func scheduledTasks() async {
+        for app in apps.values {
+            await app.scheduledTasks()
+        }
     }
 
     func handleFunc(appId: String, params: FunctionParams, entityParams: EntityParams?) async {
@@ -21,7 +35,6 @@ class Apps {
             do {
                 if let createdApp = try await appFactory.create(appId) {
                     if let meanWhileCreatedApp = apps[appId] {
-                        await createdApp.shutdown()
                         app = meanWhileCreatedApp
                     } else {
                         apps[appId] = createdApp
@@ -41,8 +54,6 @@ class Apps {
     }
 
     func shutdown() async {
-        for app in apps.values {
-            await app.shutdown()
-        }
+        await appsTask.cancel()
     }
 }

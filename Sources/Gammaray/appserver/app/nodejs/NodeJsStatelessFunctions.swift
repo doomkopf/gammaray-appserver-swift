@@ -1,5 +1,5 @@
 @available(macOS 10.15, *)
-class NodeJsStatelessFunctions: StatelessFunctions {
+final class NodeJsStatelessFunctions: StatelessFunctions {
     private let log: Logger
     private let appId: String
     private let funcResponseHandler: NodeJsFuncResponseHandler
