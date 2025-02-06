@@ -1,6 +1,6 @@
 import NIO
 
-class Handler: ChannelInboundHandler {
+final class Handler: ChannelInboundHandler, Sendable {
     typealias InboundIn = ByteBuffer
     typealias OutboundOut = ByteBuffer
 
@@ -40,8 +40,7 @@ class Receiver {
             .serverChannelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
             .childChannelInitializer { channel in
                 channel.pipeline.addHandlers([
-                    BackPressureHandler(),
-                    Handler(),
+                    Handler()
                 ])
             }
             .childChannelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)

@@ -11,7 +11,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/apple/swift-nio",
-            from: "2.77.0")
+            from: "2.80.0")
     ],
     targets: [
         .executableTarget(

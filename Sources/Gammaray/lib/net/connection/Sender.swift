@@ -1,6 +1,7 @@
 import NIO
 
-class SenderHandler: ChannelInboundHandler {
+@available(macOS 10.15, *)
+actor SenderHandler: ChannelInboundHandler {
     typealias InboundIn = ByteBuffer
     typealias OutboundOut = ByteBuffer
 
@@ -11,12 +12,19 @@ class SenderHandler: ChannelInboundHandler {
         self.receptionListener = receptionListener
     }
 
-    func channelRead(context: ChannelHandlerContext, data: NIOAny) {
-        var localBuffer = unwrapInboundIn(data)
+    nonisolated func channelRead(context: ChannelHandlerContext, data: NIOAny) {
+        let buffer = unwrapInboundIn(data)
+        Task {
+            await isolatedChannelRead(inBuffer: buffer)
+        }
+    }
+
+    private func isolatedChannelRead(inBuffer: InboundIn) {
+        var mutableBuffer = inBuffer
         if buffer == nil {
-            buffer = localBuffer
+            buffer = mutableBuffer
         } else {
-            buffer.writeBuffer(&localBuffer)
+            buffer.writeBuffer(&mutableBuffer)
         }
 
         if let frame = buffer.readNullTerminatedString() {
