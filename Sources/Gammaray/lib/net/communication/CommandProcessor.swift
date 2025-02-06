@@ -1,9 +1,14 @@
 @available(macOS 10.15, *)
 final class CommandProcessor: ReceptionListener, Sendable {
+    private let log: Logger
     private let jsonDecoder = StringJSONDecoder()
     private let resultCallbacks: ResultCallbacks
 
-    init(resultCallbacks: ResultCallbacks) {
+    init(
+        loggerFactory: LoggerFactory,
+        resultCallbacks: ResultCallbacks
+    ) {
+        log = loggerFactory.createForClass(CommandProcessor.self)
         self.resultCallbacks = resultCallbacks
     }
 
@@ -12,7 +17,7 @@ final class CommandProcessor: ReceptionListener, Sendable {
         do {
             cmd = try jsonDecoder.decode(Command.self, frame)
         } catch {
-            print("CommandProcessor: Error deserializing json=\(frame), error=\(error)")
+            log.log(.ERROR, "Error deserializing json=\(frame)", error)
             return
         }
 
@@ -25,7 +30,6 @@ final class CommandProcessor: ReceptionListener, Sendable {
             }
 
             // later further handling for CommandHandlers
-            print("Should never get here for now")
         }
     }
 }

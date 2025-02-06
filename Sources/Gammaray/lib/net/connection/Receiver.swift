@@ -12,8 +12,6 @@ final class Handler: ChannelInboundHandler, Sendable {
             return
         }
 
-        print("Received: \(message)")
-
         var buff = context.channel.allocator.buffer(capacity: message.count)
         buff.writeString(message)
         context.write(wrapOutboundOut(buff), promise: nil)

@@ -38,6 +38,7 @@ final class GeneralTest: XCTestCase {
         )
 
         let nodeApi = try NodeJsAppApiImpl(
+            loggerFactory: LoggerFactory(),
             config: config,
             scheduler: scheduler
         )

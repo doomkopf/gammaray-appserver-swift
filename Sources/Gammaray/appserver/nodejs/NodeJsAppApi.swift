@@ -18,6 +18,7 @@ final class NodeJsAppApiImpl: NodeJsAppApi {
     private let process: NodeJsProcess
 
     init(
+        loggerFactory: LoggerFactory,
         config: Config,
         scheduler: Scheduler
     ) throws {
@@ -29,7 +30,8 @@ final class NodeJsAppApiImpl: NodeJsAppApi {
             requestTimeoutMillis: config.getInt64(ConfigProperty.nodeJsAppApiRequestTimeoutMillis),
             scheduler: scheduler
         )
-        let cmdProc = CommandProcessor(resultCallbacks: resultCallbacks)
+        let cmdProc = CommandProcessor(
+            loggerFactory: loggerFactory, resultCallbacks: resultCallbacks)
 
         remoteProcess = try RemoteHost(
             requestIdGenerator: idGen,

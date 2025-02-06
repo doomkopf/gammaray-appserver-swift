@@ -20,7 +20,10 @@ final class NodeJsCommunicationTest: XCTestCase {
         let scheduler = Scheduler()
         let idGen = RequestIdGenerator(localHost: LOCAL_HOST, localPort: NODE_JS_PROCESS_LOCAL_PORT)
         let resultCallbacks = try ResultCallbacks(requestTimeoutMillis: 4000, scheduler: scheduler)
-        let cmdProc = CommandProcessor(resultCallbacks: resultCallbacks)
+        let cmdProc = CommandProcessor(
+            loggerFactory: LoggerFactory(),
+            resultCallbacks: resultCallbacks
+        )
 
         let remoteHost = try RemoteHost(
             requestIdGenerator: idGen,
