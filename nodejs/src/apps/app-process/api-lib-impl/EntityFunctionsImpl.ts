@@ -8,7 +8,11 @@ export class EntityFunctionsImpl implements EntityFunctions {
     this.invocations.push({ type: entityType, _func: func, entityId, paramsJson: !!params ? JSON.stringify(params) : null })
   }
 
-  getAndRemoveInvocations(): EntityFuncInvokePayload[] {
+  getAndRemoveInvocations(): EntityFuncInvokePayload[] | undefined {
+    if (this.invocations.length === 0) {
+      return
+    }
+
     const i = this.invocations
     this.invocations = []
     return i
