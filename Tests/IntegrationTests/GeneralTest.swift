@@ -9,14 +9,8 @@ final class GeneralTest: XCTestCase {
     actor LastObjResponseSender: ResponseSender {
         private var lastObjJson: String?
 
-        nonisolated func send(requestId: String, objJson: String) {
-            Task {
-                await setLastObjJson(objJson)
-            }
-        }
-
-        private func setLastObjJson(_ value: String) {
-            lastObjJson = value
+        func send(requestId: String, objJson: String) {
+            lastObjJson = objJson
         }
 
         func getLastObjJson() -> String? {

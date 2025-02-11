@@ -23,7 +23,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
 
     func handle(response: NodeJsFuncResponse, ctx: RequestContext) async {
         if let rsPayload = response.responseSender {
-            responseSender.send(requestId: rsPayload.requestId, objJson: rsPayload.objJson)
+            await responseSender.send(requestId: rsPayload.requestId, objJson: rsPayload.objJson)
         }
 
         if let entityFuncInvokes = response.entityFuncInvokes {
