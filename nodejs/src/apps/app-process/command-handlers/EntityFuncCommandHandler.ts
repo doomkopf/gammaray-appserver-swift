@@ -2,6 +2,7 @@ import { RequestContext } from "../../../lib/communication/RequestContext"
 import { FuncContextImpl } from "../api-lib-impl/FuncContextImpl"
 import { AppCommandHandler } from "../AppCommandHandler"
 import { EntityAction, EntityFuncRequest, EntityFuncResponse } from "./dtos"
+import { buildNodeJsFuncResponse } from "./util"
 
 export class EntityFuncCommandHandler extends AppCommandHandler {
   handleAppCommand(payload: EntityFuncRequest, ctx?: RequestContext): void {
@@ -31,7 +32,7 @@ export class EntityFuncCommandHandler extends AppCommandHandler {
     )
 
     const response: EntityFuncResponse = {
-      general: {},
+      general: buildNodeJsFuncResponse(this.lib),
       action: EntityAction.NONE
     }
 
@@ -41,15 +42,6 @@ export class EntityFuncCommandHandler extends AppCommandHandler {
     } else if (result === "delete") {
       response.action = EntityAction.DELETE_ENTITY
     }
-
-    if (payload.requestId) {
-      const responseSenderPayload = this.lib.responseSender.getAndRemoveResponse()
-      if (responseSenderPayload) {
-        response.general.responseSender = responseSenderPayload
-      }
-    }
-
-    response.general.entityFuncInvokes = this.lib.entityFunc.getAndRemoveInvocations()
 
     ctx?.respond(JSON.stringify(response))
   }
