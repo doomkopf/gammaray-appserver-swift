@@ -62,6 +62,9 @@ export interface EntityFuncRequest {
 
 export interface NodeJsFuncResponse {
     responseSender?: ResponseSenderPayload
+    userLogins?: NodeJsUserFunctionsLogin[]
+    userLogouts?: string[]
+    userSends?: NodeJsUserFunctionsSendPayload[]
     entityFuncInvokes?: EntityFuncInvokePayload[]
 }
 
@@ -86,6 +89,17 @@ export interface StatelessFuncResponse {
 
 export interface ResponseSenderPayload {
     requestId: string
+    objJson: string
+}
+
+export interface NodeJsUserFunctionsLogin {
+    userId: string
+    funcId: string
+    customCtxJson?: string
+}
+
+export interface NodeJsUserFunctionsSendPayload {
+    userId: string
     objJson: string
 }
 

@@ -1,20 +1,11 @@
 import { EntityFunctions, EntityId, JsonObject } from "../api/core"
 import { EntityFuncInvokePayload } from "../command-handlers/dtos"
+import { CopyAndClearList } from "./CopyAndClearList"
 
 export class EntityFunctionsImpl implements EntityFunctions {
-  private invocations: EntityFuncInvokePayload[] = []
+  readonly invocations = new CopyAndClearList<EntityFuncInvokePayload>()
 
   invoke(entityType: string, func: string, entityId: EntityId, params: JsonObject | null): void {
-    this.invocations.push({ type: entityType, _func: func, entityId, paramsJson: !!params ? JSON.stringify(params) : null })
-  }
-
-  getAndRemoveInvocations(): EntityFuncInvokePayload[] | undefined {
-    if (this.invocations.length === 0) {
-      return
-    }
-
-    const i = this.invocations
-    this.invocations = []
-    return i
+    this.invocations.add({ type: entityType, _func: func, entityId, paramsJson: !!params ? JSON.stringify(params) : null })
   }
 }

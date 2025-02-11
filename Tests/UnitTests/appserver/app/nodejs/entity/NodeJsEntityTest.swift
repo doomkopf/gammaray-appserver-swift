@@ -11,6 +11,9 @@ final class NodeJsEntityTest: XCTestCase {
                 NodeJsEntityFuncResponse(
                     general: NodeJsFuncResponse(
                         responseSender: nil,
+                        userLogins: nil,
+                        userLogouts: nil,
+                        userSends: nil,
                         entityFuncInvokes: nil
                     ),
                     action: NodeJsEntityAction.NONE,

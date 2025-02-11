@@ -89,7 +89,9 @@ struct NodeJsEntityFuncRequest: Encodable {
 
 struct NodeJsFuncResponse: Decodable {
     let responseSender: NodeJsResponseSenderPayload?
-    // TODO userSender payloads
+    let userLogins: [NodeJsUserFunctionsLogin]?
+    let userLogouts: [EntityId]?
+    let userSends: [NodeJsUserFunctionsSendPayload]?
     let entityFuncInvokes: [NodeJsEntityFuncInvokePayload]?
 }
 
@@ -114,6 +116,17 @@ struct NodeJsStatelessFuncResponse: Decodable {
 
 struct NodeJsResponseSenderPayload: Decodable {
     let requestId: String
+    let objJson: String
+}
+
+struct NodeJsUserFunctionsLogin: Decodable {
+    let userId: EntityId
+    let funcId: String
+    let customCtxJson: String?
+}
+
+struct NodeJsUserFunctionsSendPayload: Decodable {
+    let userId: EntityId
     let objJson: String
 }
 

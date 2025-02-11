@@ -9,7 +9,10 @@ export function buildNodeJsFuncResponse(lib: AppLib): NodeJsFuncResponse {
     dto.responseSender = responseSenderPayload
   }
 
-  dto.entityFuncInvokes = lib.entityFunc.getAndRemoveInvocations()
+  dto.userLogins = lib.user.logins.copyAndClear()
+  dto.userLogouts = lib.user.logouts.copyAndClear()
+  dto.userSends = lib.user.sends.copyAndClear()
+  dto.entityFuncInvokes = lib.entityFunc.invocations.copyAndClear()
 
   return dto
 }
