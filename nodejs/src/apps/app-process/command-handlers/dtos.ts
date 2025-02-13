@@ -42,13 +42,13 @@ export enum NodeJsFuncVisibility {
     PUB = 2,
 }
 
-export enum EntityAction {
+export enum NodeJsEntityAction {
     NONE = 0,
     SET_ENTITY = 1,
     DELETE_ENTITY = 2,
 }
 
-export interface EntityFuncRequest {
+export interface NodeJsEntityFuncRequest {
     appId: string
     requestId: string | null
     requestingUserId: string | null
@@ -61,20 +61,21 @@ export interface EntityFuncRequest {
 }
 
 export interface NodeJsFuncResponse {
-    responseSender?: ResponseSenderPayload
+    responseSender?: NodeJsResponseSenderPayload
     userLogins?: NodeJsUserFunctionsLogin[]
     userLogouts?: string[]
     userSends?: NodeJsUserFunctionsSendPayload[]
-    entityFuncInvokes?: EntityFuncInvokePayload[]
+    entityFuncInvokes?: NodeJsEntityFuncInvokePayload[]
+    entityQueryInvokes?: NodeJsEntityQueryInvokePayload[]
 }
 
-export interface EntityFuncResponse {
+export interface NodeJsEntityFuncResponse {
     general: NodeJsFuncResponse
-    action: EntityAction
+    action: NodeJsEntityAction
     entityJson?: string
 }
 
-export interface StatelessFuncRequest {
+export interface NodeJsStatelessFuncRequest {
     appId: string
     requestId: string | null
     requestingUserId: string | null
@@ -83,11 +84,11 @@ export interface StatelessFuncRequest {
     paramsJson: string | null
 }
 
-export interface StatelessFuncResponse {
+export interface NodeJsStatelessFuncResponse {
     general: NodeJsFuncResponse
 }
 
-export interface ResponseSenderPayload {
+export interface NodeJsResponseSenderPayload {
     requestId: string
     objJson: string
 }
@@ -103,9 +104,35 @@ export interface NodeJsUserFunctionsSendPayload {
     objJson: string
 }
 
-export interface EntityFuncInvokePayload {
+export interface NodeJsEntityFuncInvokePayload {
     type: string
     _func: string
     entityId: string
     paramsJson: string | null
+}
+
+export interface NodeJsEntityQueryInvokePayload {
+    entityType: string
+    queryFinishedFunctionId: string
+    query: NodeJsEntityQuery
+    customCtxJson?: string
+}
+
+export interface NodeJsEntityQuery {
+    attributes: NodeJsEntityQueryAttribute[]
+}
+
+export interface NodeJsEntityQueryAttribute {
+    name: string
+    value: NodeJsEntityQueryAttributeValue
+}
+
+export interface NodeJsEntityQueryAttributeValue {
+    match?: string
+    range?: NodeJsEntityQueryAttributeNumberRange
+}
+
+export interface NodeJsEntityQueryAttributeNumberRange {
+    min?: number
+    max?: number
 }

@@ -129,5 +129,18 @@ final class NodeJsAppApiTest: XCTestCase {
 
         XCTAssertEqual(generalFuncResponse.userLogouts?[0], "\(prefix)theUserId")
         XCTAssertEqual(generalFuncResponse.userLogouts?[1], "\(prefix)theUserId2")
+
+        XCTAssertEqual(generalFuncResponse.entityQueryInvokes?[0].entityType, "\(prefix)theType")
+        XCTAssertEqual(
+            generalFuncResponse.entityQueryInvokes?[0].queryFinishedFunctionId, "queryFinishedFunc")
+        XCTAssertEqual(generalFuncResponse.entityQueryInvokes?[0].query.attributes.count, 0)
+        XCTAssertNil(generalFuncResponse.entityQueryInvokes?[0].customCtxJson)
+        XCTAssertEqual(generalFuncResponse.entityQueryInvokes?[1].entityType, "\(prefix)theType2")
+        XCTAssertEqual(
+            generalFuncResponse.entityQueryInvokes?[1].queryFinishedFunctionId, "queryFinishedFunc2"
+        )
+        XCTAssertEqual(generalFuncResponse.entityQueryInvokes?[1].query.attributes.count, 0)
+        XCTAssertEqual(
+            generalFuncResponse.entityQueryInvokes?[1].customCtxJson, "{\"testJson\":128}")
     }
 }

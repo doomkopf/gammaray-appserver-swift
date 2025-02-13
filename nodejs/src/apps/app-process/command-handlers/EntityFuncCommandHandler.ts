@@ -1,11 +1,11 @@
 import { RequestContext } from "../../../lib/communication/RequestContext"
 import { FuncContextImpl } from "../api-lib-impl/FuncContextImpl"
 import { AppCommandHandler } from "../AppCommandHandler"
-import { EntityAction, EntityFuncRequest, EntityFuncResponse } from "./dtos"
+import { NodeJsEntityAction, NodeJsEntityFuncRequest, NodeJsEntityFuncResponse } from "./dtos"
 import { buildNodeJsFuncResponse } from "./util"
 
 export class EntityFuncCommandHandler extends AppCommandHandler {
-  handleAppCommand(payload: EntityFuncRequest, ctx?: RequestContext): void {
+  handleAppCommand(payload: NodeJsEntityFuncRequest, ctx?: RequestContext): void {
     const app = this.apps.getApp(payload.appId)
     if (!app) {
       return
@@ -31,16 +31,16 @@ export class EntityFuncCommandHandler extends AppCommandHandler {
       new FuncContextImpl(payload.persistentLocalClientId, payload.requestId, payload.requestingUserId, this.lib.responseSender),
     )
 
-    const response: EntityFuncResponse = {
+    const response: NodeJsEntityFuncResponse = {
       general: buildNodeJsFuncResponse(this.lib),
-      action: EntityAction.NONE
+      action: NodeJsEntityAction.NONE
     }
 
     if (typeof (result) === "object") {
-      response.action = EntityAction.SET_ENTITY
+      response.action = NodeJsEntityAction.SET_ENTITY
       response.entityJson = JSON.stringify(result)
     } else if (result === "delete") {
-      response.action = EntityAction.DELETE_ENTITY
+      response.action = NodeJsEntityAction.DELETE_ENTITY
     }
 
     ctx?.respond(JSON.stringify(response))

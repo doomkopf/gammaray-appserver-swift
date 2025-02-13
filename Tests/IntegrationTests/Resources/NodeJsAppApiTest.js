@@ -8,6 +8,8 @@ function callLibFunctions(ctx, lib, prefix) {
     lib.user.login(prefix + "theUserId2", "finishedFunc2")
     lib.user.logout(prefix + "theUserId")
     lib.user.logout(prefix + "theUserId2")
+    lib.entityQueries.query(prefix + "theType", "queryFinishedFunc", { attributes: [] })
+    lib.entityQueries.query(prefix + "theType2", "queryFinishedFunc2", { attributes: [] }, { testJson: 128 })
 }
 
 const entityFuncTest = {

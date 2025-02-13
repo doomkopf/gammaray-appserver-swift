@@ -93,6 +93,7 @@ struct NodeJsFuncResponse: Decodable {
     let userLogouts: [EntityId]?
     let userSends: [NodeJsUserFunctionsSendPayload]?
     let entityFuncInvokes: [NodeJsEntityFuncInvokePayload]?
+    let entityQueryInvokes: [NodeJsEntityQueryInvokePayload]?
 }
 
 struct NodeJsEntityFuncResponse: Decodable {
@@ -135,4 +136,30 @@ struct NodeJsEntityFuncInvokePayload: Decodable {
     let _func: String
     let entityId: String
     let paramsJson: String?
+}
+
+struct NodeJsEntityQueryInvokePayload: Decodable {
+    let entityType: String
+    let queryFinishedFunctionId: String
+    let query: NodeJsEntityQuery
+    let customCtxJson: String?
+}
+
+struct NodeJsEntityQuery: Decodable {
+    let attributes: [NodeJsEntityQueryAttribute]
+}
+
+struct NodeJsEntityQueryAttribute: Decodable {
+    let name: String
+    let value: NodeJsEntityQueryAttributeValue
+}
+
+struct NodeJsEntityQueryAttributeValue: Decodable {
+    let match: String?
+    let range: NodeJsEntityQueryAttributeNumberRange?
+}
+
+struct NodeJsEntityQueryAttributeNumberRange: Decodable {
+    let min: Int64?
+    let max: Int64?
 }
