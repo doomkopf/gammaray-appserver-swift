@@ -4,31 +4,26 @@ import { CommandHandler } from "./CommandHandler"
 import { Command } from "./communication"
 import { RequestContext } from "./RequestContext"
 
-export class CommandProcessor implements ReceptionListener
-{
-  constructor(
-    private readonly commandHandlers: Map<number, CommandHandler>,
-  )
-  {
-  }
-
-  onReceived(source: ReceptionSource, frame: string)
-  {
-    const cmd: Command = JSON.parse(frame)
-
-    if (!cmd.cmd)
-    {
-      console.log(`Received invalid commmand: ${frame}`)
-      return
+export class CommandProcessor implements ReceptionListener {
+    constructor(
+        private readonly commandHandlers: Map<number, CommandHandler>,
+    ) {
     }
 
-    const handler = this.commandHandlers.get(cmd.cmd)
-    if (!handler)
-    {
-      console.log(`Unknown command: ${cmd.cmd}`)
-      return
-    }
+    onReceived(source: ReceptionSource, frame: string) {
+        const cmd: Command = JSON.parse(frame)
 
-    handler.handle(cmd.pl, cmd.id ? new RequestContext(source, cmd.id) : undefined)
-  }
+        if (!cmd.cmd) {
+            console.log(`Received invalid commmand: ${frame}`)
+            return
+        }
+
+        const handler = this.commandHandlers.get(cmd.cmd)
+        if (!handler) {
+            console.log(`Unknown command: ${cmd.cmd}`)
+            return
+        }
+
+        handler.handle(cmd.pl, cmd.id ? new RequestContext(source, cmd.id) : undefined)
+    }
 }

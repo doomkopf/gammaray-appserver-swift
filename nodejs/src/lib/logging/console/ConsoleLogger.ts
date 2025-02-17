@@ -16,82 +16,66 @@ const TEXT_COLOR_WARN = TEXT_COLOR_RESET + TEXT_COLOR_YELLOW
 const TEXT_COLOR_DEBUG = TEXT_COLOR_RESET + TEXT_COLOR_GRAY + TEXT_COLOR_DIM
 const TEXT_COLOR_INFO = TEXT_COLOR_RESET + TEXT_COLOR_WHITE
 
-export class ConsoleLogger implements Logger
-{
-  private readonly msgPrefix: string
+export class ConsoleLogger implements Logger {
+    private readonly msgPrefix: string
 
-  constructor(
-    private readonly logLevel: LogLevel,
-    name: string,
-  )
-  {
-    this.msgPrefix = name
-  }
-
-  isLevel(logLevel: LogLevel): boolean
-  {
-    return this.logLevel >= logLevel
-  }
-
-  log(logLevel: LogLevel, message: string, err?: Error): void
-  {
-    if (!this.isLevel(logLevel))
-    {
-      return
+    constructor(
+        private readonly logLevel: LogLevel,
+        name: string,
+    ) {
+        this.msgPrefix = name
     }
 
-    if (logLevel === LogLevel.ERROR)
-    {
-      this.logMessage(logLevel, message, console.error, err)
+    isLevel(logLevel: LogLevel): boolean {
+        return this.logLevel >= logLevel
     }
-    else if (logLevel === LogLevel.WARN)
-    {
-      this.logMessage(logLevel, message, console.warn, err)
-    }
-    else if (logLevel === LogLevel.DEBUG)
-    {
-      this.logMessage(logLevel, message, console.debug, err)
-    }
-    else
-    {
-      this.logMessage(logLevel, message, console.log, err)
-    }
-  }
 
-  private determineColor(logLevel: LogLevel): string
-  {
-    switch (logLevel)
-    {
-      case LogLevel.ERROR:
-        return TEXT_COLOR_ERROR
-      case LogLevel.WARN:
-        return TEXT_COLOR_WARN
-      case LogLevel.DEBUG:
-        return TEXT_COLOR_DEBUG
-      default:
-        return TEXT_COLOR_INFO
-    }
-  }
+    log(logLevel: LogLevel, message: string, err?: Error): void {
+        if (!this.isLevel(logLevel)) {
+            return
+        }
 
-  private logMessage(logLevel: LogLevel, message: string, fun: (message?: string, ...optParams: unknown[]) => void, err?: Error)
-  {
-    if (err)
-    {
-      fun(this.determineColor(logLevel), this.formatMessage(logLevel, message), err)
+        if (logLevel === LogLevel.ERROR) {
+            this.logMessage(logLevel, message, console.error, err)
+        }
+        else if (logLevel === LogLevel.WARN) {
+            this.logMessage(logLevel, message, console.warn, err)
+        }
+        else if (logLevel === LogLevel.DEBUG) {
+            this.logMessage(logLevel, message, console.debug, err)
+        }
+        else {
+            this.logMessage(logLevel, message, console.log, err)
+        }
     }
-    else
-    {
-      fun(this.determineColor(logLevel), this.formatMessage(logLevel, message))
-    }
-  }
 
-  private formatMessage(logLevel: LogLevel, message: string): string
-  {
-    if (message.length > MAX_LOG_MESSAGE_LENGTH)
-    {
-      message = message.substring(0, MAX_LOG_MESSAGE_LENGTH)
-      message += "(...)"
+    private determineColor(logLevel: LogLevel): string {
+        switch (logLevel) {
+            case LogLevel.ERROR:
+                return TEXT_COLOR_ERROR
+            case LogLevel.WARN:
+                return TEXT_COLOR_WARN
+            case LogLevel.DEBUG:
+                return TEXT_COLOR_DEBUG
+            default:
+                return TEXT_COLOR_INFO
+        }
     }
-    return `${logLevelToString(logLevel)}: ${this.msgPrefix}: ${message}`
-  }
+
+    private logMessage(logLevel: LogLevel, message: string, fun: (message?: string, ...optParams: unknown[]) => void, err?: Error) {
+        if (err) {
+            fun(this.determineColor(logLevel), this.formatMessage(logLevel, message), err)
+        }
+        else {
+            fun(this.determineColor(logLevel), this.formatMessage(logLevel, message))
+        }
+    }
+
+    private formatMessage(logLevel: LogLevel, message: string): string {
+        if (message.length > MAX_LOG_MESSAGE_LENGTH) {
+            message = message.substring(0, MAX_LOG_MESSAGE_LENGTH)
+            message += "(...)"
+        }
+        return `${logLevelToString(logLevel)}: ${this.msgPrefix}: ${message}`
+    }
 }

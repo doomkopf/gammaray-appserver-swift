@@ -11,30 +11,30 @@ import { Commands } from "./Commands"
 import { LOCAL_PORT } from "./constants"
 
 export class Apps {
-  private readonly rec: Receiver
-  private readonly apps = new Map<string, GammarayApp>()
+    private readonly rec: Receiver
+    private readonly apps = new Map<string, GammarayApp>()
 
-  constructor(
-    lib: AppLib,
-  ) {
-    const commandHandlers = new Map<number, CommandHandler>()
-    commandHandlers.set(Commands.ENTITY_FUNC, new EntityFuncCommandHandler(this, lib))
-    commandHandlers.set(Commands.STATELESS_FUNC, new StatelessFuncCommandHandler(this, lib))
-    commandHandlers.set(Commands.APP_DEFINITION, new AppDefinitionCommandHandler(this, lib))
-    commandHandlers.set(Commands.SET_APP, new SetAppCommandHandler(this, lib))
+    constructor(
+        lib: AppLib,
+    ) {
+        const commandHandlers = new Map<number, CommandHandler>()
+        commandHandlers.set(Commands.ENTITY_FUNC, new EntityFuncCommandHandler(this, lib))
+        commandHandlers.set(Commands.STATELESS_FUNC, new StatelessFuncCommandHandler(this, lib))
+        commandHandlers.set(Commands.APP_DEFINITION, new AppDefinitionCommandHandler(this, lib))
+        commandHandlers.set(Commands.SET_APP, new SetAppCommandHandler(this, lib))
 
-    this.rec = new Receiver(LOCAL_PORT, new CommandProcessor(commandHandlers))
-  }
+        this.rec = new Receiver(LOCAL_PORT, new CommandProcessor(commandHandlers))
+    }
 
-  setApp(id: string, appRoot: GammarayApp) {
-    this.apps.set(id, appRoot)
-  }
+    setApp(id: string, appRoot: GammarayApp) {
+        this.apps.set(id, appRoot)
+    }
 
-  getApp(id: string): GammarayApp | undefined {
-    return this.apps.get(id)
-  }
+    getApp(id: string): GammarayApp | undefined {
+        return this.apps.get(id)
+    }
 
-  async shutdown() {
-    await this.rec.shutdown()
-  }
+    async shutdown() {
+        await this.rec.shutdown()
+    }
 }

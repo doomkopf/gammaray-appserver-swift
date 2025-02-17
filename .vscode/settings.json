@@ -1,6 +1,8 @@
 {
     "editor.fontFamily": "Andale Mono",
     "editor.fontSize": 16,
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
         "source.organizeImports": "explicit",

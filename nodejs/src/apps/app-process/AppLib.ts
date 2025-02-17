@@ -10,16 +10,16 @@ import { Logger } from "./api/log"
 import { Tools } from "./api/tools"
 
 export class AppLib implements Lib {
-  constructor(
-    readonly responseSender: ResponseSenderImpl,
-    readonly user: UserFunctionsImpl,
-    readonly tools: Tools,
-    readonly entityFunc: EntityFunctionsImpl,
-    readonly listFunc: ListFunctions,
-    readonly entityQueries: EntityQueriesImpl,
-    readonly httpClient: HttpClient,
-    readonly log: Logger,
-    readonly bigObjects: BigObjectsImpl,
-  ) {
-  }
+    constructor(
+        readonly responseSender: ResponseSenderImpl,
+        readonly user: UserFunctionsImpl,
+        readonly tools: Tools,
+        readonly entityFunc: EntityFunctionsImpl,
+        readonly listFunc: ListFunctions,
+        readonly entityQueries: EntityQueriesImpl,
+        readonly httpClient: HttpClient,
+        readonly log: Logger,
+        readonly bigObjects: BigObjectsImpl,
+    ) {
+    }
 }
