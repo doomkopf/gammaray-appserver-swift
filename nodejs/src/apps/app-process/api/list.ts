@@ -49,11 +49,9 @@ export interface ListIterationFinishedFunctionParams<P> {
 /**
  * A helper definition for the function to implement for iterating through a list.
  */
-export interface ListIteractionFunc<P> extends StatelessFunc<ListIterationFunctionParams<P>> {
-}
+export type ListIteractionFunc<P> = StatelessFunc<ListIterationFunctionParams<P>>
 
 /**
  * A helper definition for the function to implement when the iteration through a list has finished.
  */
-export interface ListIteractionFinishedFunc<P> extends StatelessFunc<ListIterationFinishedFunctionParams<P>> {
-}
+export type ListIteractionFinishedFunc<P> = StatelessFunc<ListIterationFinishedFunctionParams<P>>

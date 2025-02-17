@@ -41,5 +41,4 @@ export interface LoginResult<P> {
 /**
  * A helper definition for the function to implement when the login was finished.
  */
-export interface LoginFinishedFunc<P> extends StatelessFunc<LoginResult<P>> {
-}
+export type LoginFinishedFunc<P> = StatelessFunc<LoginResult<P>>

@@ -91,7 +91,6 @@ export interface EntityFunc<E, P> {
      * Returning nothing indicates to do nothing thus potential changes to the entity might get lost.
      * @param id the id of the entity
      */
-    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     func: (entity: E, id: EntityId, lib: Lib, params: P, ctx: FuncContext) => E | void | "delete"
     vis: FuncVisibility
 }

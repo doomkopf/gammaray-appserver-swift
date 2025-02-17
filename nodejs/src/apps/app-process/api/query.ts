@@ -69,8 +69,7 @@ export interface EntityQueryFinishedFunctionParams<P> {
 /**
  * A helper definition for the function to implement when the query has finished.
  */
-export interface EntityQueryFinishedFunc<P> extends StatelessFunc<EntityQueryFinishedFunctionParams<P>> {
-}
+export type EntityQueryFinishedFunc<P> = StatelessFunc<EntityQueryFinishedFunctionParams<P>>
 
 export interface EntityQueries {
     /**

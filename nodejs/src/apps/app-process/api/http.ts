@@ -101,8 +101,7 @@ export interface HttpParams<P> {
 /**
  * A helper definition for a http function.
  */
-export interface HttpFunc<P> extends StatelessFunc<HttpParams<P>> {
-}
+export type HttpFunc<P> = StatelessFunc<HttpParams<P>>
 
 export interface HttpHeader {
     key: string
