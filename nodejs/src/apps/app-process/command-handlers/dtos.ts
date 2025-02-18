@@ -67,6 +67,7 @@ export interface NodeJsFuncResponse {
     userSends?: NodeJsUserFunctionsSendPayload[]
     entityFuncInvokes?: NodeJsEntityFuncInvokePayload[]
     entityQueryInvokes?: NodeJsEntityQueryInvokePayload[]
+    httpClientRequest?: NodeJsHttpClientRequest[]
 }
 
 export interface NodeJsEntityFuncResponse {
@@ -135,4 +136,26 @@ export interface NodeJsEntityQueryAttributeValue {
 export interface NodeJsEntityQueryAttributeNumberRange {
     min?: number
     max?: number
+}
+
+export interface NodeJsHttpClientRequest {
+    url: string
+    method: NodeJsHttpMethod
+    body?: string
+    headers: NodeJsHttpHeader[]
+    resultFunc: string
+    requestCtxJson?: string
+}
+
+export enum NodeJsHttpMethod {
+    GET = "GET",
+    POST = "POST",
+    PUT = "PUT",
+    PATCH = "PATCH",
+    DELETE = "DELETE",
+}
+
+export interface NodeJsHttpHeader {
+    key: string
+    value: string
 }

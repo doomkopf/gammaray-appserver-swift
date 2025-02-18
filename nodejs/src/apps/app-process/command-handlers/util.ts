@@ -14,6 +14,7 @@ export function buildNodeJsFuncResponse(lib: AppLib): NodeJsFuncResponse {
     dto.userSends = lib.user.sends.copyAndClear()
     dto.entityFuncInvokes = lib.entityFunc.invocations.copyAndClear()
     dto.entityQueryInvokes = lib.entityQueries.invocations.copyAndClear()
+    dto.httpClientRequest = lib.httpClient.requests.copyAndClear()
 
     return dto
 }

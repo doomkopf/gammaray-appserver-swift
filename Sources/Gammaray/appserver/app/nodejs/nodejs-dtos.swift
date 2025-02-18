@@ -94,6 +94,7 @@ struct NodeJsFuncResponse: Decodable {
     let userSends: [NodeJsUserFunctionsSendPayload]?
     let entityFuncInvokes: [NodeJsEntityFuncInvokePayload]?
     let entityQueryInvokes: [NodeJsEntityQueryInvokePayload]?
+    let httpClientRequest: [NodeJsHttpClientRequest]?
 }
 
 struct NodeJsEntityFuncResponse: Decodable {
@@ -162,4 +163,26 @@ struct NodeJsEntityQueryAttributeValue: Decodable {
 struct NodeJsEntityQueryAttributeNumberRange: Decodable {
     let min: Int64?
     let max: Int64?
+}
+
+struct NodeJsHttpClientRequest: Decodable {
+    let url: String
+    let method: NodeJsHttpMethod
+    let body: String?
+    let headers: [NodeJsHttpHeader]
+    let resultFunc: String
+    let requestCtxJson: String?
+}
+
+enum NodeJsHttpMethod: String, Decodable {
+    case GET = "GET"
+    case POST = "POST"
+    case PUT = "PUT"
+    case PATCH = "PATCH"
+    case DELETE = "DELETE"
+}
+
+struct NodeJsHttpHeader: Decodable {
+    let key: String
+    let value: String
 }

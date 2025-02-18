@@ -1,4 +1,4 @@
-import { FuncContext, JsonObject, StatelessFunc } from "./core"
+import { JsonObject, StatelessFunc } from "./core"
 
 export type HttpMethod =
     "GET"
@@ -132,7 +132,6 @@ export interface HttpClient {
      * @param headers the http headers
      * @param resultFunc the id of the function to handle the http response - the params of that function are of type {@link HttpClientResponse}
      * @param requestCtx any custom json object to keep a context for the resultFunc
-     * @param ctx the usual function context
      */
     request(
         url: string,
@@ -141,6 +140,5 @@ export interface HttpClient {
         headers: HttpHeaders,
         resultFunc: string,
         requestCtx: JsonObject | null,
-        ctx: FuncContext,
     ): void
 }

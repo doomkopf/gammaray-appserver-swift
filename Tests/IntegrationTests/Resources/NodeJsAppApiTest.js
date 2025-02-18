@@ -10,6 +10,8 @@ function callLibFunctions(ctx, lib, prefix) {
     lib.user.logout(prefix + "theUserId2")
     lib.entityQueries.query(prefix + "theType", "queryFinishedFunc", { attributes: [] })
     lib.entityQueries.query(prefix + "theType2", "queryFinishedFunc2", { attributes: [] }, { testJson: 128 })
+    lib.httpClient.request(prefix + "theUrl", "GET", "theBody", { headers: [{ key: "headerKey", value: "headerValue" }] }, "httpResultFunc", { testJson: 129 })
+    lib.httpClient.request(prefix + "theUrl2", "POST", null, { headers: [] }, "httpResultFunc2")
 }
 
 const entityFuncTest = {
