@@ -67,7 +67,11 @@ export interface NodeJsFuncResponse {
     userSends?: NodeJsUserFunctionsSendPayload[]
     entityFuncInvokes?: NodeJsEntityFuncInvokePayload[]
     entityQueryInvokes?: NodeJsEntityQueryInvokePayload[]
-    httpClientRequest?: NodeJsHttpClientRequest[]
+    httpClientRequests?: NodeJsHttpClientRequest[]
+    listAdds?: NodeJsListAdd[]
+    listClears?: NodeJsListClear[]
+    listIterates?: NodeJsListIterate[]
+    listRemoves?: NodeJsListRemove[]
 }
 
 export interface NodeJsEntityFuncResponse {
@@ -158,4 +162,25 @@ export enum NodeJsHttpMethod {
 export interface NodeJsHttpHeader {
     key: string
     value: string
+}
+
+export interface NodeJsListAdd {
+    listId: string,
+    elemToAdd: string,
+}
+
+export interface NodeJsListClear {
+    listId: string,
+}
+
+export interface NodeJsListIterate {
+    listId: string
+    iterationFunctionId: string
+    iterationFinishedFunctionId: string
+    customCtxJson?: string
+}
+
+export interface NodeJsListRemove {
+    listId: string
+    elemToRemove: string
 }

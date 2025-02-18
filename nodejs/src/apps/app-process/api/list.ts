@@ -1,4 +1,4 @@
-import { EntityId, FuncContext, JsonObject, StatelessFunc } from "./core"
+import { EntityId, JsonObject, StatelessFunc } from "./core"
 
 /**
  * A collection of functions dealing with lists of strings.
@@ -15,10 +15,9 @@ export interface ListFunctions {
      * @param listId the id of the list to iterate through
      * @param iterationFunctionId the function that contains the iteration logic. This function can be declared using the {@link ListIteractionFunc} interface.
      * @param iterationFinishedFunctionId the function that is called when the iteration has finished. This function can be declared using the {@link ListIteractionFinishedFunc} interface.
-     * @param ctx the usual function context
      * @param customCtx an optional custom object to keep a context through the process - see {@link ListIterationFunctionParams.ctx} and {@link ListIterationFinishedFunctionParams.ctx}
      */
-    iterate(listId: EntityId, iterationFunctionId: string, iterationFinishedFunctionId: string, ctx: FuncContext, customCtx?: JsonObject): void
+    iterate(listId: EntityId, iterationFunctionId: string, iterationFinishedFunctionId: string, customCtx?: JsonObject): void
 }
 
 /**

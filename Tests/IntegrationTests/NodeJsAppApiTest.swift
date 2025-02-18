@@ -143,20 +143,32 @@ final class NodeJsAppApiTest: XCTestCase {
         XCTAssertEqual(
             generalFuncResponse.entityQueryInvokes?[1].customCtxJson, "{\"testJson\":128}")
 
-        XCTAssertEqual(generalFuncResponse.httpClientRequest?[0].url, "\(prefix)theUrl")
-        XCTAssertEqual(generalFuncResponse.httpClientRequest?[0].method, .GET)
-        XCTAssertEqual(generalFuncResponse.httpClientRequest?[0].body, "theBody")
-        XCTAssertEqual(generalFuncResponse.httpClientRequest?[0].headers.count, 1)
-        XCTAssertEqual(generalFuncResponse.httpClientRequest?[0].headers[0].key, "headerKey")
-        XCTAssertEqual(generalFuncResponse.httpClientRequest?[0].headers[0].value, "headerValue")
-        XCTAssertEqual(generalFuncResponse.httpClientRequest?[0].resultFunc, "httpResultFunc")
+        XCTAssertEqual(generalFuncResponse.httpClientRequests?[0].url, "\(prefix)theUrl")
+        XCTAssertEqual(generalFuncResponse.httpClientRequests?[0].method, .GET)
+        XCTAssertEqual(generalFuncResponse.httpClientRequests?[0].body, "theBody")
+        XCTAssertEqual(generalFuncResponse.httpClientRequests?[0].headers.count, 1)
+        XCTAssertEqual(generalFuncResponse.httpClientRequests?[0].headers[0].key, "headerKey")
+        XCTAssertEqual(generalFuncResponse.httpClientRequests?[0].headers[0].value, "headerValue")
+        XCTAssertEqual(generalFuncResponse.httpClientRequests?[0].resultFunc, "httpResultFunc")
         XCTAssertEqual(
-            generalFuncResponse.httpClientRequest?[0].requestCtxJson, "{\"testJson\":129}")
-        XCTAssertEqual(generalFuncResponse.httpClientRequest?[1].url, "\(prefix)theUrl2")
-        XCTAssertEqual(generalFuncResponse.httpClientRequest?[1].method, .POST)
-        XCTAssertNil(generalFuncResponse.httpClientRequest?[1].body)
-        XCTAssertEqual(generalFuncResponse.httpClientRequest?[1].headers.count, 0)
-        XCTAssertEqual(generalFuncResponse.httpClientRequest?[1].resultFunc, "httpResultFunc2")
-        XCTAssertNil(generalFuncResponse.httpClientRequest?[1].requestCtxJson)
+            generalFuncResponse.httpClientRequests?[0].requestCtxJson, "{\"testJson\":129}")
+        XCTAssertEqual(generalFuncResponse.httpClientRequests?[1].url, "\(prefix)theUrl2")
+        XCTAssertEqual(generalFuncResponse.httpClientRequests?[1].method, .POST)
+        XCTAssertNil(generalFuncResponse.httpClientRequests?[1].body)
+        XCTAssertEqual(generalFuncResponse.httpClientRequests?[1].headers.count, 0)
+        XCTAssertEqual(generalFuncResponse.httpClientRequests?[1].resultFunc, "httpResultFunc2")
+        XCTAssertNil(generalFuncResponse.httpClientRequests?[1].requestCtxJson)
+
+        XCTAssertEqual(generalFuncResponse.listAdds?[0].listId, "\(prefix)theListId")
+        XCTAssertEqual(generalFuncResponse.listAdds?[0].elemToAdd, "theElem")
+        XCTAssertEqual(generalFuncResponse.listClears?[0].listId, "\(prefix)theListId")
+        XCTAssertEqual(generalFuncResponse.listIterates?[0].listId, "\(prefix)theListId")
+        XCTAssertEqual(
+            generalFuncResponse.listIterates?[0].iterationFunctionId, "theIterationFunctionId")
+        XCTAssertEqual(
+            generalFuncResponse.listIterates?[0].iterationFinishedFunctionId,
+            "theIterationFinishedFunctionId")
+        XCTAssertEqual(
+            generalFuncResponse.listIterates?[0].customCtxJson, "{\"testJson\":130}")
     }
 }

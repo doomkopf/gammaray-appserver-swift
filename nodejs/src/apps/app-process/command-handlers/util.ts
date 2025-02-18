@@ -14,7 +14,11 @@ export function buildNodeJsFuncResponse(lib: AppLib): NodeJsFuncResponse {
     dto.userSends = lib.user.sends.copyAndClear()
     dto.entityFuncInvokes = lib.entityFunc.invocations.copyAndClear()
     dto.entityQueryInvokes = lib.entityQueries.invocations.copyAndClear()
-    dto.httpClientRequest = lib.httpClient.requests.copyAndClear()
+    dto.httpClientRequests = lib.httpClient.requests.copyAndClear()
+    dto.listAdds = lib.listFunc.adds.copyAndClear()
+    dto.listClears = lib.listFunc.clears.copyAndClear()
+    dto.listIterates = lib.listFunc.iterates.copyAndClear()
+    dto.listRemoves = lib.listFunc.removes.copyAndClear()
 
     return dto
 }

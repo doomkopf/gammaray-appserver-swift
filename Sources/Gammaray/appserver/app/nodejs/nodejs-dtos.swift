@@ -94,7 +94,11 @@ struct NodeJsFuncResponse: Decodable {
     let userSends: [NodeJsUserFunctionsSendPayload]?
     let entityFuncInvokes: [NodeJsEntityFuncInvokePayload]?
     let entityQueryInvokes: [NodeJsEntityQueryInvokePayload]?
-    let httpClientRequest: [NodeJsHttpClientRequest]?
+    let httpClientRequests: [NodeJsHttpClientRequest]?
+    let listAdds: [NodeJsListAdd]?
+    let listClears: [NodeJsListClear]?
+    let listIterates: [NodeJsListIterate]?
+    let listRemoves: [NodeJsListRemove]?
 }
 
 struct NodeJsEntityFuncResponse: Decodable {
@@ -185,4 +189,25 @@ enum NodeJsHttpMethod: String, Decodable {
 struct NodeJsHttpHeader: Decodable {
     let key: String
     let value: String
+}
+
+struct NodeJsListAdd: Decodable {
+    let listId: EntityId
+    let elemToAdd: String
+}
+
+struct NodeJsListClear: Decodable {
+    let listId: EntityId
+}
+
+struct NodeJsListIterate: Decodable {
+    let listId: EntityId
+    let iterationFunctionId: String
+    let iterationFinishedFunctionId: String
+    let customCtxJson: String?
+}
+
+struct NodeJsListRemove: Decodable {
+    let listId: EntityId
+    let elemToRemove: String
 }

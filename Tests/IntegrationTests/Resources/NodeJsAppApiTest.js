@@ -12,6 +12,10 @@ function callLibFunctions(ctx, lib, prefix) {
     lib.entityQueries.query(prefix + "theType2", "queryFinishedFunc2", { attributes: [] }, { testJson: 128 })
     lib.httpClient.request(prefix + "theUrl", "GET", "theBody", { headers: [{ key: "headerKey", value: "headerValue" }] }, "httpResultFunc", { testJson: 129 })
     lib.httpClient.request(prefix + "theUrl2", "POST", null, { headers: [] }, "httpResultFunc2")
+    lib.listFunc.add(prefix + "theListId", "theElem")
+    lib.listFunc.clear(prefix + "theListId")
+    lib.listFunc.iterate(prefix + "theListId", "theIterationFunctionId", "theIterationFinishedFunctionId", { testJson: 130 })
+    lib.listFunc.remove(prefix + "theListId", "theElemToRemove")
 }
 
 const entityFuncTest = {
