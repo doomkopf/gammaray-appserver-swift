@@ -20,7 +20,8 @@ final class NodeJsEntityTest: XCTestCase {
                         listAdds: nil,
                         listClears: nil,
                         listIterates: nil,
-                        listRemoves: nil
+                        listRemoves: nil,
+                        logs: nil
                     ),
                     action: NodeJsEntityAction.NONE,
                     entityJson: nil

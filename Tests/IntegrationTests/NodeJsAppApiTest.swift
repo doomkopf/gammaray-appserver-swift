@@ -170,5 +170,10 @@ final class NodeJsAppApiTest: XCTestCase {
             "theIterationFinishedFunctionId")
         XCTAssertEqual(
             generalFuncResponse.listIterates?[0].customCtxJson, "{\"testJson\":130}")
+
+        XCTAssertEqual(generalFuncResponse.logs?[0].logLevel, .INFO)
+        XCTAssertEqual(generalFuncResponse.logs?[0].message, "this is a log message")
+        XCTAssertEqual(generalFuncResponse.logs?[1].logLevel, .ERROR)
+        XCTAssertEqual(generalFuncResponse.logs?[1].message, "this is an error message")
     }
 }

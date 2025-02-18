@@ -99,6 +99,7 @@ struct NodeJsFuncResponse: Decodable {
     let listClears: [NodeJsListClear]?
     let listIterates: [NodeJsListIterate]?
     let listRemoves: [NodeJsListRemove]?
+    let logs: [NodeJsLog]?
 }
 
 struct NodeJsEntityFuncResponse: Decodable {
@@ -210,4 +211,16 @@ struct NodeJsListIterate: Decodable {
 struct NodeJsListRemove: Decodable {
     let listId: EntityId
     let elemToRemove: String
+}
+
+struct NodeJsLog: Decodable {
+    let logLevel: NodeJsLogLevel
+    let message: String
+}
+
+enum NodeJsLogLevel: String, Decodable {
+    case ERROR = "ERROR"
+    case WARN = "WARN"
+    case INFO = "INFO"
+    case DEBUG = "DEBUG"
 }

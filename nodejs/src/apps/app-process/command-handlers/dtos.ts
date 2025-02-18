@@ -72,6 +72,7 @@ export interface NodeJsFuncResponse {
     listClears?: NodeJsListClear[]
     listIterates?: NodeJsListIterate[]
     listRemoves?: NodeJsListRemove[]
+    logs?: NodeJsLog[]
 }
 
 export interface NodeJsEntityFuncResponse {
@@ -183,4 +184,16 @@ export interface NodeJsListIterate {
 export interface NodeJsListRemove {
     listId: string
     elemToRemove: string
+}
+
+export interface NodeJsLog {
+    logLevel: NodeJsLogLevel
+    message: string
+}
+
+export enum NodeJsLogLevel {
+    ERROR = "ERROR",
+    WARN = "WARN",
+    INFO = "INFO",
+    DEBUG = "DEBUG",
 }

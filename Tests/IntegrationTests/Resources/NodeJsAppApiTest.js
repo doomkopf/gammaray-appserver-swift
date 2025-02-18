@@ -16,6 +16,8 @@ function callLibFunctions(ctx, lib, prefix) {
     lib.listFunc.clear(prefix + "theListId")
     lib.listFunc.iterate(prefix + "theListId", "theIterationFunctionId", "theIterationFinishedFunctionId", { testJson: 130 })
     lib.listFunc.remove(prefix + "theListId", "theElemToRemove")
+    lib.log.log(2, "this is a log message")
+    lib.log.log(0, "this is an error message")
 }
 
 const entityFuncTest = {

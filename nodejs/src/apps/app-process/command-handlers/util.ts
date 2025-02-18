@@ -19,6 +19,7 @@ export function buildNodeJsFuncResponse(lib: AppLib): NodeJsFuncResponse {
     dto.listClears = lib.listFunc.clears.copyAndClear()
     dto.listIterates = lib.listFunc.iterates.copyAndClear()
     dto.listRemoves = lib.listFunc.removes.copyAndClear()
+    dto.logs = lib.log.logs.copyAndClear()
 
     return dto
 }
