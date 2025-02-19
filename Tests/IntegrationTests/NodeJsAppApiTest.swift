@@ -133,7 +133,14 @@ final class NodeJsAppApiTest: XCTestCase {
         XCTAssertEqual(generalFuncResponse.entityQueryInvokes?[0].entityType, "\(prefix)theType")
         XCTAssertEqual(
             generalFuncResponse.entityQueryInvokes?[0].queryFinishedFunctionId, "queryFinishedFunc")
-        XCTAssertEqual(generalFuncResponse.entityQueryInvokes?[0].query.attributes.count, 0)
+        XCTAssertEqual(
+            generalFuncResponse.entityQueryInvokes?[0].query.attributes[0].name, "something")
+        XCTAssertEqual(
+            generalFuncResponse.entityQueryInvokes?[0].query.attributes[0].value.match, "123")
+        XCTAssertEqual(
+            generalFuncResponse.entityQueryInvokes?[0].query.attributes[0].value.range?.min, 1)
+        XCTAssertEqual(
+            generalFuncResponse.entityQueryInvokes?[0].query.attributes[0].value.range?.max, 2)
         XCTAssertNil(generalFuncResponse.entityQueryInvokes?[0].customCtxJson)
         XCTAssertEqual(generalFuncResponse.entityQueryInvokes?[1].entityType, "\(prefix)theType2")
         XCTAssertEqual(

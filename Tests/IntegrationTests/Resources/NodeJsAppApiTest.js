@@ -8,7 +8,7 @@ function callLibFunctions(ctx, lib, prefix) {
     lib.user.login(prefix + "theUserId2", "finishedFunc2")
     lib.user.logout(prefix + "theUserId")
     lib.user.logout(prefix + "theUserId2")
-    lib.entityQueries.query(prefix + "theType", "queryFinishedFunc", { attributes: [] })
+    lib.entityQueries.query(prefix + "theType", "queryFinishedFunc", { attributes: [{ name: "something", value: { match: 123, range: { min: 1, max: 2 } } }] })
     lib.entityQueries.query(prefix + "theType2", "queryFinishedFunc2", { attributes: [] }, { testJson: 128 })
     lib.httpClient.request(prefix + "theUrl", "GET", "theBody", { headers: [{ key: "headerKey", value: "headerValue" }] }, "httpResultFunc", { testJson: 129 })
     lib.httpClient.request(prefix + "theUrl2", "POST", null, { headers: [] }, "httpResultFunc2")
