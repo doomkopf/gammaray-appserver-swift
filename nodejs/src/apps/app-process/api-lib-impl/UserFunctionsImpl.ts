@@ -1,12 +1,12 @@
 import { EntityId, JsonObject } from "../api/core"
 import { UserFunctions } from "../api/user"
-import { NodeJsUserFunctionsLogin, NodeJsUserFunctionsSendPayload } from "../command-handlers/dtos"
+import { NodeJsUserFunctionsLogin, NodeJsUserFunctionsSend } from "../command-handlers/dtos"
 import { CopyAndClearList } from "./CopyAndClearList"
 
 export class UserFunctionsImpl implements UserFunctions {
     readonly logins = new CopyAndClearList<NodeJsUserFunctionsLogin>()
     readonly logouts = new CopyAndClearList<string>()
-    readonly sends = new CopyAndClearList<NodeJsUserFunctionsSendPayload>()
+    readonly sends = new CopyAndClearList<NodeJsUserFunctionsSend>()
 
     login(userId: EntityId, loginFinishedFunctionId: string, customCtx?: JsonObject): void {
         this.logins.add({ userId, funcId: loginFinishedFunctionId, customCtxJson: !!customCtx ? JSON.stringify(customCtx) : undefined })

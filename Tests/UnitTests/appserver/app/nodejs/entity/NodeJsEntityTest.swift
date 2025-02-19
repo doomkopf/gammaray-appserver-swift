@@ -10,18 +10,18 @@ final class NodeJsEntityTest: XCTestCase {
             {
                 NodeJsEntityFuncResponse(
                     general: NodeJsFuncResponse(
-                        responseSender: nil,
-                        userLogins: nil,
-                        userLogouts: nil,
-                        userSends: nil,
-                        entityFuncInvokes: nil,
-                        entityQueryInvokes: nil,
-                        httpClientRequests: nil,
-                        listAdds: nil,
-                        listClears: nil,
-                        listIterates: nil,
-                        listRemoves: nil,
-                        logs: nil
+                        responseSenderSend: nil,
+                        userFunctionsLogin: nil,
+                        userFunctionsLogout: nil,
+                        userFunctionsSend: nil,
+                        entityFunctionsInvoke: nil,
+                        entityQueriesQuery: nil,
+                        httpClientRequest: nil,
+                        listsAdd: nil,
+                        listsClear: nil,
+                        listsIterate: nil,
+                        listsRemove: nil,
+                        loggerLog: nil
                     ),
                     action: NodeJsEntityAction.NONE,
                     entityJson: nil

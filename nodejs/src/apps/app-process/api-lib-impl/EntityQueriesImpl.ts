@@ -1,10 +1,10 @@
 import { JsonObject } from "../api/core"
 import { EntityQueries, EntityQuery, EntityQueryAttributeValue } from "../api/query"
-import { NodeJsEntityQueryAttributeValue, NodeJsEntityQueryInvokePayload } from "../command-handlers/dtos"
+import { NodeJsEntityQueriesQuery, NodeJsEntityQueryAttributeValue } from "../command-handlers/dtos"
 import { CopyAndClearList } from "./CopyAndClearList"
 
 export class EntityQueriesImpl implements EntityQueries {
-    readonly invocations = new CopyAndClearList<NodeJsEntityQueryInvokePayload>()
+    readonly invocations = new CopyAndClearList<NodeJsEntityQueriesQuery>()
 
     query(entityType: string, queryFinishedFunctionId: string, query: EntityQuery, customCtx?: JsonObject): void {
         this.invocations.add({

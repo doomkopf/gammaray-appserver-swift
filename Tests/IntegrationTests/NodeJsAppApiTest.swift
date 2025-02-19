@@ -101,86 +101,90 @@ final class NodeJsAppApiTest: XCTestCase {
         generalFuncResponse: NodeJsFuncResponse,
         prefix: String
     ) {
-        XCTAssertEqual(generalFuncResponse.responseSender?.requestId, "123")
+        XCTAssertEqual(generalFuncResponse.responseSenderSend?.requestId, "123")
         XCTAssertEqual(
-            generalFuncResponse.responseSender?.objJson, "{\"response\":\"\(prefix)someResponse\"}")
+            generalFuncResponse.responseSenderSend?.objJson,
+            "{\"response\":\"\(prefix)someResponse\"}")
 
-        XCTAssertEqual(generalFuncResponse.entityFuncInvokes?[0].type, "\(prefix)theType")
-        XCTAssertEqual(generalFuncResponse.entityFuncInvokes?[0]._func, "theFunc")
-        XCTAssertEqual(generalFuncResponse.entityFuncInvokes?[0].entityId, "theEntityId")
-        XCTAssertEqual(generalFuncResponse.entityFuncInvokes?[0].paramsJson, "{\"testJson\":123}")
+        XCTAssertEqual(generalFuncResponse.entityFunctionsInvoke?[0].type, "\(prefix)theType")
+        XCTAssertEqual(generalFuncResponse.entityFunctionsInvoke?[0]._func, "theFunc")
+        XCTAssertEqual(generalFuncResponse.entityFunctionsInvoke?[0].entityId, "theEntityId")
+        XCTAssertEqual(
+            generalFuncResponse.entityFunctionsInvoke?[0].paramsJson, "{\"testJson\":123}")
 
-        XCTAssertEqual(generalFuncResponse.entityFuncInvokes?[1].type, "\(prefix)theType2")
-        XCTAssertEqual(generalFuncResponse.entityFuncInvokes?[1]._func, "theFunc2")
-        XCTAssertEqual(generalFuncResponse.entityFuncInvokes?[1].entityId, "theEntityId2")
-        XCTAssertEqual(generalFuncResponse.entityFuncInvokes?[1].paramsJson, "{\"testJson\":124}")
+        XCTAssertEqual(generalFuncResponse.entityFunctionsInvoke?[1].type, "\(prefix)theType2")
+        XCTAssertEqual(generalFuncResponse.entityFunctionsInvoke?[1]._func, "theFunc2")
+        XCTAssertEqual(generalFuncResponse.entityFunctionsInvoke?[1].entityId, "theEntityId2")
+        XCTAssertEqual(
+            generalFuncResponse.entityFunctionsInvoke?[1].paramsJson, "{\"testJson\":124}")
 
-        XCTAssertEqual(generalFuncResponse.userSends?[0].userId, "\(prefix)theUserId")
-        XCTAssertEqual(generalFuncResponse.userSends?[0].objJson, "{\"testJson\":125}")
-        XCTAssertEqual(generalFuncResponse.userSends?[1].userId, "\(prefix)theUserId2")
-        XCTAssertEqual(generalFuncResponse.userSends?[1].objJson, "{\"testJson\":126}")
+        XCTAssertEqual(generalFuncResponse.userFunctionsSend?[0].userId, "\(prefix)theUserId")
+        XCTAssertEqual(generalFuncResponse.userFunctionsSend?[0].objJson, "{\"testJson\":125}")
+        XCTAssertEqual(generalFuncResponse.userFunctionsSend?[1].userId, "\(prefix)theUserId2")
+        XCTAssertEqual(generalFuncResponse.userFunctionsSend?[1].objJson, "{\"testJson\":126}")
 
-        XCTAssertEqual(generalFuncResponse.userLogins?[0].userId, "\(prefix)theUserId")
-        XCTAssertEqual(generalFuncResponse.userLogins?[0].funcId, "finishedFunc1")
-        XCTAssertEqual(generalFuncResponse.userLogins?[0].customCtxJson, "{\"testJson\":127}")
-        XCTAssertEqual(generalFuncResponse.userLogins?[1].userId, "\(prefix)theUserId2")
-        XCTAssertEqual(generalFuncResponse.userLogins?[1].funcId, "finishedFunc2")
-        XCTAssertNil(generalFuncResponse.userLogins?[1].customCtxJson)
+        XCTAssertEqual(generalFuncResponse.userFunctionsLogin?[0].userId, "\(prefix)theUserId")
+        XCTAssertEqual(generalFuncResponse.userFunctionsLogin?[0].funcId, "finishedFunc1")
+        XCTAssertEqual(
+            generalFuncResponse.userFunctionsLogin?[0].customCtxJson, "{\"testJson\":127}")
+        XCTAssertEqual(generalFuncResponse.userFunctionsLogin?[1].userId, "\(prefix)theUserId2")
+        XCTAssertEqual(generalFuncResponse.userFunctionsLogin?[1].funcId, "finishedFunc2")
+        XCTAssertNil(generalFuncResponse.userFunctionsLogin?[1].customCtxJson)
 
-        XCTAssertEqual(generalFuncResponse.userLogouts?[0], "\(prefix)theUserId")
-        XCTAssertEqual(generalFuncResponse.userLogouts?[1], "\(prefix)theUserId2")
+        XCTAssertEqual(generalFuncResponse.userFunctionsLogout?[0], "\(prefix)theUserId")
+        XCTAssertEqual(generalFuncResponse.userFunctionsLogout?[1], "\(prefix)theUserId2")
 
-        XCTAssertEqual(generalFuncResponse.entityQueryInvokes?[0].entityType, "\(prefix)theType")
+        XCTAssertEqual(generalFuncResponse.entityQueriesQuery?[0].entityType, "\(prefix)theType")
         XCTAssertEqual(
-            generalFuncResponse.entityQueryInvokes?[0].queryFinishedFunctionId, "queryFinishedFunc")
+            generalFuncResponse.entityQueriesQuery?[0].queryFinishedFunctionId, "queryFinishedFunc")
         XCTAssertEqual(
-            generalFuncResponse.entityQueryInvokes?[0].query.attributes[0].name, "something")
+            generalFuncResponse.entityQueriesQuery?[0].query.attributes[0].name, "something")
         XCTAssertEqual(
-            generalFuncResponse.entityQueryInvokes?[0].query.attributes[0].value.match, "123")
+            generalFuncResponse.entityQueriesQuery?[0].query.attributes[0].value.match, "123")
         XCTAssertEqual(
-            generalFuncResponse.entityQueryInvokes?[0].query.attributes[0].value.range?.min, 1)
+            generalFuncResponse.entityQueriesQuery?[0].query.attributes[0].value.range?.min, 1)
         XCTAssertEqual(
-            generalFuncResponse.entityQueryInvokes?[0].query.attributes[0].value.range?.max, 2)
-        XCTAssertNil(generalFuncResponse.entityQueryInvokes?[0].customCtxJson)
-        XCTAssertEqual(generalFuncResponse.entityQueryInvokes?[1].entityType, "\(prefix)theType2")
+            generalFuncResponse.entityQueriesQuery?[0].query.attributes[0].value.range?.max, 2)
+        XCTAssertNil(generalFuncResponse.entityQueriesQuery?[0].customCtxJson)
+        XCTAssertEqual(generalFuncResponse.entityQueriesQuery?[1].entityType, "\(prefix)theType2")
         XCTAssertEqual(
-            generalFuncResponse.entityQueryInvokes?[1].queryFinishedFunctionId, "queryFinishedFunc2"
+            generalFuncResponse.entityQueriesQuery?[1].queryFinishedFunctionId, "queryFinishedFunc2"
         )
-        XCTAssertEqual(generalFuncResponse.entityQueryInvokes?[1].query.attributes.count, 0)
+        XCTAssertEqual(generalFuncResponse.entityQueriesQuery?[1].query.attributes.count, 0)
         XCTAssertEqual(
-            generalFuncResponse.entityQueryInvokes?[1].customCtxJson, "{\"testJson\":128}")
+            generalFuncResponse.entityQueriesQuery?[1].customCtxJson, "{\"testJson\":128}")
 
-        XCTAssertEqual(generalFuncResponse.httpClientRequests?[0].url, "\(prefix)theUrl")
-        XCTAssertEqual(generalFuncResponse.httpClientRequests?[0].method, .GET)
-        XCTAssertEqual(generalFuncResponse.httpClientRequests?[0].body, "theBody")
-        XCTAssertEqual(generalFuncResponse.httpClientRequests?[0].headers.count, 1)
-        XCTAssertEqual(generalFuncResponse.httpClientRequests?[0].headers[0].key, "headerKey")
-        XCTAssertEqual(generalFuncResponse.httpClientRequests?[0].headers[0].value, "headerValue")
-        XCTAssertEqual(generalFuncResponse.httpClientRequests?[0].resultFunc, "httpResultFunc")
+        XCTAssertEqual(generalFuncResponse.httpClientRequest?[0].url, "\(prefix)theUrl")
+        XCTAssertEqual(generalFuncResponse.httpClientRequest?[0].method, .GET)
+        XCTAssertEqual(generalFuncResponse.httpClientRequest?[0].body, "theBody")
+        XCTAssertEqual(generalFuncResponse.httpClientRequest?[0].headers.count, 1)
+        XCTAssertEqual(generalFuncResponse.httpClientRequest?[0].headers[0].key, "headerKey")
+        XCTAssertEqual(generalFuncResponse.httpClientRequest?[0].headers[0].value, "headerValue")
+        XCTAssertEqual(generalFuncResponse.httpClientRequest?[0].resultFunc, "httpResultFunc")
         XCTAssertEqual(
-            generalFuncResponse.httpClientRequests?[0].requestCtxJson, "{\"testJson\":129}")
-        XCTAssertEqual(generalFuncResponse.httpClientRequests?[1].url, "\(prefix)theUrl2")
-        XCTAssertEqual(generalFuncResponse.httpClientRequests?[1].method, .POST)
-        XCTAssertNil(generalFuncResponse.httpClientRequests?[1].body)
-        XCTAssertEqual(generalFuncResponse.httpClientRequests?[1].headers.count, 0)
-        XCTAssertEqual(generalFuncResponse.httpClientRequests?[1].resultFunc, "httpResultFunc2")
-        XCTAssertNil(generalFuncResponse.httpClientRequests?[1].requestCtxJson)
+            generalFuncResponse.httpClientRequest?[0].requestCtxJson, "{\"testJson\":129}")
+        XCTAssertEqual(generalFuncResponse.httpClientRequest?[1].url, "\(prefix)theUrl2")
+        XCTAssertEqual(generalFuncResponse.httpClientRequest?[1].method, .POST)
+        XCTAssertNil(generalFuncResponse.httpClientRequest?[1].body)
+        XCTAssertEqual(generalFuncResponse.httpClientRequest?[1].headers.count, 0)
+        XCTAssertEqual(generalFuncResponse.httpClientRequest?[1].resultFunc, "httpResultFunc2")
+        XCTAssertNil(generalFuncResponse.httpClientRequest?[1].requestCtxJson)
 
-        XCTAssertEqual(generalFuncResponse.listAdds?[0].listId, "\(prefix)theListId")
-        XCTAssertEqual(generalFuncResponse.listAdds?[0].elemToAdd, "theElem")
-        XCTAssertEqual(generalFuncResponse.listClears?[0].listId, "\(prefix)theListId")
-        XCTAssertEqual(generalFuncResponse.listIterates?[0].listId, "\(prefix)theListId")
+        XCTAssertEqual(generalFuncResponse.listsAdd?[0].listId, "\(prefix)theListId")
+        XCTAssertEqual(generalFuncResponse.listsAdd?[0].elemToAdd, "theElem")
+        XCTAssertEqual(generalFuncResponse.listsClear?[0].listId, "\(prefix)theListId")
+        XCTAssertEqual(generalFuncResponse.listsIterate?[0].listId, "\(prefix)theListId")
         XCTAssertEqual(
-            generalFuncResponse.listIterates?[0].iterationFunctionId, "theIterationFunctionId")
+            generalFuncResponse.listsIterate?[0].iterationFunctionId, "theIterationFunctionId")
         XCTAssertEqual(
-            generalFuncResponse.listIterates?[0].iterationFinishedFunctionId,
+            generalFuncResponse.listsIterate?[0].iterationFinishedFunctionId,
             "theIterationFinishedFunctionId")
         XCTAssertEqual(
-            generalFuncResponse.listIterates?[0].customCtxJson, "{\"testJson\":130}")
+            generalFuncResponse.listsIterate?[0].customCtxJson, "{\"testJson\":130}")
 
-        XCTAssertEqual(generalFuncResponse.logs?[0].logLevel, .INFO)
-        XCTAssertEqual(generalFuncResponse.logs?[0].message, "this is a log message")
-        XCTAssertEqual(generalFuncResponse.logs?[1].logLevel, .ERROR)
-        XCTAssertEqual(generalFuncResponse.logs?[1].message, "this is an error message")
+        XCTAssertEqual(generalFuncResponse.loggerLog?[0].logLevel, .INFO)
+        XCTAssertEqual(generalFuncResponse.loggerLog?[0].message, "this is a log message")
+        XCTAssertEqual(generalFuncResponse.loggerLog?[1].logLevel, .ERROR)
+        XCTAssertEqual(generalFuncResponse.loggerLog?[1].message, "this is an error message")
     }
 }

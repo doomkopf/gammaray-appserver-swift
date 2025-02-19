@@ -88,18 +88,18 @@ struct NodeJsEntityFuncRequest: Encodable {
 }
 
 struct NodeJsFuncResponse: Decodable {
-    let responseSender: NodeJsResponseSenderPayload?
-    let userLogins: [NodeJsUserFunctionsLogin]?
-    let userLogouts: [EntityId]?
-    let userSends: [NodeJsUserFunctionsSendPayload]?
-    let entityFuncInvokes: [NodeJsEntityFuncInvokePayload]?
-    let entityQueryInvokes: [NodeJsEntityQueryInvokePayload]?
-    let httpClientRequests: [NodeJsHttpClientRequest]?
-    let listAdds: [NodeJsListAdd]?
-    let listClears: [NodeJsListClear]?
-    let listIterates: [NodeJsListIterate]?
-    let listRemoves: [NodeJsListRemove]?
-    let logs: [NodeJsLog]?
+    let responseSenderSend: NodeJsResponseSenderSend?
+    let userFunctionsLogin: [NodeJsUserFunctionsLogin]?
+    let userFunctionsLogout: [EntityId]?
+    let userFunctionsSend: [NodeJsUserFunctionsSend]?
+    let entityFunctionsInvoke: [NodeJsEntityFunctionsInvoke]?
+    let entityQueriesQuery: [NodeJsEntityQueriesQuery]?
+    let httpClientRequest: [NodeJsHttpClientRequest]?
+    let listsAdd: [NodeJsListsAdd]?
+    let listsClear: [NodeJsListsClear]?
+    let listsIterate: [NodeJsListsIterate]?
+    let listsRemove: [NodeJsListsRemove]?
+    let loggerLog: [NodeJsLoggerLog]?
 }
 
 struct NodeJsEntityFuncResponse: Decodable {
@@ -121,7 +121,7 @@ struct NodeJsStatelessFuncResponse: Decodable {
     let general: NodeJsFuncResponse
 }
 
-struct NodeJsResponseSenderPayload: Decodable {
+struct NodeJsResponseSenderSend: Decodable {
     let requestId: String
     let objJson: String
 }
@@ -132,19 +132,19 @@ struct NodeJsUserFunctionsLogin: Decodable {
     let customCtxJson: String?
 }
 
-struct NodeJsUserFunctionsSendPayload: Decodable {
+struct NodeJsUserFunctionsSend: Decodable {
     let userId: EntityId
     let objJson: String
 }
 
-struct NodeJsEntityFuncInvokePayload: Decodable {
+struct NodeJsEntityFunctionsInvoke: Decodable {
     let type: String
     let _func: String
     let entityId: String
     let paramsJson: String?
 }
 
-struct NodeJsEntityQueryInvokePayload: Decodable {
+struct NodeJsEntityQueriesQuery: Decodable {
     let entityType: String
     let queryFinishedFunctionId: String
     let query: NodeJsEntityQuery
@@ -192,28 +192,28 @@ struct NodeJsHttpHeader: Decodable {
     let value: String
 }
 
-struct NodeJsListAdd: Decodable {
+struct NodeJsListsAdd: Decodable {
     let listId: EntityId
     let elemToAdd: String
 }
 
-struct NodeJsListClear: Decodable {
+struct NodeJsListsClear: Decodable {
     let listId: EntityId
 }
 
-struct NodeJsListIterate: Decodable {
+struct NodeJsListsIterate: Decodable {
     let listId: EntityId
     let iterationFunctionId: String
     let iterationFinishedFunctionId: String
     let customCtxJson: String?
 }
 
-struct NodeJsListRemove: Decodable {
+struct NodeJsListsRemove: Decodable {
     let listId: EntityId
     let elemToRemove: String
 }
 
-struct NodeJsLog: Decodable {
+struct NodeJsLoggerLog: Decodable {
     let logLevel: NodeJsLogLevel
     let message: String
 }

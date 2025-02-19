@@ -31,21 +31,21 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     }
 
     func handle(response: NodeJsFuncResponse, ctx: RequestContext) async {
-        await handle(response.responseSender)
-        await handle(response.userLogins)
-        await handle(response.userLogouts)
-        await handle(response.userSends)
-        await handle(response.entityFuncInvokes, ctx)
-        handle(response.entityQueryInvokes)
-        await handle(response.httpClientRequests)
-        handle(response.listAdds)
-        handle(response.listClears)
-        handle(response.listIterates)
-        handle(response.listRemoves)
-        handle(response.logs)
+        await handle(response.responseSenderSend)
+        await handle(response.userFunctionsLogin)
+        await handle(response.userFunctionsLogout)
+        await handle(response.userFunctionsSend)
+        await handle(response.entityFunctionsInvoke, ctx)
+        handle(response.entityQueriesQuery)
+        await handle(response.httpClientRequest)
+        handle(response.listsAdd)
+        handle(response.listsClear)
+        handle(response.listsIterate)
+        handle(response.listsRemove)
+        handle(response.loggerLog)
     }
 
-    private func handle(_ rsPayload: NodeJsResponseSenderPayload?) async {
+    private func handle(_ rsPayload: NodeJsResponseSenderSend?) async {
         if let rsPayload = rsPayload {
             await globalAppLibComponents.responseSender.send(
                 requestId: rsPayload.requestId, objJson: rsPayload.objJson)
@@ -72,7 +72,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         }
     }
 
-    private func handle(_ userSends: [NodeJsUserFunctionsSendPayload]?) async {
+    private func handle(_ userSends: [NodeJsUserFunctionsSend]?) async {
         if let userSends = userSends {
             for userSendCall in userSends {
                 await globalAppLibComponents.userSender.send(
@@ -82,7 +82,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     }
 
     private func handle(
-        _ entityFuncInvokes: [NodeJsEntityFuncInvokePayload]?, _ ctx: RequestContext
+        _ entityFuncInvokes: [NodeJsEntityFunctionsInvoke]?, _ ctx: RequestContext
     ) async {
         if let entityFuncInvokes = entityFuncInvokes {
             for invoke in entityFuncInvokes {
@@ -106,7 +106,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         }
     }
 
-    private func handle(_ entityQueryInvokes: [NodeJsEntityQueryInvokePayload]?) {
+    private func handle(_ entityQueryInvokes: [NodeJsEntityQueriesQuery]?) {
         if let entityQueryInvokes = entityQueryInvokes {
             for invocation in entityQueryInvokes {
                 entityQueries.query(
@@ -167,7 +167,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         }
     }
 
-    private func handle(_ listAdds: [NodeJsListAdd]?) {
+    private func handle(_ listAdds: [NodeJsListsAdd]?) {
         if let listAdds = listAdds {
             for listAdd in listAdds {
                 lists.add(listId: listAdd.listId, elemToAdd: listAdd.elemToAdd)
@@ -175,7 +175,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         }
     }
 
-    private func handle(_ listClears: [NodeJsListClear]?) {
+    private func handle(_ listClears: [NodeJsListsClear]?) {
         if let listClears = listClears {
             for listClear in listClears {
                 lists.clear(listId: listClear.listId)
@@ -183,7 +183,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         }
     }
 
-    private func handle(_ listIterates: [NodeJsListIterate]?) {
+    private func handle(_ listIterates: [NodeJsListsIterate]?) {
         if let listIterates = listIterates {
             for listIterate in listIterates {
                 lists.iterate(
@@ -196,7 +196,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         }
     }
 
-    private func handle(_ listRemoves: [NodeJsListRemove]?) {
+    private func handle(_ listRemoves: [NodeJsListsRemove]?) {
         if let listRemoves = listRemoves {
             for listRemove in listRemoves {
                 lists.remove(listId: listRemove.listId, elemToRemove: listRemove.elemToRemove)
@@ -204,7 +204,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         }
     }
 
-    private func handle(_ logs: [NodeJsLog]?) {
+    private func handle(_ logs: [NodeJsLoggerLog]?) {
         if let logs = logs {
             for log in logs {
                 appLogger.log(

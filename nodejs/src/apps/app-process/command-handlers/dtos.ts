@@ -61,18 +61,18 @@ export interface NodeJsEntityFuncRequest {
 }
 
 export interface NodeJsFuncResponse {
-    responseSender?: NodeJsResponseSenderPayload
-    userLogins?: NodeJsUserFunctionsLogin[]
-    userLogouts?: string[]
-    userSends?: NodeJsUserFunctionsSendPayload[]
-    entityFuncInvokes?: NodeJsEntityFuncInvokePayload[]
-    entityQueryInvokes?: NodeJsEntityQueryInvokePayload[]
-    httpClientRequests?: NodeJsHttpClientRequest[]
-    listAdds?: NodeJsListAdd[]
-    listClears?: NodeJsListClear[]
-    listIterates?: NodeJsListIterate[]
-    listRemoves?: NodeJsListRemove[]
-    logs?: NodeJsLog[]
+    responseSenderSend?: NodeJsResponseSenderSend
+    userFunctionsLogin?: NodeJsUserFunctionsLogin[]
+    userFunctionsLogout?: string[]
+    userFunctionsSend?: NodeJsUserFunctionsSend[]
+    entityFunctionsInvoke?: NodeJsEntityFunctionsInvoke[]
+    entityQueriesQuery?: NodeJsEntityQueriesQuery[]
+    httpClientRequest?: NodeJsHttpClientRequest[]
+    listsAdd?: NodeJsListsAdd[]
+    listsClear?: NodeJsListsClear[]
+    listsIterate?: NodeJsListsIterate[]
+    listsRemove?: NodeJsListsRemove[]
+    loggerLog?: NodeJsLoggerLog[]
 }
 
 export interface NodeJsEntityFuncResponse {
@@ -94,7 +94,7 @@ export interface NodeJsStatelessFuncResponse {
     general: NodeJsFuncResponse
 }
 
-export interface NodeJsResponseSenderPayload {
+export interface NodeJsResponseSenderSend {
     requestId: string
     objJson: string
 }
@@ -105,19 +105,19 @@ export interface NodeJsUserFunctionsLogin {
     customCtxJson?: string
 }
 
-export interface NodeJsUserFunctionsSendPayload {
+export interface NodeJsUserFunctionsSend {
     userId: string
     objJson: string
 }
 
-export interface NodeJsEntityFuncInvokePayload {
+export interface NodeJsEntityFunctionsInvoke {
     type: string
     _func: string
     entityId: string
     paramsJson: string | null
 }
 
-export interface NodeJsEntityQueryInvokePayload {
+export interface NodeJsEntityQueriesQuery {
     entityType: string
     queryFinishedFunctionId: string
     query: NodeJsEntityQuery
@@ -165,28 +165,28 @@ export interface NodeJsHttpHeader {
     value: string
 }
 
-export interface NodeJsListAdd {
+export interface NodeJsListsAdd {
     listId: string,
     elemToAdd: string,
 }
 
-export interface NodeJsListClear {
+export interface NodeJsListsClear {
     listId: string,
 }
 
-export interface NodeJsListIterate {
+export interface NodeJsListsIterate {
     listId: string
     iterationFunctionId: string
     iterationFinishedFunctionId: string
     customCtxJson?: string
 }
 
-export interface NodeJsListRemove {
+export interface NodeJsListsRemove {
     listId: string
     elemToRemove: string
 }
 
-export interface NodeJsLog {
+export interface NodeJsLoggerLog {
     logLevel: NodeJsLogLevel
     message: string
 }

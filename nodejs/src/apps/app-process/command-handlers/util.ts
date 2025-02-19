@@ -4,22 +4,22 @@ import { NodeJsFuncResponse } from "./dtos";
 export function buildNodeJsFuncResponse(lib: AppLib): NodeJsFuncResponse {
     const dto: NodeJsFuncResponse = {}
 
-    const responseSenderPayload = lib.responseSender.getAndRemoveResponse()
-    if (responseSenderPayload) {
-        dto.responseSender = responseSenderPayload
+    const responseSenderSend = lib.responseSender.getAndRemoveResponse()
+    if (responseSenderSend) {
+        dto.responseSenderSend = responseSenderSend
     }
 
-    dto.userLogins = lib.user.logins.copyAndClear()
-    dto.userLogouts = lib.user.logouts.copyAndClear()
-    dto.userSends = lib.user.sends.copyAndClear()
-    dto.entityFuncInvokes = lib.entityFunc.invocations.copyAndClear()
-    dto.entityQueryInvokes = lib.entityQueries.invocations.copyAndClear()
-    dto.httpClientRequests = lib.httpClient.requests.copyAndClear()
-    dto.listAdds = lib.listFunc.adds.copyAndClear()
-    dto.listClears = lib.listFunc.clears.copyAndClear()
-    dto.listIterates = lib.listFunc.iterates.copyAndClear()
-    dto.listRemoves = lib.listFunc.removes.copyAndClear()
-    dto.logs = lib.log.logs.copyAndClear()
+    dto.userFunctionsLogin = lib.user.logins.copyAndClear()
+    dto.userFunctionsLogout = lib.user.logouts.copyAndClear()
+    dto.userFunctionsSend = lib.user.sends.copyAndClear()
+    dto.entityFunctionsInvoke = lib.entityFunc.invocations.copyAndClear()
+    dto.entityQueriesQuery = lib.entityQueries.invocations.copyAndClear()
+    dto.httpClientRequest = lib.httpClient.requests.copyAndClear()
+    dto.listsAdd = lib.listFunc.adds.copyAndClear()
+    dto.listsClear = lib.listFunc.clears.copyAndClear()
+    dto.listsIterate = lib.listFunc.iterates.copyAndClear()
+    dto.listsRemove = lib.listFunc.removes.copyAndClear()
+    dto.loggerLog = lib.log.logs.copyAndClear()
 
     return dto
 }

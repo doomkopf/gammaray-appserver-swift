@@ -1,13 +1,13 @@
 import { EntityId, JsonObject } from "../api/core"
 import { ListFunctions } from "../api/list"
-import { NodeJsListAdd, NodeJsListClear, NodeJsListIterate, NodeJsListRemove } from "../command-handlers/dtos"
+import { NodeJsListsAdd, NodeJsListsClear, NodeJsListsIterate, NodeJsListsRemove } from "../command-handlers/dtos"
 import { CopyAndClearList } from "./CopyAndClearList"
 
 export class ListFunctionsImpl implements ListFunctions {
-    readonly adds = new CopyAndClearList<NodeJsListAdd>()
-    readonly clears = new CopyAndClearList<NodeJsListClear>()
-    readonly iterates = new CopyAndClearList<NodeJsListIterate>()
-    readonly removes = new CopyAndClearList<NodeJsListRemove>()
+    readonly adds = new CopyAndClearList<NodeJsListsAdd>()
+    readonly clears = new CopyAndClearList<NodeJsListsClear>()
+    readonly iterates = new CopyAndClearList<NodeJsListsIterate>()
+    readonly removes = new CopyAndClearList<NodeJsListsRemove>()
 
     add(listId: EntityId, elemToAdd: string): void {
         this.adds.add({
