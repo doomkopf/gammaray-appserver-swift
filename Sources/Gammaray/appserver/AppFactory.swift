@@ -3,20 +3,20 @@ final class AppFactory: Sendable {
     private let db: AppserverDatabase
     private let config: Config
     private let loggerFactory: LoggerFactory
-    private let responseSender: ResponseSender
+    private let globalAppLibComponents: GlobalAppLibComponents
     private let nodeProcess: NodeJsAppApi
 
     init(
         db: AppserverDatabase,
         config: Config,
         loggerFactory: LoggerFactory,
-        responseSender: ResponseSender,
+        globalAppLibComponents: GlobalAppLibComponents,
         nodeProcess: NodeJsAppApi
     ) {
         self.db = db
         self.config = config
         self.loggerFactory = loggerFactory
-        self.responseSender = responseSender
+        self.globalAppLibComponents = globalAppLibComponents
         self.nodeProcess = nodeProcess
     }
 
@@ -45,7 +45,10 @@ final class AppFactory: Sendable {
 
         let funcResponseHandler = NodeJsFuncResponseHandlerImpl(
             loggerFactory: loggerFactory,
-            responseSender: responseSender
+            globalAppLibComponents: globalAppLibComponents,
+            appLogger: AppLogger(appId: appId, loggerFactory: loggerFactory),
+            entityQueries: EntityQueries(),
+            lists: Lists()
         )
 
         let appEntities = try AppEntities(

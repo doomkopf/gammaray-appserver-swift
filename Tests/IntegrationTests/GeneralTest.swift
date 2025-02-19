@@ -18,6 +18,31 @@ final class GeneralTest: XCTestCase {
         }
     }
 
+    final class UserLoginMock: UserLogin {
+        func login(userId: EntityId, funcId: String, customCtxJson: String?) async {
+        }
+
+        func logout(userId: EntityId) async {
+        }
+    }
+
+    final class UserSenderMock: UserSender {
+        func send(userId: EntityId, objJson: String) async {
+        }
+    }
+
+    final class HttpClientMock: HttpClient {
+        func request(
+            url: String,
+            method: HttpMethod,
+            body: String?,
+            headers: [HttpHeader],
+            resultFunc: String,
+            requestCtxJson: String?
+        ) async {
+        }
+    }
+
     func testGeneral() async throws {
         let reader = ResourceFileReaderImpl(module: Bundle.module)
         let config = try Config(reader: reader)
@@ -49,7 +74,12 @@ final class GeneralTest: XCTestCase {
                 db: db,
                 config: config,
                 loggerFactory: loggerFactory,
-                responseSender: responseSender,
+                globalAppLibComponents: GlobalAppLibComponents(
+                    responseSender: responseSender,
+                    userLogin: UserLoginMock(),
+                    userSender: UserSenderMock(),
+                    httpClient: HttpClientMock()
+                ),
                 nodeProcess: nodeApi
             )
         )
