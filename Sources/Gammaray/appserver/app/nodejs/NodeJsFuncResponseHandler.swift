@@ -142,14 +142,22 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
                     url: httpClientRequest.url,
                     method: map(httpClientRequest.method),
                     body: httpClientRequest.body,
-                    headers: httpClientRequest.headers.map { nodeHeader in
-                        HttpHeader(key: nodeHeader.key, value: nodeHeader.value)
-                    },
+                    headers: map(httpClientRequest.headers),
                     resultFunc: httpClientRequest.resultFunc,
                     requestCtxJson: httpClientRequest.requestCtxJson
                 )
             }
         }
+    }
+
+    private func map(_ node: [NodeJsHttpHeader]) -> HttpHeaders {
+        var headers: HttpHeaders = [:]
+
+        for elem in node {
+            headers[elem.key] = elem.value
+        }
+
+        return headers
     }
 
     private func map(_ node: NodeJsHttpMethod) -> HttpMethod {

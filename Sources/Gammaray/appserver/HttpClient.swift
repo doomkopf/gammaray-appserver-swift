@@ -3,7 +3,7 @@ protocol HttpClient: Sendable {
         url: String,
         method: HttpMethod,
         body: String?,
-        headers: [HttpHeader],
+        headers: HttpHeaders,
         resultFunc: String,
         requestCtxJson: String?
     ) async

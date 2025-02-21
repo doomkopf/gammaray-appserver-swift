@@ -24,7 +24,7 @@ final class GeneralTest: XCTestCase {
             url: String,
             method: HttpMethod,
             body: String?,
-            headers: [HttpHeader],
+            headers: HttpHeaders,
             resultFunc: String,
             requestCtxJson: String?
         ) async {
@@ -85,7 +85,7 @@ final class GeneralTest: XCTestCase {
     private func echoFuncResponds(apps: Apps, responseSender: ResponseSender) async {
         actor TestWebserverRequest: WebserverRequest {
             var body = ""
-            func respond(body: String, status: HttpStatus, headers: [HttpHeader]?) {
+            func respond(body: String, status: HttpStatus, headers: HttpHeaders?) {
                 self.body = body
             }
         }

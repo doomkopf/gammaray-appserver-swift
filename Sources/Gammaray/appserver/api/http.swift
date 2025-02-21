@@ -6,10 +6,7 @@ enum HttpMethod {
     case DELETE
 }
 
-struct HttpHeader {
-    let key: String
-    let value: String
-}
+typealias HttpHeaders = [String: String]
 
 enum HttpStatus: Int {
     case CONTINUE = 100
