@@ -1,5 +1,5 @@
 struct RequestContext {
-    let requestId: String?
+    let requestId: RequestId?
     let persistentLocalClientId: String?
     let requestingUserId: EntityId?
 }

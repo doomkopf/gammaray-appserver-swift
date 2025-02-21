@@ -4,6 +4,7 @@ struct GammarayApp {
 }
 
 typealias EntityId = String
+typealias RequestId = String
 
 enum FuncVisibility {
     case pri
@@ -23,23 +24,10 @@ struct EntityFunc {
 }
 
 protocol FuncContext: Sendable {
-    var requestId: String? { get }
+    var requestId: RequestId? { get }
     var persistentLocalClientId: String? { get }
     var requestingUserId: EntityId? { get }
     func sendResponse(objJson: String)
-}
-
-enum HttpMethod {
-    case GET
-    case POST
-    case PUT
-    case PATCH
-    case DELETE
-}
-
-struct HttpHeader {
-    let key: String
-    let value: String
 }
 
 struct EntityQuery {

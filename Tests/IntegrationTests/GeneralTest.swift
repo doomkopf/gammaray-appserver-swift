@@ -6,18 +6,6 @@ import XCTest
 final class GeneralTest: XCTestCase {
     private let appId = "test"
 
-    actor LastObjResponseSender: ResponseSender {
-        private var lastObjJson: String?
-
-        func send(requestId: String, objJson: String) {
-            lastObjJson = objJson
-        }
-
-        func getLastObjJson() -> String? {
-            lastObjJson
-        }
-    }
-
     final class UserLoginMock: UserLogin {
         func login(userId: EntityId, funcId: String, customCtxJson: String?) async {
         }
@@ -48,7 +36,7 @@ final class GeneralTest: XCTestCase {
         let config = try Config(reader: reader)
         let loggerFactory = LoggerFactory()
         let scheduler = Scheduler()
-        let responseSender = LastObjResponseSender()
+        let responseSender = ResponseSender()
 
         let db = AppserverDatabaseImpl(
             db: InMemoryDatabase(),
@@ -94,14 +82,24 @@ final class GeneralTest: XCTestCase {
         try await nodeApi.shutdown()
     }
 
-    private func echoFuncResponds(apps: Apps, responseSender: LastObjResponseSender) async {
+    private func echoFuncResponds(apps: Apps, responseSender: ResponseSender) async {
+        actor TestWebserverRequest: WebserverRequest {
+            var body = ""
+            func respond(body: String, status: HttpStatus, headers: [HttpHeader]?) {
+                self.body = body
+            }
+        }
+
+        let request = TestWebserverRequest()
+        let requestId = await responseSender.addRequest(request: request)
+
         let echoParamsJson = "{\"test\":123}"
         await apps.handleFunc(
             appId: appId,
             params: FunctionParams(
                 theFunc: "echo",
                 ctx: RequestContext(
-                    requestId: "id",
+                    requestId: requestId,
                     persistentLocalClientId: nil,
                     requestingUserId: nil
                 ),
@@ -110,8 +108,8 @@ final class GeneralTest: XCTestCase {
             entityParams: nil
         )
 
-        let lastSent = await responseSender.getLastObjJson()
-        XCTAssertEqual(echoParamsJson, lastSent)
+        let sentBody = await request.body
+        XCTAssertEqual(echoParamsJson, sentBody)
     }
 
     private func createPersonEntityAndStoreToDatabase(
