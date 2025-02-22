@@ -1,4 +1,3 @@
-@available(macOS 10.15, *)
 final class EntityFunctions: Sendable {
     private let log: Logger
     private let appId: String

@@ -1,4 +1,3 @@
-@available(macOS 10.15, *)
 final class RemoteHost: Sendable {
     private let jsonEncoder = StringJSONEncoder()
     private let requestIdGenerator: RequestIdGenerator

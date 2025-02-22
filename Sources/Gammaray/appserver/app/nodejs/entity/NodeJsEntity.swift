@@ -5,7 +5,6 @@ private struct FuncCall {
     let callback: @Sendable (_ result: EntityFuncResult) -> Void
 }
 
-@available(macOS 10.15, *)
 actor NodeJsEntity: Entity {
     private let appId: String
     private let entityId: String

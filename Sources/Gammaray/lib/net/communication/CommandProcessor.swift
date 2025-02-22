@@ -1,4 +1,3 @@
-@available(macOS 10.15, *)
 final class CommandProcessor: ReceptionListener, Sendable {
     private let log: Logger
     private let jsonDecoder = StringJSONDecoder()

@@ -1,6 +1,5 @@
 import Foundation
 
-@available(macOS 10.15, *)
 final class NodeJsProcess: Sendable {
     private let proc: Process
 

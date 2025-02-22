@@ -1,4 +1,3 @@
-@available(macOS 10.15, *)
 final class NodeJsEntityFactory: EntityFactory {
     private let nodeJs: NodeJsAppApi
     private let funcResponseHandler: NodeJsFuncResponseHandler

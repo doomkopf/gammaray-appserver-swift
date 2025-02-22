@@ -6,7 +6,6 @@ private struct Message: Decodable {
     let paramsJson: String?
 }
 
-@available(macOS 10.15, *)
 class GammarayProtocolRequestHandler {
     private let log: Logger
     private let jsonDecoder: StringJSONDecoder

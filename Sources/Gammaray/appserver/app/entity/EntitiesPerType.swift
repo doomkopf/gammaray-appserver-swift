@@ -1,4 +1,3 @@
-@available(macOS 10.15, *)
 actor EntitiesPerType: CacheListener {
     typealias V = EntityContainer
 

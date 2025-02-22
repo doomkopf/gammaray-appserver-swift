@@ -15,7 +15,6 @@ struct SendQueueEntry: Sendable {
     let callback: SendCallback
 }
 
-@available(macOS 10.15, *)
 actor SendQueue: CacheListener {
     typealias V = SendQueueEntry
 

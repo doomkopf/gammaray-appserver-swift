@@ -2,7 +2,6 @@ import Foundation
 
 typealias ScheduledTaskFunc = @Sendable () async -> Void
 
-@available(macOS 10.15, *)
 actor ScheduledTask {
     private var _taskFunc: ScheduledTaskFunc?
     private var cancelled = false
@@ -32,7 +31,6 @@ actor ScheduledTask {
     }
 }
 
-@available(macOS 10.15, *)
 final class Scheduler: Sendable {
     func scheduleOnce(millis: Int64, taskFunc: @escaping ScheduledTaskFunc) {
         DispatchQueue.main.asyncAfter(

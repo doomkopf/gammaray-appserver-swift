@@ -1,4 +1,3 @@
-@available(macOS 10.15, *)
 final class App: Sendable {
     private let statelessFunctions: StatelessFunctions
     private let entityFunctions: EntityFunctions

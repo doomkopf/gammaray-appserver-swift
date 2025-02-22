@@ -3,6 +3,9 @@ import PackageDescription
 
 let package = Package(
     name: "Gammaray",
+    platforms: [
+        .macOS(.v14)
+    ],
     products: [
         .executable(
             name: "Gammaray",

@@ -9,7 +9,6 @@ protocol NodeJsAppApi: Sendable {
         -> NodeJsStatelessFuncResponse
 }
 
-@available(macOS 10.15, *)
 final class NodeJsAppApiImpl: NodeJsAppApi {
     private let jsonEncoder = StringJSONEncoder()
     private let jsonDecoder = StringJSONDecoder()

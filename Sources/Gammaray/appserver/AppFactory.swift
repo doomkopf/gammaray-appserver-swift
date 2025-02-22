@@ -1,4 +1,3 @@
-@available(macOS 10.15, *)
 final class AppFactory: Sendable {
     private let db: AppserverDatabase
     private let config: Config

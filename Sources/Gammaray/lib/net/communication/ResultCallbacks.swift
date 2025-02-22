@@ -10,7 +10,6 @@ struct RequestResult {
 
 typealias ResultCallback = @Sendable (_ result: RequestResult) -> Void
 
-@available(macOS 10.15, *)
 actor ResultCallbacks: CacheListener {
     typealias V = ResultCallback
 

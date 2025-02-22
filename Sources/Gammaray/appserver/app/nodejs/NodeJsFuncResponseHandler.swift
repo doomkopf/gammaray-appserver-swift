@@ -2,7 +2,6 @@ protocol NodeJsFuncResponseHandler: Sendable {
     func handle(response: NodeJsFuncResponse, ctx: RequestContext) async
 }
 
-@available(macOS 10.15, *)
 actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     private let log: Logger
     private let globalAppLibComponents: GlobalAppLibComponents

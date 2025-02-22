@@ -1,4 +1,3 @@
-@available(macOS 10.15, *)
 final class AppEntities: Sendable {
     private let typeToEntities: [String: EntitiesPerType]
 

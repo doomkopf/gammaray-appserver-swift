@@ -1,4 +1,3 @@
-@available(macOS 10.15, *)
 actor Apps {
     private let log: Logger
     private let appFactory: AppFactory

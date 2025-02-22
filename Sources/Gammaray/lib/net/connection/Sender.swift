@@ -1,6 +1,5 @@
 import NIO
 
-@available(macOS 10.15, *)
 actor SenderHandler: ChannelInboundHandler {
     typealias InboundIn = ByteBuffer
     typealias OutboundOut = ByteBuffer
@@ -33,7 +32,6 @@ actor SenderHandler: ChannelInboundHandler {
     }
 }
 
-@available(macOS 10.15, *)
 actor Sender {
     private let host: String
     private let port: Int
