@@ -42,7 +42,6 @@ class GammarayProtocolRequestHandler {
                 theFunc: msg.theFunc,
                 ctx: RequestContext(
                     requestId: requestId,
-                    persistentLocalClientId: nil,
                     requestingUserId: nil
                 ),
                 paramsJson: msg.paramsJson

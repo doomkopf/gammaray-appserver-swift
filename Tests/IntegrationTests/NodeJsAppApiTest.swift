@@ -60,7 +60,6 @@ final class NodeJsAppApiTest: XCTestCase {
                 appId: appId,
                 requestId: "123",
                 requestingUserId: nil,
-                persistentLocalClientId: nil,
                 id: "",
                 type: "person",
                 efunc: "test",
@@ -85,7 +84,6 @@ final class NodeJsAppApiTest: XCTestCase {
                 appId: appId,
                 requestId: "123",
                 requestingUserId: nil,
-                persistentLocalClientId: nil,
                 sfunc: "test",
                 paramsJson: "{\"text\":\"stuff\"}"
             )

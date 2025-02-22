@@ -3,7 +3,6 @@ import { HttpResponseData } from "../api/http"
 
 export class FuncContextImpl implements FuncContext {
     constructor(
-        readonly persistentLocalClientId: string | null,
         readonly requestId: string | null,
         readonly requestingUserId: EntityId | null,
         private readonly responseSender: ResponseSender,

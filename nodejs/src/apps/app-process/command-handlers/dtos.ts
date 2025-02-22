@@ -52,7 +52,6 @@ export interface NodeJsEntityFuncRequest {
     appId: string
     requestId: string | null
     requestingUserId: string | null
-    persistentLocalClientId: string | null
     id: string
     type: string
     efunc: string
@@ -85,7 +84,6 @@ export interface NodeJsStatelessFuncRequest {
     appId: string
     requestId: string | null
     requestingUserId: string | null
-    persistentLocalClientId: string | null
     sfunc: string
     paramsJson: string | null
 }

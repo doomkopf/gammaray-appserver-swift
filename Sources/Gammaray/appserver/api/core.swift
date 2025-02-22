@@ -25,7 +25,6 @@ struct EntityFunc {
 
 protocol FuncContext: Sendable {
     var requestId: RequestId? { get }
-    var persistentLocalClientId: String? { get }
     var requestingUserId: EntityId? { get }
     func sendResponse(objJson: String)
 }

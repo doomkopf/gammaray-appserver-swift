@@ -44,10 +44,6 @@ export interface FuncContext {
      */
     readonly requestId: string | null
     /**
-     * Used only for internal purposes.
-     */
-    readonly persistentLocalClientId: string | null
-    /**
      * The logged-in user that triggered the request or null in case the request was done anonymously or when the current call wasn't triggered through a client.
      */
     readonly requestingUserId: EntityId | null

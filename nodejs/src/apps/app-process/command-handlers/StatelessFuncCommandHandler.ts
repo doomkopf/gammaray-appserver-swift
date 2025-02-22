@@ -15,7 +15,7 @@ export class StatelessFuncCommandHandler extends AppCommandHandler {
         statelessFunc.func(
             this.lib,
             (payload.paramsJson ? JSON.parse(payload.paramsJson) : null) as never,
-            new FuncContextImpl(payload.persistentLocalClientId, payload.requestId, payload.requestingUserId, this.lib.responseSender),
+            new FuncContextImpl(payload.requestId, payload.requestingUserId, this.lib.responseSender),
         )
 
         const response: NodeJsStatelessFuncResponse = {

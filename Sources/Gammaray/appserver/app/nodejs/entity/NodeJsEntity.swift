@@ -73,7 +73,6 @@ actor NodeJsEntity: Entity {
                 appId: appId,
                 requestId: params.ctx.requestId,
                 requestingUserId: params.ctx.requestingUserId,
-                persistentLocalClientId: params.ctx.persistentLocalClientId,
                 id: entityId,
                 type: entityType,
                 efunc: params.theFunc,

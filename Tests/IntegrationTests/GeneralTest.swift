@@ -100,7 +100,6 @@ final class GeneralTest: XCTestCase {
                 theFunc: "echo",
                 ctx: RequestContext(
                     requestId: requestId,
-                    persistentLocalClientId: nil,
                     requestingUserId: nil
                 ),
                 paramsJson: echoParamsJson
@@ -122,7 +121,6 @@ final class GeneralTest: XCTestCase {
                 theFunc: "createPerson",
                 ctx: RequestContext(
                     requestId: "id",
-                    persistentLocalClientId: nil,
                     requestingUserId: nil
                 ),
                 paramsJson: createPersonParamsJson

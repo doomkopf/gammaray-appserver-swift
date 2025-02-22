@@ -79,7 +79,6 @@ struct NodeJsEntityFuncRequest: Encodable {
     let appId: String
     let requestId: String?
     let requestingUserId: String?
-    let persistentLocalClientId: String?
     let id: String
     let type: String
     let efunc: String
@@ -112,7 +111,6 @@ struct NodeJsStatelessFuncRequest: Encodable {
     let appId: String
     let requestId: String?
     let requestingUserId: String?
-    let persistentLocalClientId: String?
     let sfunc: String
     let paramsJson: String?
 }
