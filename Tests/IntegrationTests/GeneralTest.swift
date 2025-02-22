@@ -83,14 +83,14 @@ final class GeneralTest: XCTestCase {
     }
 
     private func echoFuncResponds(apps: Apps, responseSender: ResponseSender) async {
-        actor TestWebserverRequest: WebserverRequest {
-            var body = ""
-            func respond(body: String, status: HttpStatus, headers: HttpHeaders?) {
-                self.body = body
+        actor TestRequest: GammarayProtocolRequest {
+            var payload = ""
+            func respond(payload: String) {
+                self.payload = payload
             }
         }
 
-        let request = TestWebserverRequest()
+        let request = TestRequest()
         let requestId = await responseSender.addRequest(request: request)
 
         let echoParamsJson = "{\"test\":123}"
@@ -108,8 +108,8 @@ final class GeneralTest: XCTestCase {
             entityParams: nil
         )
 
-        let sentBody = await request.body
-        XCTAssertEqual(echoParamsJson, sentBody)
+        let sentPayload = await request.payload
+        XCTAssertEqual(echoParamsJson, sentPayload)
     }
 
     private func createPersonEntityAndStoreToDatabase(

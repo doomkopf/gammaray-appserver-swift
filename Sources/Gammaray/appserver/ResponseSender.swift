@@ -1,16 +1,16 @@
 actor ResponseSender {
     private var idCounter = 0
-    private var requests: [RequestId: WebserverRequest] = [:]
+    private var requests: [RequestId: GammarayProtocolRequest] = [:]
 
     func send(requestId: RequestId, objJson: String) async {
         guard let request = requests[requestId] else {
             return
         }
 
-        await request.respond(body: objJson, status: .OK, headers: nil)
+        await request.respond(payload: objJson)
     }
 
-    func addRequest(request: WebserverRequest) -> RequestId {
+    func addRequest(request: GammarayProtocolRequest) -> RequestId {
         let requestId = generateRequestId()
         requests[requestId] = request
         return requestId
