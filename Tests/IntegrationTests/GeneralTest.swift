@@ -119,10 +119,7 @@ final class GeneralTest: XCTestCase {
             appId: appId,
             params: FunctionParams(
                 theFunc: "createPerson",
-                ctx: RequestContext(
-                    requestId: "id",
-                    requestingUserId: nil
-                ),
+                ctx: EMPTY_REQUEST_CONTEXT,
                 paramsJson: createPersonParamsJson
             ),
             entityParams: EntityParams(
