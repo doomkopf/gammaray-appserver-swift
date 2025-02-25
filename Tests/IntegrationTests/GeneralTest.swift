@@ -50,7 +50,9 @@ final class GeneralTest: XCTestCase {
             scheduler: scheduler
         )
         defer {
-            nodeApi.shutdownProcess()
+            Task {
+                await nodeApi.shutdown()
+            }
         }
         await nodeApi.start()
 
@@ -58,6 +60,7 @@ final class GeneralTest: XCTestCase {
             loggerFactory: loggerFactory,
             config: config,
             scheduler: scheduler,
+            db: db,
             appFactory: AppFactory(
                 db: db,
                 config: config,
@@ -79,7 +82,6 @@ final class GeneralTest: XCTestCase {
         await createPersonEntityAndStoreToDatabase(apps: apps, db: db, config: config)
 
         await apps.shutdown()
-        try await nodeApi.shutdown()
     }
 
     private func echoFuncResponds(apps: Apps, responseSender: ResponseSender) async {

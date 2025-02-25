@@ -44,6 +44,8 @@ final class NodeJsEntityTest: XCTestCase {
             {
                 throw AppserverError.General("")
             }
+            func shutdown() async {
+            }
         }
 
         actor NodeJsFuncResponseHandlerMock: NodeJsFuncResponseHandler {

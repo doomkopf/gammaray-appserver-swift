@@ -14,7 +14,12 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/apple/swift-nio",
-            from: "2.80.0")
+            from: "2.80.0"
+        ),
+        .package(
+            url: "https://github.com/hummingbird-project/hummingbird.git",
+            from: "2.9.0"
+        ),
     ],
     targets: [
         .executableTarget(
@@ -22,7 +27,10 @@ let package = Package(
             dependencies: [
                 .product(
                     name: "NIO",
-                    package: "swift-nio")
+                    package: "swift-nio"),
+                .product(
+                    name: "Hummingbird",
+                    package: "hummingbird"),
             ],
             resources: [
                 .copy("Resources/")

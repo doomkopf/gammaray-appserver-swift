@@ -7,6 +7,7 @@ protocol NodeJsAppApi: Sendable {
     func entityFunc(_ request: NodeJsEntityFuncRequest) async throws -> NodeJsEntityFuncResponse
     func statelessFunc(_ request: NodeJsStatelessFuncRequest) async throws
         -> NodeJsStatelessFuncResponse
+    func shutdown() async
 }
 
 final class NodeJsAppApiImpl: NodeJsAppApi {
@@ -121,13 +122,14 @@ final class NodeJsAppApiImpl: NodeJsAppApi {
         throw AppserverError.NodeJsApp("statelessFunc failed in an unexpected case")
     }
 
-    func shutdown() async throws {
+    func shutdown() async {
         await resultCallbacks.shutdown()
-        try await remoteProcess.shutdown()
-        shutdownProcess()
-    }
-
-    func shutdownProcess() {
+        do {
+            try await remoteProcess.shutdown()
+        } catch {
+            // TODO logger
+            print(error)
+        }
         process.shutdown()
     }
 }

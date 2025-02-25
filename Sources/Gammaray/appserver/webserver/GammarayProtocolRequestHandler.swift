@@ -1,12 +1,16 @@
 private struct Message: Decodable {
     let appId: String
     let theFunc: String
-    let entityType: String
-    let entityId: String
+    let entityMsg: EntityMessage?
     let paramsJson: String?
 }
 
-class GammarayProtocolRequestHandler {
+private struct EntityMessage: Decodable {
+    let entityType: String
+    let entityId: String
+}
+
+final class GammarayProtocolRequestHandler: Sendable {
     private let log: Logger
     private let jsonDecoder: StringJSONDecoder
     private let responseSender: ResponseSender
@@ -34,6 +38,10 @@ class GammarayProtocolRequestHandler {
         }
 
         let requestId = await responseSender.addRequest(request: request)
+        var entityParams: EntityParams?
+        if let entityMsg = msg.entityMsg {
+            entityParams = EntityParams(type: entityMsg.entityType, id: entityMsg.entityId)
+        }
 
         await apps.handleFunc(
             appId: msg.appId,
@@ -45,7 +53,7 @@ class GammarayProtocolRequestHandler {
                 ),
                 paramsJson: msg.paramsJson
             ),
-            entityParams: EntityParams(type: msg.entityType, id: msg.entityId)
+            entityParams: entityParams
         )
     }
 }

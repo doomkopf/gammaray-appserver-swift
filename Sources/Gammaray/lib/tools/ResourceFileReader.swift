@@ -1,10 +1,10 @@
 import Foundation
 
-protocol ResourceFileReader {
+protocol ResourceFileReader: Sendable {
     func readStringFile(name: String, ext: String) throws -> String
 }
 
-class ResourceFileReaderImpl: ResourceFileReader {
+final class ResourceFileReaderImpl: ResourceFileReader {
     private let module: Bundle
 
     init(module: Bundle) {

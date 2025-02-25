@@ -4,7 +4,7 @@ import XCTest
 
 final class ConfigTest: XCTestCase {
     func testConfiguredAndDefaultValue() throws {
-        class ResourceFileReaderMock: ResourceFileReader {
+        final class ResourceFileReaderMock: ResourceFileReader {
             private let content: String
 
             init(_ content: String) {

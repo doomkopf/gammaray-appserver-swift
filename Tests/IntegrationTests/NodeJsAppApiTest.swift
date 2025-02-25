@@ -11,15 +11,15 @@ final class NodeJsAppApiTest: XCTestCase {
     func testAll() async throws {
         let nodeApi = try await setup()
         defer {
-            nodeApi.shutdownProcess()
+            Task {
+                await nodeApi.shutdown()
+            }
         }
 
         try await failWhenSettingInvalidAppCode(nodeApi)
         try await getAppDefinitionReturnsAllDefinitionsFromAppCode(nodeApi)
         try await entityFuncReturnsAllResultingActions(nodeApi)
         try await statelessFuncReturnsAllResultingActions(nodeApi)
-
-        try await nodeApi.shutdown()
     }
 
     private func setup() async throws -> NodeJsAppApiImpl {

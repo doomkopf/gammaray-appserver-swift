@@ -1,5 +1,6 @@
 actor Apps {
     private let log: Logger
+    private let db: AppserverDatabase
     private let appFactory: AppFactory
     private let appsTask: ScheduledTask
 
@@ -9,10 +10,14 @@ actor Apps {
         loggerFactory: LoggerFactory,
         config: Config,
         scheduler: Scheduler,
+        db: AppserverDatabase,
         appFactory: AppFactory
     ) {
         log = loggerFactory.createForClass(Apps.self)
+
         self.appFactory = appFactory
+        self.db = db
+
         appsTask = scheduler.scheduleInterval(
             millis: config.getInt64(ConfigProperty.appScheduledTasksIntervalMillis))
         appsTask.setFuncNotAwaiting {
@@ -50,6 +55,11 @@ actor Apps {
         }
 
         await app.handleFunc(params: params, entityParams: entityParams)
+    }
+
+    func deployNodeJsApp(appId: String, code: String) async {
+        await db.putApp(appId: appId, app: DatabaseApp(type: .NODEJS, code: code))
+        apps.removeValue(forKey: appId)
     }
 
     func shutdown() async {
