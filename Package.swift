@@ -13,24 +13,17 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/apple/swift-nio",
-            from: "2.80.0"
-        ),
-        .package(
             url: "https://github.com/hummingbird-project/hummingbird.git",
             from: "2.9.0"
-        ),
+        )
     ],
     targets: [
         .executableTarget(
             name: "Gammaray",
             dependencies: [
                 .product(
-                    name: "NIO",
-                    package: "swift-nio"),
-                .product(
                     name: "Hummingbird",
-                    package: "hummingbird"),
+                    package: "hummingbird")
             ],
             resources: [
                 .copy("Resources/")
