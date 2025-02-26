@@ -1,4 +1,4 @@
-final class AppFactory: Sendable {
+struct AppFactory {
     private let db: AppserverDatabase
     private let config: Config
     private let loggerFactory: LoggerFactory

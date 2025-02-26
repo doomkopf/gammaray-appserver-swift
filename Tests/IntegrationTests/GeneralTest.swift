@@ -6,7 +6,7 @@ import XCTest
 final class GeneralTest: XCTestCase {
     private let appId = "test"
 
-    final class UserLoginMock: UserLogin {
+    struct UserLoginMock: UserLogin {
         func login(userId: EntityId, funcId: String, customCtxJson: String?) async {
         }
 
@@ -14,12 +14,12 @@ final class GeneralTest: XCTestCase {
         }
     }
 
-    final class UserSenderMock: UserSender {
+    struct UserSenderMock: UserSender {
         func send(userId: EntityId, objJson: String) async {
         }
     }
 
-    final class HttpClientMock: HttpClient {
+    struct HttpClientMock: HttpClient {
         func request(
             url: String,
             method: HttpMethod,

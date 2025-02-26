@@ -1,4 +1,4 @@
-class EntityQueries {
+struct EntityQueries {
     func query(
         entityType: String,
         queryFinishedFunctionId: String,

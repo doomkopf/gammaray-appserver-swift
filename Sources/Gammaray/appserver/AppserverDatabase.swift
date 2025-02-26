@@ -7,7 +7,7 @@ protocol AppserverDatabase: Sendable {
     func putApp(appId: String, app: DatabaseApp) async
 }
 
-final class AppserverDatabaseImpl: AppserverDatabase {
+struct AppserverDatabaseImpl: AppserverDatabase {
     private let db: Database
     private let jsonEncoder: StringJSONEncoder
     private let jsonDecoder: StringJSONDecoder

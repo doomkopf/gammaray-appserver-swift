@@ -4,7 +4,7 @@ protocol ResourceFileReader: Sendable {
     func readStringFile(name: String, ext: String) throws -> String
 }
 
-final class ResourceFileReaderImpl: ResourceFileReader {
+struct ResourceFileReaderImpl: ResourceFileReader {
     private let module: Bundle
 
     init(module: Bundle) {

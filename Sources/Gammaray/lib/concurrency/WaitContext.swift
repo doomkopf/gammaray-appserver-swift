@@ -1,6 +1,6 @@
 // Thanks to Andy Finnell for the idea to use an AsyncStream: https://losingfight.com/blog/2024/04/14/modeling-condition-variables-in-swift-asyncawait/
 
-final class WaitContext: Sendable {
+struct WaitContext {
     private let waitClosure: @Sendable () async -> Void
     private let streamContinuation: AsyncStream<Void>.Continuation
 

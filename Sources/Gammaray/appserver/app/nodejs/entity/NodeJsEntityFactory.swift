@@ -1,4 +1,4 @@
-final class NodeJsEntityFactory: EntityFactory {
+struct NodeJsEntityFactory: EntityFactory {
     private let nodeJs: NodeJsAppApi
     private let funcResponseHandler: NodeJsFuncResponseHandler
 

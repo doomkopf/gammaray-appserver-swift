@@ -10,7 +10,7 @@ struct SendError {
 
 typealias SendCallback = @Sendable (_ err: SendError?) -> Void
 
-struct SendQueueEntry: Sendable {
+struct SendQueueEntry {
     let frame: String
     let callback: SendCallback
 }

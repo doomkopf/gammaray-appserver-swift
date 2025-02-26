@@ -1,6 +1,6 @@
 import Foundation
 
-final class StringJSONEncoder: Sendable {
+struct StringJSONEncoder {
     private let enc = JSONEncoder()
 
     func encode(_ object: Encodable) -> String {

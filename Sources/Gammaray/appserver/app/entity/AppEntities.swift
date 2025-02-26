@@ -1,4 +1,4 @@
-final class AppEntities: Sendable {
+struct AppEntities {
     private let typeToEntities: [String: EntitiesPerType]
 
     init(

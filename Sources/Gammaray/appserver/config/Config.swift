@@ -22,7 +22,7 @@ private func defaultValue(_ configProperty: ConfigProperty) -> String {
     }
 }
 
-final class Config: Sendable {
+struct Config {
     private let config: [ConfigProperty: String]
 
     init(reader: ResourceFileReader) throws {

@@ -31,7 +31,7 @@ actor ScheduledTask {
     }
 }
 
-final class Scheduler: Sendable {
+struct Scheduler {
     func scheduleOnce(millis: Int64, taskFunc: @escaping ScheduledTaskFunc) {
         DispatchQueue.main.asyncAfter(
             deadline: .now() + TimeInterval(floatLiteral: Double(millis) / 1000)

@@ -27,7 +27,7 @@ final class Handler: ChannelInboundHandler, Sendable {
     }
 }
 
-class Receiver {
+struct Receiver {
     private let eventLoopGroup: EventLoopGroup
 
     init(port: Int, listener: ReceptionListener) throws {

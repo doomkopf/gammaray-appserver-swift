@@ -1,6 +1,6 @@
 import Foundation
 
-final class NodeJsProcess: Sendable {
+struct NodeJsProcess {
     private let proc: Process
 
     init(jsFile: String, module: Bundle, nodeJsBinaryPath: String) throws {

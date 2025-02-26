@@ -1,4 +1,4 @@
-final class Lists {
+struct Lists {
     func add(listId: EntityId, elemToAdd: String) {
     }
 

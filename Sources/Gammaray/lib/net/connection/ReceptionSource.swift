@@ -1,5 +1,5 @@
-class ReceptionSource {
+struct ReceptionSource {
     func send(frame: String) {
-        // TODO: stringToTerminatedBuffer(frame)
+        // TODO
     }
 }

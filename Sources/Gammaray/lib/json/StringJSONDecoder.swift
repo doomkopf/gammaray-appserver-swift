@@ -1,6 +1,6 @@
 import Foundation
 
-final class StringJSONDecoder: Sendable {
+struct StringJSONDecoder {
     private let dec = JSONDecoder()
 
     func decode<T: Decodable>(_ type: T.Type, _ str: String) throws -> T {

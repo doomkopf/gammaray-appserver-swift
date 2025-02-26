@@ -1,4 +1,4 @@
-final class RemoteHost: Sendable {
+struct RemoteHost {
     private let jsonEncoder = StringJSONEncoder()
     private let requestIdGenerator: RequestIdGenerator
     private let resultCallbacks: ResultCallbacks

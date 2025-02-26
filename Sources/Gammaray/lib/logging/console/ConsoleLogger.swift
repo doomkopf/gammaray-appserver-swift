@@ -1,4 +1,4 @@
-final class ConsoleLogger: Logger {
+struct ConsoleLogger: Logger {
     private let name: String
 
     init(

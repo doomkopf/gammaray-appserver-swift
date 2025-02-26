@@ -1,4 +1,4 @@
-final class App: Sendable {
+struct App {
     private let statelessFunctions: StatelessFunctions
     private let entityFunctions: EntityFunctions
     private let appEntities: AppEntities

@@ -10,7 +10,7 @@ protocol NodeJsAppApi: Sendable {
     func shutdown() async
 }
 
-final class NodeJsAppApiImpl: NodeJsAppApi {
+struct NodeJsAppApiImpl: NodeJsAppApi {
     private let jsonEncoder = StringJSONEncoder()
     private let jsonDecoder = StringJSONDecoder()
     private let resultCallbacks: ResultCallbacks
