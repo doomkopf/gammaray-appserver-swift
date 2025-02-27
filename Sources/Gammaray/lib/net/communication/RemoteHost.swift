@@ -40,8 +40,7 @@ struct RemoteHost {
 
             await resultCallbacks.put(requestId: requestId, callback: callback)
 
-            let command = requestCommand(cmd: cmd, id: requestId, pl: payload)
-            let frame = jsonEncoder.encode(command)
+            let frame = jsonEncoder.encode(Command(pl: payload, cmd: cmd, id: requestId))
             await sender.sendCallback(frame: frame) { optSendError in
                 if let sendError = optSendError {
                     Task {
