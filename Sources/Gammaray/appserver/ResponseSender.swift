@@ -7,6 +7,8 @@ actor ResponseSender {
             return
         }
 
+        requests.removeValue(forKey: requestId)
+
         await request.respond(payload: objJson)
     }
 
