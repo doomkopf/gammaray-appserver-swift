@@ -28,6 +28,7 @@ struct HttpClientMock: HttpClient {
 struct AppserverComponents {
     let apps: Apps
     let fileReader: ResourceFileReader
+    let config: Config
     let protocolRequestHandler: GammarayProtocolRequestHandler
     let nodeJsAppApi: NodeJsAppApi
 
@@ -87,6 +88,7 @@ func createComponents() async throws -> AppserverComponents {
     return AppserverComponents(
         apps: apps,
         fileReader: fileReader,
+        config: config,
         protocolRequestHandler: protocolRequestHandler,
         nodeJsAppApi: nodeApi
     )

@@ -28,7 +28,8 @@ func runWebserver(components: AppserverComponents) async throws {
 
             return Response(status: HTTPResponse.Status.badRequest)
         },
-        configuration: .init(address: .hostname("127.0.0.1", port: 8082))
+        configuration: .init(
+            address: .hostname("127.0.0.1", port: components.config.getInt(.webserverPort)))
     )
 
     try await hummingbird.runService()

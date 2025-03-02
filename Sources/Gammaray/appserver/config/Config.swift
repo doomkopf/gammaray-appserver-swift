@@ -7,6 +7,7 @@ enum ConfigProperty: String {
     case entityCacheEvictionTimeMillis
     case entityCacheMaxEntries
     case appScheduledTasksIntervalMillis
+    case webserverPort
 }
 
 private func defaultValue(_ configProperty: ConfigProperty) -> String {
@@ -19,6 +20,7 @@ private func defaultValue(_ configProperty: ConfigProperty) -> String {
     case .entityCacheEvictionTimeMillis: "600000"
     case .entityCacheMaxEntries: "100000"
     case .appScheduledTasksIntervalMillis: "3000"
+    case .webserverPort: "8080"
     }
 }
 
