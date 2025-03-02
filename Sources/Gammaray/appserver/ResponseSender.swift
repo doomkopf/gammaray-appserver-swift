@@ -3,11 +3,9 @@ actor ResponseSender {
     private var requests: [RequestId: GammarayProtocolRequest] = [:]
 
     func send(requestId: RequestId, objJson: String) async {
-        guard let request = requests[requestId] else {
+        guard let request = requests.removeValue(forKey: requestId) else {
             return
         }
-
-        requests.removeValue(forKey: requestId)
 
         await request.respond(payload: objJson)
     }
