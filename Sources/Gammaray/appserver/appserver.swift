@@ -31,9 +31,11 @@ struct AppserverComponents {
     let config: Config
     let protocolRequestHandler: GammarayProtocolRequestHandler
     let nodeJsAppApi: NodeJsAppApi
+    let responseSender: ResponseSender
 
     func shutdown() async {
         await nodeJsAppApi.shutdown()
+        await responseSender.shutdown()
     }
 }
 
@@ -43,8 +45,8 @@ func createComponents() async throws -> AppserverComponents {
     let loggerFactory = LoggerFactory()
     let jsonEncoder = StringJSONEncoder()
     let jsonDecoder = StringJSONDecoder()
-    let responseSender = ResponseSender()
     let scheduler = Scheduler()
+    let responseSender = try ResponseSender(scheduler: scheduler)
 
     let nodeApi = try NodeJsAppApiImpl(
         loggerFactory: LoggerFactory(),
@@ -90,6 +92,7 @@ func createComponents() async throws -> AppserverComponents {
         fileReader: fileReader,
         config: config,
         protocolRequestHandler: protocolRequestHandler,
-        nodeJsAppApi: nodeApi
+        nodeJsAppApi: nodeApi,
+        responseSender: responseSender
     )
 }

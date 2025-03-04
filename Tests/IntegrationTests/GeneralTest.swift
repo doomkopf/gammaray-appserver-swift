@@ -36,7 +36,7 @@ final class GeneralTest: XCTestCase {
         let config = try Config(reader: reader)
         let loggerFactory = LoggerFactory()
         let scheduler = Scheduler()
-        let responseSender = ResponseSender()
+        let responseSender = try ResponseSender(scheduler: scheduler)
 
         let db = AppserverDatabaseImpl(
             db: InMemoryDatabase(),
@@ -89,6 +89,8 @@ final class GeneralTest: XCTestCase {
             var payload = ""
             func respond(payload: String) {
                 self.payload = payload
+            }
+            func cancel() async {
             }
         }
 

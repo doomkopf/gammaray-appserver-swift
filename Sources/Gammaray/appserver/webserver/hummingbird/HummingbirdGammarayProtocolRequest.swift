@@ -7,6 +7,10 @@ actor HummingbirdGammarayProtocolRequest: GammarayProtocolRequest {
         wait.signal()
     }
 
+    func cancel() {
+        wait.signal()
+    }
+
     func awaitResponse() async -> String? {
         await wait.waitForSignal()
         return payload
