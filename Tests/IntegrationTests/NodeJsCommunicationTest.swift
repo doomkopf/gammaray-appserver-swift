@@ -17,7 +17,7 @@ final class NodeJsCommunicationTest: XCTestCase {
         }
         await p.start()
 
-        let scheduler = Scheduler()
+        let scheduler = SchedulerImpl()
         let idGen = RequestIdGenerator(localHost: LOCAL_HOST, localPort: NODE_JS_PROCESS_LOCAL_PORT)
         let resultCallbacks = try ResultCallbacks(requestTimeoutMillis: 4000, scheduler: scheduler)
         let cmdProc = CommandProcessor(

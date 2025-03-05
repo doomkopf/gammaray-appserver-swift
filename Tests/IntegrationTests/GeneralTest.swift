@@ -35,7 +35,7 @@ final class GeneralTest: XCTestCase {
         let reader = ResourceFileReaderImpl(module: Bundle.module)
         let config = try Config(reader: reader)
         let loggerFactory = LoggerFactory()
-        let scheduler = Scheduler()
+        let scheduler = SchedulerImpl()
         let responseSender = try ResponseSender(scheduler: scheduler)
 
         let db = AppserverDatabaseImpl(

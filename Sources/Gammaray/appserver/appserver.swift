@@ -45,7 +45,7 @@ func createComponents() async throws -> AppserverComponents {
     let loggerFactory = LoggerFactory()
     let jsonEncoder = StringJSONEncoder()
     let jsonDecoder = StringJSONDecoder()
-    let scheduler = Scheduler()
+    let scheduler = SchedulerImpl()
     let responseSender = try ResponseSender(scheduler: scheduler)
 
     let nodeApi = try NodeJsAppApiImpl(

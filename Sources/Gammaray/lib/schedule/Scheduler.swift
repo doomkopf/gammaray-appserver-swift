@@ -2,12 +2,18 @@ import Foundation
 
 typealias ScheduledTaskFunc = @Sendable () async -> Void
 
-actor ScheduledTask {
-    private var _taskFunc: ScheduledTaskFunc?
-    private var cancelled = false
+protocol ScheduledTask: Sendable {
+    func setFunc(_ taskFunc: @escaping ScheduledTaskFunc) async
+    func setFuncNotAwaiting(_ taskFunc: @escaping ScheduledTaskFunc)
+    func cancel() async
+}
+
+actor ScheduledTaskImpl: ScheduledTask {
+    fileprivate var taskFunc: ScheduledTaskFunc?
+    fileprivate var cancelled = false
 
     func setFunc(_ taskFunc: @escaping ScheduledTaskFunc) {
-        _taskFunc = taskFunc
+        self.taskFunc = taskFunc
     }
 
     /// Helper method for e.g. classes that schedule internal behavior from the constructor.
@@ -18,20 +24,17 @@ actor ScheduledTask {
         }
     }
 
-    var taskFunc: ScheduledTaskFunc? {
-        _taskFunc
-    }
-
-    var isCancelled: Bool {
-        cancelled
-    }
-
     func cancel() {
         cancelled = true
     }
 }
 
-struct Scheduler {
+protocol Scheduler: Sendable {
+    func scheduleOnce(millis: Int64, taskFunc: @escaping ScheduledTaskFunc)
+    func scheduleInterval(millis: Int64) -> ScheduledTask
+}
+
+struct SchedulerImpl: Scheduler {
     func scheduleOnce(millis: Int64, taskFunc: @escaping ScheduledTaskFunc) {
         DispatchQueue.main.asyncAfter(
             deadline: .now() + TimeInterval(floatLiteral: Double(millis) / 1000)
@@ -45,16 +48,16 @@ struct Scheduler {
     func scheduleInterval(millis: Int64)
         -> ScheduledTask
     {
-        let task = ScheduledTask()
+        let task = ScheduledTaskImpl()
 
         internalScheduleInterval(millis: millis, task: task)
 
         return task
     }
 
-    private func internalScheduleInterval(millis: Int64, task: ScheduledTask) {
+    private func internalScheduleInterval(millis: Int64, task: ScheduledTaskImpl) {
         Task {
-            if await task.isCancelled {
+            if await task.cancelled {
                 return
             }
 

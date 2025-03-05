@@ -2,27 +2,36 @@ actor ResponseSender: CacheListener {
     typealias V = GammarayProtocolRequest
 
     private var idCounter = 0
-    private let requests: any Cache<GammarayProtocolRequest>
+    private let requestsCache: any Cache<GammarayProtocolRequest>
     private let task: ScheduledTask
 
     init(
-        scheduler: Scheduler
-    ) throws {
-        requests = try CacheImpl(entryEvictionTimeMillis: 10000, maxEntries: 100000)
+        scheduler: Scheduler,
+        requestsCache: any Cache<GammarayProtocolRequest>
+    ) {
+        self.requestsCache = requestsCache
         task = scheduler.scheduleInterval(millis: 5000)
 
-        requests.setListener(self)
+        requestsCache.setListener(self)
         task.setFuncNotAwaiting {
             await self.cleanup()
         }
     }
 
+    init(
+        scheduler: Scheduler
+    ) throws {
+        self.init(
+            scheduler: scheduler,
+            requestsCache: try CacheImpl(entryEvictionTimeMillis: 10000, maxEntries: 100000))
+    }
+
     private func cleanup() {
-        requests.cleanup()
+        requestsCache.cleanup()
     }
 
     func send(requestId: RequestId, objJson: String) async {
-        guard let request = requests.remove(requestId) else {
+        guard let request = requestsCache.remove(requestId) else {
             return
         }
 
@@ -31,7 +40,7 @@ actor ResponseSender: CacheListener {
 
     func addRequest(request: GammarayProtocolRequest) -> RequestId {
         let requestId = generateRequestId()
-        requests.put(key: requestId, value: request)
+        requestsCache.put(key: requestId, value: request)
         return requestId
     }
 
