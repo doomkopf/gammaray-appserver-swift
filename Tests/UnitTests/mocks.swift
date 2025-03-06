@@ -16,3 +16,35 @@ struct NoopScheduler: Scheduler {
         NoopScheduledTask()
     }
 }
+
+struct NoopGammarayProtocolRequest: GammarayProtocolRequest {
+    func respond(payload: String) async {
+    }
+    func cancel() async {
+    }
+}
+
+struct NoopCache<V>: Cache {
+    func setListener(_ listener: any CacheListener<V>) {
+    }
+    func put(key: String, value: V) {
+    }
+    func get(key: String) -> V? {
+        nil
+    }
+    func remove(_ key: String) -> V? {
+        nil
+    }
+    func removeAnyEntry() -> CacheEntry<V>? {
+        nil
+    }
+    func forEachEntry(fun: (String, V) -> Void) {
+    }
+    var size: Int {
+        0
+    }
+    func cleanup() {
+    }
+    func clear() {
+    }
+}
