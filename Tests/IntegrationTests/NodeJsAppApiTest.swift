@@ -11,9 +11,7 @@ final class NodeJsAppApiTest: XCTestCase {
     func testAll() async throws {
         let nodeApi = try await setup()
         defer {
-            Task {
-                await nodeApi.shutdown()
-            }
+            nodeApi.shutdownProcess()
         }
 
         try await failWhenSettingInvalidAppCode(nodeApi)

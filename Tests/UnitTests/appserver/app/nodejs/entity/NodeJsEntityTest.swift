@@ -46,6 +46,8 @@ final class NodeJsEntityTest: XCTestCase {
             }
             func shutdown() async {
             }
+            func shutdownProcess() {
+            }
         }
 
         actor NodeJsFuncResponseHandlerMock: NodeJsFuncResponseHandler {

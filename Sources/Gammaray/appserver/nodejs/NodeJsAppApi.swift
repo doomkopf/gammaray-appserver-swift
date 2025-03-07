@@ -8,13 +8,14 @@ protocol NodeJsAppApi: Sendable {
     func statelessFunc(_ request: NodeJsStatelessFuncRequest) async throws
         -> NodeJsStatelessFuncResponse
     func shutdown() async
+    func shutdownProcess()
 }
 
 struct NodeJsAppApiImpl: NodeJsAppApi {
     private let jsonEncoder = StringJSONEncoder()
     private let jsonDecoder = StringJSONDecoder()
     private let resultCallbacks: ResultCallbacks
-    private let remoteProcess: RemoteHost
+    private let remoteProcessConnection: RemoteHost
     private let process: NodeJsProcess
 
     init(
@@ -33,7 +34,7 @@ struct NodeJsAppApiImpl: NodeJsAppApi {
         let cmdProc = CommandProcessor(
             loggerFactory: loggerFactory, resultCallbacks: resultCallbacks)
 
-        remoteProcess = try RemoteHost(
+        remoteProcessConnection = try RemoteHost(
             requestIdGenerator: idGen,
             resultCallbacks: resultCallbacks,
             host: LOCAL_HOST,
@@ -56,7 +57,7 @@ struct NodeJsAppApiImpl: NodeJsAppApi {
     }
 
     func setApp(_ request: NodeJsSetAppRequest) async throws -> NodeJsSetAppResponse {
-        let result = await remoteProcess.request(
+        let result = await remoteProcessConnection.request(
             cmd: NodeJsCommands.SET_APP.rawValue, payload: jsonEncoder.encode(request))
 
         if let resultData = result.data {
@@ -74,7 +75,7 @@ struct NodeJsAppApiImpl: NodeJsAppApi {
     func getAppDefinition(_ request: NodeJsGetAppDefinitionRequest) async throws
         -> NodeJsGammarayApp
     {
-        let result = await remoteProcess.request(
+        let result = await remoteProcessConnection.request(
             cmd: NodeJsCommands.APP_DEFINITION.rawValue, payload: jsonEncoder.encode(request))
 
         if let resultData = result.data {
@@ -90,7 +91,7 @@ struct NodeJsAppApiImpl: NodeJsAppApi {
     }
 
     func entityFunc(_ request: NodeJsEntityFuncRequest) async throws -> NodeJsEntityFuncResponse {
-        let result = await remoteProcess.request(
+        let result = await remoteProcessConnection.request(
             cmd: NodeJsCommands.ENTITY_FUNC.rawValue, payload: jsonEncoder.encode(request))
 
         if let resultData = result.data {
@@ -107,7 +108,7 @@ struct NodeJsAppApiImpl: NodeJsAppApi {
     func statelessFunc(_ request: NodeJsStatelessFuncRequest) async throws
         -> NodeJsStatelessFuncResponse
     {
-        let result = await remoteProcess.request(
+        let result = await remoteProcessConnection.request(
             cmd: NodeJsCommands.STATELESS_FUNC.rawValue, payload: jsonEncoder.encode(request))
 
         if let resultData = result.data {
@@ -125,11 +126,14 @@ struct NodeJsAppApiImpl: NodeJsAppApi {
     func shutdown() async {
         await resultCallbacks.shutdown()
         do {
-            try await remoteProcess.shutdown()
+            try await remoteProcessConnection.shutdown()
         } catch {
             // TODO logger
             print(error)
         }
+    }
+
+    func shutdownProcess() {
         process.shutdown()
     }
 }

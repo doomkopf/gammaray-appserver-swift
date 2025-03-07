@@ -21,15 +21,18 @@ struct AppserverComponents {
     let apps: Apps
     let fileReader: ResourceFileReader
     let config: Config
+    let db: Database
     let protocolRequestHandler: GammarayProtocolRequestHandler
     let nodeJsAppApi: NodeJsAppApi
     let responseSender: ResponseSender
     let userLogin: UserLogin
 
     func shutdown() async {
+        await apps.shutdown()
         await nodeJsAppApi.shutdown()
         await responseSender.shutdown()
         await userLogin.shutdown()
+        await db.shutdown()
     }
 }
 
@@ -49,8 +52,9 @@ func createComponents() async throws -> AppserverComponents {
     )
     await nodeApi.start()
 
-    let db = AppserverDatabaseImpl(
-        db: InMemoryDatabase(),
+    let db = InMemoryDatabase()
+    let appserverDb = AppserverDatabaseImpl(
+        db: db,
         jsonEncoder: jsonEncoder,
         jsonDecoder: jsonDecoder
     )
@@ -61,9 +65,9 @@ func createComponents() async throws -> AppserverComponents {
         loggerFactory: loggerFactory,
         config: config,
         scheduler: scheduler,
-        db: db,
+        db: appserverDb,
         appFactory: AppFactory(
-            db: db,
+            db: appserverDb,
             config: config,
             loggerFactory: loggerFactory,
             globalAppLibComponents: GlobalAppLibComponents(
@@ -88,6 +92,7 @@ func createComponents() async throws -> AppserverComponents {
         apps: apps,
         fileReader: fileReader,
         config: config,
+        db: db,
         protocolRequestHandler: protocolRequestHandler,
         nodeJsAppApi: nodeApi,
         responseSender: responseSender,

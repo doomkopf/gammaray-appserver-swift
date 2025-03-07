@@ -40,8 +40,5 @@ final class NodeJsCommunicationTest: XCTestCase {
 
         result = await remoteHost.request(cmd: 1, payload: "test2")
         XCTAssertEqual(result.data, "test2")
-
-        try await remoteHost.shutdown()
-        await resultCallbacks.shutdown()
     }
 }
