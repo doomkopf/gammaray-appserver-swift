@@ -6,15 +6,6 @@ import XCTest
 final class GeneralTest: XCTestCase {
     private let appId = "test"
 
-    struct UserLoginMock: UserLogin {
-        func login(userId: EntityId) async -> SessionId {
-            ""
-        }
-
-        func logout(userId: EntityId) async {
-        }
-    }
-
     struct UserSenderMock: UserSender {
         func send(userId: EntityId, objJson: String) async {
         }
@@ -32,6 +23,15 @@ final class GeneralTest: XCTestCase {
         }
     }
 
+    actor TestRequest: GammarayProtocolRequest {
+        var payload = ""
+        func respond(payload: String) {
+            self.payload = payload
+        }
+        func cancel() async {
+        }
+    }
+
     func testGeneral() async throws {
         let reader = ResourceFileReaderImpl(module: Bundle.module)
         let config = try Config(reader: reader)
@@ -39,11 +39,12 @@ final class GeneralTest: XCTestCase {
         let scheduler = SchedulerImpl()
         let responseSender = try ResponseSender(scheduler: scheduler)
         let jsonEncoder = StringJSONEncoder()
+        let jsonDecoder = StringJSONDecoder()
 
         let db = AppserverDatabaseImpl(
             db: InMemoryDatabase(),
             jsonEncoder: jsonEncoder,
-            jsonDecoder: StringJSONDecoder()
+            jsonDecoder: jsonDecoder
         )
 
         let nodeApi = try NodeJsAppApiImpl(
@@ -69,7 +70,7 @@ final class GeneralTest: XCTestCase {
                 loggerFactory: loggerFactory,
                 globalAppLibComponents: GlobalAppLibComponents(
                     responseSender: responseSender,
-                    userLogin: UserLoginMock(),
+                    userLogin: try UserLogin(scheduler: scheduler),
                     userSender: UserSenderMock(),
                     httpClient: HttpClientMock()
                 ),
@@ -83,20 +84,13 @@ final class GeneralTest: XCTestCase {
 
         await echoFuncResponds(apps: apps, responseSender: responseSender)
         await createPersonEntityAndStoreToDatabase(apps: apps, db: db, config: config)
+        try await userLoginCallsLoginFinishedFunctionWithSessionId(
+            apps: apps, responseSender: responseSender, jsonDecoder: jsonDecoder)
 
         await apps.shutdown()
     }
 
     private func echoFuncResponds(apps: Apps, responseSender: ResponseSender) async {
-        actor TestRequest: GammarayProtocolRequest {
-            var payload = ""
-            func respond(payload: String) {
-                self.payload = payload
-            }
-            func cancel() async {
-            }
-        }
-
         let request = TestRequest()
         let requestId = await responseSender.addRequest(request: request)
 
@@ -142,5 +136,30 @@ final class GeneralTest: XCTestCase {
             appId: appId, entityType: "person", entityId: "theEntityId")
 
         XCTAssertEqual("{\"name\":\"TestName\"}", dbEntity)
+    }
+
+    private func userLoginCallsLoginFinishedFunctionWithSessionId(
+        apps: Apps, responseSender: ResponseSender, jsonDecoder: StringJSONDecoder
+    ) async throws {
+        let request = TestRequest()
+        let requestId = await responseSender.addRequest(request: request)
+
+        await apps.handleFunc(
+            appId: appId,
+            params: FunctionParams(
+                theFunc: "testUserLogin",
+                ctx: RequestContext(
+                    requestId: requestId,
+                    requestingUserId: nil
+                ),
+                paramsJson: nil
+            ),
+            entityParams: nil
+        )
+
+        let sentPayloadString = await request.payload
+        let sentPayload = try jsonDecoder.decode(LoginResult.self, sentPayloadString)
+        XCTAssertEqual("1", sentPayload.sessionId)
+        XCTAssertEqual("{\"myCustomContext\":\"test\"}", sentPayload.ctxJson)
     }
 }

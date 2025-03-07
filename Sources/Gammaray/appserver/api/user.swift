@@ -1,4 +1,4 @@
-struct LoginResult: Encodable {
+struct LoginResult: Encodable, Decodable {
     let sessionId: String
     let ctxJson: String?
 }

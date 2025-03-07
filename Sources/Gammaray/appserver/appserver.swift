@@ -1,14 +1,5 @@
 import Foundation
 
-struct UserLoginMock: UserLogin {
-    func login(userId: EntityId) async -> SessionId {
-        ""
-    }
-
-    func logout(userId: EntityId) async {
-    }
-}
-
 struct UserSenderMock: UserSender {
     func send(userId: EntityId, objJson: String) async {
     }
@@ -33,10 +24,12 @@ struct AppserverComponents {
     let protocolRequestHandler: GammarayProtocolRequestHandler
     let nodeJsAppApi: NodeJsAppApi
     let responseSender: ResponseSender
+    let userLogin: UserLogin
 
     func shutdown() async {
         await nodeJsAppApi.shutdown()
         await responseSender.shutdown()
+        await userLogin.shutdown()
     }
 }
 
@@ -62,6 +55,8 @@ func createComponents() async throws -> AppserverComponents {
         jsonDecoder: jsonDecoder
     )
 
+    let userLogin = try UserLogin(scheduler: scheduler)
+
     let apps = Apps(
         loggerFactory: loggerFactory,
         config: config,
@@ -73,7 +68,7 @@ func createComponents() async throws -> AppserverComponents {
             loggerFactory: loggerFactory,
             globalAppLibComponents: GlobalAppLibComponents(
                 responseSender: responseSender,
-                userLogin: UserLoginMock(),
+                userLogin: userLogin,
                 userSender: UserSenderMock(),
                 httpClient: HttpClientMock()
             ),
@@ -95,6 +90,7 @@ func createComponents() async throws -> AppserverComponents {
         config: config,
         protocolRequestHandler: protocolRequestHandler,
         nodeJsAppApi: nodeApi,
-        responseSender: responseSender
+        responseSender: responseSender,
+        userLogin: userLogin
     )
 }
