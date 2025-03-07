@@ -1,7 +1,8 @@
 import Foundation
 
 struct UserLoginMock: UserLogin {
-    func login(userId: EntityId, funcId: String, customCtxJson: String?) async {
+    func login(userId: EntityId) async -> SessionId {
+        ""
     }
 
     func logout(userId: EntityId) async {
@@ -76,7 +77,8 @@ func createComponents() async throws -> AppserverComponents {
                 userSender: UserSenderMock(),
                 httpClient: HttpClientMock()
             ),
-            nodeProcess: nodeApi
+            nodeProcess: nodeApi,
+            jsonEncoder: jsonEncoder
         )
     )
 

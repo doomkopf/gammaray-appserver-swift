@@ -4,19 +4,22 @@ struct AppFactory {
     private let loggerFactory: LoggerFactory
     private let globalAppLibComponents: GlobalAppLibComponents
     private let nodeProcess: NodeJsAppApi
+    private let jsonEncoder: StringJSONEncoder
 
     init(
         db: AppserverDatabase,
         config: Config,
         loggerFactory: LoggerFactory,
         globalAppLibComponents: GlobalAppLibComponents,
-        nodeProcess: NodeJsAppApi
+        nodeProcess: NodeJsAppApi,
+        jsonEncoder: StringJSONEncoder
     ) {
         self.db = db
         self.config = config
         self.loggerFactory = loggerFactory
         self.globalAppLibComponents = globalAppLibComponents
         self.nodeProcess = nodeProcess
+        self.jsonEncoder = jsonEncoder
     }
 
     func create(_ id: String) async throws -> App? {
@@ -47,7 +50,8 @@ struct AppFactory {
             globalAppLibComponents: globalAppLibComponents,
             appLogger: AppLogger(appId: appId, loggerFactory: loggerFactory),
             entityQueries: EntityQueries(),
-            lists: Lists()
+            lists: Lists(),
+            jsonEncoder: jsonEncoder
         )
 
         let appEntities = try AppEntities(
@@ -61,21 +65,24 @@ struct AppFactory {
             config: config
         )
 
+        let statelessFunctions = NodeJsStatelessFunctions(
+            loggerFactory: loggerFactory,
+            appId: appId,
+            funcResponseHandler: funcResponseHandler,
+            nodeProcess: nodeProcess
+        )
+
         let entityFunctions = EntityFunctions(
             loggerFactory: loggerFactory,
             appId: appId,
             appEntities: appEntities
         )
 
-        await funcResponseHandler.lateBind(entityFuncs: entityFunctions)
+        await funcResponseHandler.lateBind(
+            statelessFuncs: statelessFunctions, entityFuncs: entityFunctions)
 
         return App(
-            statelessFunctions: NodeJsStatelessFunctions(
-                loggerFactory: loggerFactory,
-                appId: appId,
-                funcResponseHandler: funcResponseHandler,
-                nodeProcess: nodeProcess
-            ),
+            statelessFunctions: statelessFunctions,
             entityFunctions: entityFunctions,
             appEntities: appEntities
         )

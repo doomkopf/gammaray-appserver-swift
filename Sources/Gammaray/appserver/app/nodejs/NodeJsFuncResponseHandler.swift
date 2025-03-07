@@ -8,6 +8,8 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     private let appLogger: AppLogger
     private let entityQueries: EntityQueries
     private let lists: Lists
+    private let jsonEncoder: StringJSONEncoder
+    private var statelessFuncs: StatelessFunctions?
     private var entityFuncs: EntityFunctions?
 
     init(
@@ -15,7 +17,8 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         globalAppLibComponents: GlobalAppLibComponents,
         appLogger: AppLogger,
         entityQueries: EntityQueries,
-        lists: Lists
+        lists: Lists,
+        jsonEncoder: StringJSONEncoder
     ) {
         log = loggerFactory.createForClass(NodeJsFuncResponseHandlerImpl.self)
 
@@ -23,15 +26,17 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         self.appLogger = appLogger
         self.entityQueries = entityQueries
         self.lists = lists
+        self.jsonEncoder = jsonEncoder
     }
 
-    func lateBind(entityFuncs: EntityFunctions) {
+    func lateBind(statelessFuncs: StatelessFunctions, entityFuncs: EntityFunctions) {
+        self.statelessFuncs = statelessFuncs
         self.entityFuncs = entityFuncs
     }
 
     func handle(response: NodeJsFuncResponse, ctx: RequestContext) async {
         await handle(response.responseSenderSend)
-        await handle(response.userFunctionsLogin)
+        await handle(response.userFunctionsLogin, ctx)
         await handle(response.userFunctionsLogout)
         await handle(response.userFunctionsSend)
         await handle(response.entityFunctionsInvoke, ctx)
@@ -51,13 +56,26 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         }
     }
 
-    private func handle(_ userLogins: [NodeJsUserFunctionsLogin]?) async {
+    private func handle(_ userLogins: [NodeJsUserFunctionsLogin]?, _ ctx: RequestContext) async {
         if let userLogins = userLogins {
             for userLoginCall in userLogins {
-                await globalAppLibComponents.userLogin.login(
-                    userId: userLoginCall.userId,
-                    funcId: userLoginCall.funcId,
-                    customCtxJson: userLoginCall.customCtxJson
+                guard let statelessFuncs = statelessFuncs else {
+                    log.log(LogLevel.ERROR, "Not fully initialized yet", nil)
+                    return
+                }
+
+                let sessionId = await globalAppLibComponents.userLogin.login(
+                    userId: userLoginCall.userId)
+                let loginResult = LoginResult(
+                    sessionId: sessionId,
+                    ctxJson: userLoginCall.customCtxJson
+                )
+                await statelessFuncs.invoke(
+                    FunctionParams(
+                        theFunc: userLoginCall.funcId,
+                        ctx: ctx,
+                        paramsJson: jsonEncoder.encode(loginResult)
+                    )
                 )
             }
         }

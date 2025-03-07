@@ -5,6 +5,7 @@ struct GammarayApp {
 
 typealias EntityId = String
 typealias RequestId = String
+typealias SessionId = String
 
 enum FuncVisibility {
     case pri

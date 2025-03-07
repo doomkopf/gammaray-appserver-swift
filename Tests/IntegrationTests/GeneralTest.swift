@@ -7,7 +7,8 @@ final class GeneralTest: XCTestCase {
     private let appId = "test"
 
     struct UserLoginMock: UserLogin {
-        func login(userId: EntityId, funcId: String, customCtxJson: String?) async {
+        func login(userId: EntityId) async -> SessionId {
+            ""
         }
 
         func logout(userId: EntityId) async {
@@ -37,10 +38,11 @@ final class GeneralTest: XCTestCase {
         let loggerFactory = LoggerFactory()
         let scheduler = SchedulerImpl()
         let responseSender = try ResponseSender(scheduler: scheduler)
+        let jsonEncoder = StringJSONEncoder()
 
         let db = AppserverDatabaseImpl(
             db: InMemoryDatabase(),
-            jsonEncoder: StringJSONEncoder(),
+            jsonEncoder: jsonEncoder,
             jsonDecoder: StringJSONDecoder()
         )
 
@@ -71,7 +73,8 @@ final class GeneralTest: XCTestCase {
                     userSender: UserSenderMock(),
                     httpClient: HttpClientMock()
                 ),
-                nodeProcess: nodeApi
+                nodeProcess: nodeApi,
+                jsonEncoder: jsonEncoder
             )
         )
 
