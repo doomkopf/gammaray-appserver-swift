@@ -24,11 +24,11 @@ final class EntityFunctions: Sendable {
             return
         }
 
-        let entityContainer = await entitiesPerType.retrieveEntity(entityParams.id)
         do {
+            let entityContainer = try await entitiesPerType.retrieveEntity(entityParams.id)
             let result = try await entityContainer.invokeFunction(
                 theFunc: params.theFunc, paramsJson: params.paramsJson, ctx: params.ctx)
-            if result.action == EntityAction.deleteEntity {
+            if result == .deleteEntity {
                 await entitiesPerType.deleteEntity(entityParams.id)
             }
         } catch {

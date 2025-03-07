@@ -3,16 +3,16 @@ struct AppEntities {
 
     init(
         appId: String,
-        appDef: GammarayApp,
+        entityTypes: [String],
         entityFactory: EntityFactory,
         db: AppserverDatabase,
         config: Config
     ) throws {
         var typeToEntities: [String: EntitiesPerType] = [:]
-        for key in appDef.entity.keys {
-            typeToEntities[key] = try EntitiesPerType(
+        for type in entityTypes {
+            typeToEntities[type] = try EntitiesPerType(
                 appId: appId,
-                type: key,
+                type: type,
                 entityFactory: entityFactory,
                 db: db,
                 config: config

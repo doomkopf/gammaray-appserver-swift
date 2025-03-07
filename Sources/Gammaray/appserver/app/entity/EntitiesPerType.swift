@@ -67,7 +67,7 @@ actor EntitiesPerType: CacheListener {
         }
     }
 
-    func retrieveEntity(_ key: EntityId) async -> EntityContainer {
+    func retrieveEntity(_ key: EntityId) async throws -> EntityContainer {
         guard let entityContainer = cache.get(key: key)
         else {
             let databaseEntity = await db.getAppEntity(
@@ -78,8 +78,13 @@ actor EntitiesPerType: CacheListener {
             }
 
             let entityContainer = EntityContainer(
-                entity: entityFactory.create(
-                    appId: appId, type: type, id: key, databaseEntity: databaseEntity), dirty: false
+                entity: try entityFactory.create(
+                    appId: appId,
+                    type: type,
+                    id: key,
+                    databaseEntity: databaseEntity
+                ),
+                dirty: false
             )
 
             cache.put(key: key, value: entityContainer)

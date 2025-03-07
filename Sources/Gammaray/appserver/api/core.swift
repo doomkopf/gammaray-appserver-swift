@@ -17,11 +17,27 @@ struct StatelessFunc {
 }
 
 struct EntityType {
-    let efunc: [String: EntityFunc]
+    let efunc: [String: EntityFunc<Any, Any>]
 }
 
-struct EntityFunc {
+enum EntityFuncResult {
+    case none
+    case setEntity(Encodable)
+    case deleteEntity
+}
+
+struct EntityFunc<E, P> {
     let vis: FuncVisibility
+    let paramsType: Decodable.Type
+    let f:
+        @Sendable
+        (
+            _ entity: E?,
+            _ id: String,
+            _ lib: Lib,
+            _ params: P?,
+            _ ctx: FuncContext
+        ) -> EntityFuncResult
 }
 
 protocol FuncContext: Sendable {

@@ -76,7 +76,7 @@ final class NodeJsEntityTest: XCTestCase {
             ctx: EMPTY_REQUEST_CONTEXT
         )
 
-        XCTAssertEqual(EntityAction.none, result.action)
+        XCTAssertEqual(EntityAction.none, result)
 
         let handlerCalled = await funcHandler.handlerCalled
         XCTAssertTrue(handlerCalled)

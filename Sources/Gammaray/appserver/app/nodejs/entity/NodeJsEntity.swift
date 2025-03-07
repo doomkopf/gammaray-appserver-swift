@@ -2,7 +2,7 @@ private struct FuncCall {
     let theFunc: String
     let paramsJson: String?
     let ctx: RequestContext
-    let callback: @Sendable (_ result: EntityFuncResult) -> Void
+    let callback: @Sendable (_ result: EntityAction) -> Void
 }
 
 actor NodeJsEntity: Entity {
@@ -33,7 +33,7 @@ actor NodeJsEntity: Entity {
     }
 
     func invokeFunction(theFunc: String, paramsJson: String?, ctx: RequestContext) async
-        -> EntityFuncResult
+        -> EntityAction
     {
         await withCheckedContinuation { c in
             Task {
@@ -85,7 +85,7 @@ actor NodeJsEntity: Entity {
 
         await funcResponseHandler.handle(response: response.general, ctx: params.ctx)
 
-        params.callback(EntityFuncResult(action: response.action.toCore()))
+        params.callback(response.action.toCore())
     }
 
     func toString() -> String? {

@@ -56,7 +56,9 @@ struct AppFactory {
 
         let appEntities = try AppEntities(
             appId: appId,
-            appDef: map(appDef),
+            entityTypes: appDef.entity.map { (key, value) in
+                key
+            },
             entityFactory: NodeJsEntityFactory(
                 nodeJs: nodeProcess,
                 funcResponseHandler: funcResponseHandler
@@ -85,21 +87,6 @@ struct AppFactory {
             statelessFunctions: statelessFunctions,
             entityFunctions: entityFunctions,
             appEntities: appEntities
-        )
-    }
-
-    private func map(_ nodeJs: NodeJsGammarayApp) -> GammarayApp {
-        GammarayApp(
-            sfunc: nodeJs.sfunc.mapValues { nodeJsFunc in
-                StatelessFunc(vis: nodeJsFunc.vis.toCore())
-            },
-            entity: nodeJs.entity.mapValues { nodeJsEntityType in
-                EntityType(
-                    efunc: nodeJsEntityType.efunc.mapValues { nodeJsEntityFunc in
-                        EntityFunc(vis: nodeJsEntityFunc.vis.toCore())
-                    }
-                )
-            }
         )
     }
 }
