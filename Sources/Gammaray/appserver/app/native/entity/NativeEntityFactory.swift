@@ -1,10 +1,10 @@
 struct NativeEntityFactory: EntityFactory {
-    private let entityType: Codable.Type
-    private let entityFuncs: [String: EntityFunc<Any, Any>]
-    private let lib: Lib
-    private let responseSender: ResponseSender
-    private let jsonEncoder: StringJSONEncoder
-    private let jsonDecoder: StringJSONDecoder
+    let entityType: Codable.Type
+    let entityFuncs: [String: EntityFunc<Any, Any>]
+    let lib: Lib
+    let responseSender: ResponseSender
+    let jsonEncoder: StringJSONEncoder
+    let jsonDecoder: StringJSONDecoder
 
     func create(appId: String, type: String, id: EntityId, databaseEntity: String?) throws -> Entity
     {

@@ -33,7 +33,7 @@ struct EntityFunc<E, P> {
         @Sendable
         (
             _ entity: E?,
-            _ id: String,
+            _ id: EntityId,
             _ lib: Lib,
             _ params: P?,
             _ ctx: FuncContext
@@ -63,4 +63,8 @@ struct EntityQueryAttributeValue {
 struct EntityQueryAttributeNumberRange {
     let min: Int64?
     let max: Int64?
+}
+
+protocol ApiEntityFunctions: Sendable {
+    func invoke(entityType: String, theFunc: String, entityId: EntityId, params: Encodable?)
 }

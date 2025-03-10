@@ -14,9 +14,6 @@ final class EntityFunctions: Sendable {
     }
 
     func invoke(params: FunctionParams, entityParams: EntityParams) async {
-
-        // later entity routing here
-
         guard
             let entitiesPerType = appEntities.getEntitiesByType(entityParams.type)
         else {
@@ -24,17 +21,31 @@ final class EntityFunctions: Sendable {
             return
         }
 
+        await invokePerType(
+            params: params,
+            id: entityParams.id,
+            type: entityParams.type,
+            entitiesPerType: entitiesPerType
+        )
+    }
+
+    func invokePerType(
+        params: FunctionParams,
+        id: EntityId,
+        type: String,
+        entitiesPerType: EntitiesPerType
+    ) async {
         do {
-            let entityContainer = try await entitiesPerType.retrieveEntity(entityParams.id)
+            let entityContainer = try await entitiesPerType.retrieveEntity(id)
             let result = try await entityContainer.invokeFunction(
                 theFunc: params.theFunc, paramsJson: params.paramsJson, ctx: params.ctx)
             if result == .deleteEntity {
-                await entitiesPerType.deleteEntity(entityParams.id)
+                await entitiesPerType.deleteEntity(id)
             }
         } catch {
             log.log(
                 LogLevel.ERROR,
-                "Error executing entity function: appId=\(appId), type=\(entityParams.type), func=\(params.theFunc)",
+                "Error executing entity function: appId=\(appId), type=\(type), func=\(params.theFunc)",
                 error)
         }
     }
