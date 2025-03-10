@@ -45,14 +45,30 @@ struct AppFactory {
         let appDef = try await nodeProcess.getAppDefinition(
             NodeJsGetAppDefinitionRequest(appId: appId))
 
-        let funcResponseHandler = NodeJsFuncResponseHandlerImpl(
-            loggerFactory: loggerFactory,
-            globalAppLibComponents: globalAppLibComponents,
-            appLogger: AppLogger(appId: appId, loggerFactory: loggerFactory),
-            entityQueries: EntityQueries(),
-            lists: Lists(),
+        let apiUser = ApiUserFunctionsImpl(
+            userSender: globalAppLibComponents.userSender,
+            userLogin: globalAppLibComponents.userLogin,
             jsonEncoder: jsonEncoder
         )
+
+        let apiEntityFunc = ApiEntityFunctionsImpl()
+
+        let lib = Lib(
+            responseSender: ApiResponseSenderImpl(
+                responseSender: globalAppLibComponents.responseSender
+            ),
+            user: apiUser,
+            entityFunc: apiEntityFunc,
+            httpClient: ApiHttpClientImpl(),
+            lists: ApiListsImpl(),
+            entityQueries: ApiEntityQueriesImpl(),
+            log: ApiLoggerImpl(
+                appId: appId,
+                loggerFactory: loggerFactory
+            )
+        )
+
+        let funcResponseHandler = NodeJsFuncResponseHandlerImpl(lib: lib)
 
         let appEntities = try AppEntities(
             appId: appId,
@@ -80,8 +96,8 @@ struct AppFactory {
             appEntities: appEntities
         )
 
-        await funcResponseHandler.lateBind(
-            statelessFuncs: statelessFunctions, entityFuncs: entityFunctions)
+        await apiUser.lateBind(statelessFuncs: statelessFunctions)
+        await apiEntityFunc.lateBind(entityFuncs: entityFunctions)
 
         return App(
             statelessFunctions: statelessFunctions,

@@ -66,5 +66,15 @@ struct EntityQueryAttributeNumberRange {
 }
 
 protocol ApiEntityFunctions: Sendable {
-    func invoke(entityType: String, theFunc: String, entityId: EntityId, params: Encodable?)
+    func invoke(
+        entityType: String,
+        theFunc: String,
+        entityId: EntityId,
+        params: String?,
+        ctx: RequestContext  // TODO remove from native API
+    )
+}
+
+protocol ApiResponseSender: Sendable {
+    func send(requestId: RequestId, obj: String)
 }

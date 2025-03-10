@@ -1,4 +1,4 @@
-struct Lists {
+struct ApiListsImpl: ApiLists {
     func add(listId: EntityId, elemToAdd: String) {
     }
 
@@ -9,7 +9,7 @@ struct Lists {
         listId: EntityId,
         iterationFunctionId: String,
         iterationFinishedFunctionId: String,
-        customCtxJson: String?
+        customCtx: String?
     ) {
     }
 

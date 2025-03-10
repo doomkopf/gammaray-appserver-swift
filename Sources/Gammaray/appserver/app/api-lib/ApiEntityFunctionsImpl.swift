@@ -1,26 +1,46 @@
-struct ApiEntityFunctionsImpl: ApiEntityFunctions {
-    let entityFuncs: EntityFunctions
-    let jsonEncoder: StringJSONEncoder
+actor ApiEntityFunctionsImpl: ApiEntityFunctions {
+    private var entityFuncs: EntityFunctions?
 
-    func invoke(entityType: String, theFunc: String, entityId: EntityId, params: Encodable?) {
-        let ctx = RequestContextContainer.$ctx.get()
+    func lateBind(entityFuncs: EntityFunctions) {
+        self.entityFuncs = entityFuncs
+    }
 
-        let paramsJson: String?
-        if let params {
-            paramsJson = jsonEncoder.encode(params)
-        } else {
-            paramsJson = nil
-        }
-
+    nonisolated func invoke(
+        entityType: String,
+        theFunc: String,
+        entityId: EntityId,
+        params: String?,
+        ctx: RequestContext
+    ) {
         Task {
-            await entityFuncs.invoke(
-                params: FunctionParams(
-                    theFunc: theFunc,
-                    ctx: ctx,
-                    paramsJson: paramsJson
-                ),
-                entityParams: EntityParams(type: entityType, id: entityId)
+            await invoke(
+                entityType: entityType,
+                theFunc: theFunc,
+                entityId: entityId,
+                paramsJson: params,
+                ctx: ctx
             )
         }
+    }
+
+    private func invoke(
+        entityType: String,
+        theFunc: String,
+        entityId: EntityId,
+        paramsJson: String?,
+        ctx: RequestContext
+    ) async {
+        guard let entityFuncs else {
+            return
+        }
+
+        await entityFuncs.invoke(
+            params: FunctionParams(
+                theFunc: theFunc,
+                ctx: ctx,
+                paramsJson: paramsJson
+            ),
+            entityParams: EntityParams(type: entityType, id: entityId)
+        )
     }
 }

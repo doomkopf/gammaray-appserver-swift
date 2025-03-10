@@ -1,14 +1,4 @@
-enum HttpMethod {
-    case GET
-    case POST
-    case PUT
-    case PATCH
-    case DELETE
-}
-
-typealias HttpHeaders = [String: String]
-
-protocol ApiHttpClient: Sendable {
+struct ApiHttpClientImpl: ApiHttpClient {
     func request(
         url: String,
         method: HttpMethod,
@@ -16,5 +6,6 @@ protocol ApiHttpClient: Sendable {
         headers: HttpHeaders,
         resultFunc: String,
         requestCtx: String?
-    )
+    ) {
+    }
 }

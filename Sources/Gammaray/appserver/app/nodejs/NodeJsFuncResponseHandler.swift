@@ -2,46 +2,17 @@ protocol NodeJsFuncResponseHandler: Sendable {
     func handle(response: NodeJsFuncResponse, ctx: RequestContext) async
 }
 
-actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
-    private let log: Logger
-    private let globalAppLibComponents: GlobalAppLibComponents
-    private let appLogger: AppLogger
-    private let entityQueries: EntityQueries
-    private let lists: Lists
-    private let jsonEncoder: StringJSONEncoder
-    private var statelessFuncs: StatelessFunctions?
-    private var entityFuncs: EntityFunctions?
+struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
+    let lib: Lib
 
-    init(
-        loggerFactory: LoggerFactory,
-        globalAppLibComponents: GlobalAppLibComponents,
-        appLogger: AppLogger,
-        entityQueries: EntityQueries,
-        lists: Lists,
-        jsonEncoder: StringJSONEncoder
-    ) {
-        log = loggerFactory.createForClass(NodeJsFuncResponseHandlerImpl.self)
-
-        self.globalAppLibComponents = globalAppLibComponents
-        self.appLogger = appLogger
-        self.entityQueries = entityQueries
-        self.lists = lists
-        self.jsonEncoder = jsonEncoder
-    }
-
-    func lateBind(statelessFuncs: StatelessFunctions, entityFuncs: EntityFunctions) {
-        self.statelessFuncs = statelessFuncs
-        self.entityFuncs = entityFuncs
-    }
-
-    func handle(response: NodeJsFuncResponse, ctx: RequestContext) async {
-        await handle(response.responseSenderSend)
-        await handle(response.userFunctionsLogin, ctx)
-        await handle(response.userFunctionsLogout)
-        await handle(response.userFunctionsSend)
-        await handle(response.entityFunctionsInvoke, ctx)
+    func handle(response: NodeJsFuncResponse, ctx: RequestContext) {
+        handle(response.responseSenderSend)
+        handle(response.userFunctionsLogin, ctx)
+        handle(response.userFunctionsLogout)
+        handle(response.userFunctionsSend)
+        handle(response.entityFunctionsInvoke, ctx)
         handle(response.entityQueriesQuery)
-        await handle(response.httpClientRequest)
+        handle(response.httpClientRequest)
         handle(response.listsAdd)
         handle(response.listsClear)
         handle(response.listsIterate)
@@ -49,88 +20,67 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         handle(response.loggerLog)
     }
 
-    private func handle(_ rsPayload: NodeJsResponseSenderSend?) async {
-        if let rsPayload = rsPayload {
-            await globalAppLibComponents.responseSender.send(
-                requestId: rsPayload.requestId, objJson: rsPayload.objJson)
+    private func handle(_ rsPayload: NodeJsResponseSenderSend?) {
+        if let rsPayload {
+            lib.responseSender.send(
+                requestId: rsPayload.requestId, obj: rsPayload.objJson)
         }
     }
 
-    private func handle(_ userLogins: [NodeJsUserFunctionsLogin]?, _ ctx: RequestContext) async {
-        if let userLogins = userLogins {
+    private func handle(_ userLogins: [NodeJsUserFunctionsLogin]?, _ ctx: RequestContext) {
+        if let userLogins {
             for userLoginCall in userLogins {
-                guard let statelessFuncs = statelessFuncs else {
-                    log.log(LogLevel.ERROR, "Not fully initialized yet", nil)
-                    return
-                }
-
-                let sessionId = await globalAppLibComponents.userLogin.login(
-                    userId: userLoginCall.userId)
-                let loginResult = LoginResult(
-                    sessionId: sessionId,
-                    ctxJson: userLoginCall.customCtxJson
-                )
-                await statelessFuncs.invoke(
-                    FunctionParams(
-                        theFunc: userLoginCall.funcId,
-                        ctx: ctx,
-                        paramsJson: jsonEncoder.encode(loginResult)
-                    )
+                lib.user.login(
+                    userId: userLoginCall.userId,
+                    loginFinishedFunctionId: userLoginCall.funcId,
+                    customCtx: userLoginCall.customCtxJson,
+                    ctx: ctx
                 )
             }
         }
     }
 
-    private func handle(_ userLogouts: [EntityId]?) async {
-        if let userLogouts = userLogouts {
+    private func handle(_ userLogouts: [EntityId]?) {
+        if let userLogouts {
             for userLogoutCall in userLogouts {
-                await globalAppLibComponents.userLogin.logout(userId: userLogoutCall)
+                lib.user.logout(userId: userLogoutCall)
             }
         }
     }
 
-    private func handle(_ userSends: [NodeJsUserFunctionsSend]?) async {
-        if let userSends = userSends {
+    private func handle(_ userSends: [NodeJsUserFunctionsSend]?) {
+        if let userSends {
             for userSendCall in userSends {
-                await globalAppLibComponents.userSender.send(
-                    userId: userSendCall.userId, objJson: userSendCall.objJson)
+                lib.user.send(
+                    userId: userSendCall.userId, obj: userSendCall.objJson)
             }
         }
     }
 
     private func handle(
         _ entityFuncInvokes: [NodeJsEntityFunctionsInvoke]?, _ ctx: RequestContext
-    ) async {
-        if let entityFuncInvokes = entityFuncInvokes {
+    ) {
+        if let entityFuncInvokes {
             for invoke in entityFuncInvokes {
-                guard let funcs = entityFuncs else {
-                    log.log(LogLevel.ERROR, "Not fully initialized yet", nil)
-                    return
-                }
-
-                await funcs.invoke(
-                    params: FunctionParams(
-                        theFunc: invoke._func,
-                        ctx: ctx,
-                        paramsJson: invoke.paramsJson
-                    ),
-                    entityParams: EntityParams(
-                        type: invoke.type,
-                        id: invoke.entityId
-                    )
+                lib.entityFunc.invoke(
+                    entityType: invoke.type,
+                    theFunc: invoke._func,
+                    entityId: invoke.entityId,
+                    params: invoke.paramsJson,
+                    ctx: ctx
                 )
             }
         }
     }
 
     private func handle(_ entityQueryInvokes: [NodeJsEntityQueriesQuery]?) {
-        if let entityQueryInvokes = entityQueryInvokes {
+        if let entityQueryInvokes {
             for invocation in entityQueryInvokes {
-                entityQueries.query(
+                lib.entityQueries.query(
                     entityType: invocation.entityType,
                     queryFinishedFunctionId: invocation.queryFinishedFunctionId,
                     query: map(invocation.query),
-                    customCtxJson: invocation.customCtxJson
+                    customCtx: invocation.customCtxJson
                 )
             }
         }
@@ -152,16 +102,16 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
             })
     }
 
-    private func handle(_ httpClientRequests: [NodeJsHttpClientRequest]?) async {
-        if let httpClientRequests = httpClientRequests {
+    private func handle(_ httpClientRequests: [NodeJsHttpClientRequest]?) {
+        if let httpClientRequests {
             for httpClientRequest in httpClientRequests {
-                await globalAppLibComponents.httpClient.request(
+                lib.httpClient.request(
                     url: httpClientRequest.url,
                     method: map(httpClientRequest.method),
                     body: httpClientRequest.body,
                     headers: map(httpClientRequest.headers),
                     resultFunc: httpClientRequest.resultFunc,
-                    requestCtxJson: httpClientRequest.requestCtxJson
+                    requestCtx: httpClientRequest.requestCtxJson
                 )
             }
         }
@@ -193,54 +143,51 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     }
 
     private func handle(_ listAdds: [NodeJsListsAdd]?) {
-        if let listAdds = listAdds {
+        if let listAdds {
             for listAdd in listAdds {
-                lists.add(listId: listAdd.listId, elemToAdd: listAdd.elemToAdd)
+                lib.lists.add(listId: listAdd.listId, elemToAdd: listAdd.elemToAdd)
             }
         }
     }
 
     private func handle(_ listClears: [NodeJsListsClear]?) {
-        if let listClears = listClears {
+        if let listClears {
             for listClear in listClears {
-                lists.clear(listId: listClear.listId)
+                lib.lists.clear(listId: listClear.listId)
             }
         }
     }
 
     private func handle(_ listIterates: [NodeJsListsIterate]?) {
-        if let listIterates = listIterates {
+        if let listIterates {
             for listIterate in listIterates {
-                lists.iterate(
+                lib.lists.iterate(
                     listId: listIterate.listId,
                     iterationFunctionId: listIterate.iterationFunctionId,
                     iterationFinishedFunctionId: listIterate.iterationFinishedFunctionId,
-                    customCtxJson: listIterate.customCtxJson
+                    customCtx: listIterate.customCtxJson
                 )
             }
         }
     }
 
     private func handle(_ listRemoves: [NodeJsListsRemove]?) {
-        if let listRemoves = listRemoves {
+        if let listRemoves {
             for listRemove in listRemoves {
-                lists.remove(listId: listRemove.listId, elemToRemove: listRemove.elemToRemove)
+                lib.lists.remove(listId: listRemove.listId, elemToRemove: listRemove.elemToRemove)
             }
         }
     }
 
     private func handle(_ logs: [NodeJsLoggerLog]?) {
-        if let logs = logs {
+        if let logs {
             for log in logs {
-                appLogger.log(
-                    logLevel: map(log.logLevel),
-                    message: log.message
-                )
+                lib.log.log(logLevel: map(log.logLevel), message: log.message)
             }
         }
     }
 
-    private func map(_ node: NodeJsLogLevel) -> LogLevel {
+    private func map(_ node: NodeJsLogLevel) -> ApiLogLevel {
         switch node {
         case .DEBUG:
             return .DEBUG

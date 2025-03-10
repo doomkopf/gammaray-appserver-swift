@@ -34,13 +34,13 @@ final class NodeJsEntityTest: XCTestCase {
             {
                 throw AppserverError.General("")
             }
-            func setApp(_ request: Gammaray.NodeJsSetAppRequest) async throws
-                -> Gammaray.NodeJsSetAppResponse
+            func setApp(_ request: NodeJsSetAppRequest) async throws
+                -> NodeJsSetAppResponse
             {
                 throw AppserverError.General("")
             }
-            func getAppDefinition(_ request: Gammaray.NodeJsGetAppDefinitionRequest) async throws
-                -> Gammaray.NodeJsGammarayApp
+            func getAppDefinition(_ request: NodeJsGetAppDefinitionRequest) async throws
+                -> NodeJsGammarayApp
             {
                 throw AppserverError.General("")
             }
@@ -53,7 +53,7 @@ final class NodeJsEntityTest: XCTestCase {
         actor NodeJsFuncResponseHandlerMock: NodeJsFuncResponseHandler {
             var handlerCalled = false
 
-            func handle(response: Gammaray.NodeJsFuncResponse, ctx: Gammaray.RequestContext) {
+            func handle(response: Gammaray.NodeJsFuncResponse, ctx: RequestContext) {
                 handlerCalled = true
             }
         }
