@@ -9,9 +9,10 @@ actor ApiEntityFunctionsImpl: ApiEntityFunctions {
         entityType: String,
         theFunc: String,
         entityId: EntityId,
-        params: String?,
-        ctx: RequestContext
+        params: String?
     ) {
+        let ctx = RequestContextContainer.$ctx.get()
+
         Task {
             await invoke(
                 entityType: entityType,
@@ -23,7 +24,7 @@ actor ApiEntityFunctionsImpl: ApiEntityFunctions {
         }
     }
 
-    private func invoke(
+    func invoke(
         entityType: String,
         theFunc: String,
         entityId: EntityId,

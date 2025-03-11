@@ -70,8 +70,7 @@ protocol ApiEntityFunctions: Sendable {
         entityType: String,
         theFunc: String,
         entityId: EntityId,
-        params: String?,
-        ctx: RequestContext  // TODO remove from native API
+        params: String?
     )
 }
 

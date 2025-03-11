@@ -53,22 +53,20 @@ struct AppFactory {
 
         let apiEntityFunc = ApiEntityFunctionsImpl()
 
-        let lib = Lib(
-            responseSender: ApiResponseSenderImpl(
-                responseSender: globalAppLibComponents.responseSender
-            ),
-            user: apiUser,
+        let funcResponseHandler = NodeJsFuncResponseHandlerImpl(
+            responseSender: globalAppLibComponents.responseSender,
+            apiUser: apiUser,
+            userLogin: globalAppLibComponents.userLogin,
+            userSender: globalAppLibComponents.userSender,
             entityFunc: apiEntityFunc,
             httpClient: ApiHttpClientImpl(),
             lists: ApiListsImpl(),
             entityQueries: ApiEntityQueriesImpl(),
-            log: ApiLoggerImpl(
+            logger: ApiLoggerImpl(
                 appId: appId,
                 loggerFactory: loggerFactory
             )
         )
-
-        let funcResponseHandler = NodeJsFuncResponseHandlerImpl(lib: lib)
 
         let appEntities = try AppEntities(
             appId: appId,

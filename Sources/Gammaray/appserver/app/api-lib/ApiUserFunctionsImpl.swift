@@ -27,9 +27,10 @@ actor ApiUserFunctionsImpl: ApiUserFunctions {
     nonisolated func login(
         userId: EntityId,
         loginFinishedFunctionId: String,
-        customCtx: String?,
-        ctx: RequestContext
+        customCtx: String?
     ) {
+        let ctx = RequestContextContainer.$ctx.get()
+
         Task {
             await login(
                 userId: userId,
@@ -40,7 +41,7 @@ actor ApiUserFunctionsImpl: ApiUserFunctions {
         }
     }
 
-    private func login(
+    func login(
         userId: EntityId,
         loginFinishedFunctionId: String,
         ctxJson: String?,

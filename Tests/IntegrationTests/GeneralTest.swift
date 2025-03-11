@@ -104,8 +104,6 @@ final class GeneralTest: XCTestCase {
             entityParams: nil
         )
 
-        await Task.yield()
-
         let sentPayload = await request.payload
         XCTAssertEqual(echoParamsJson, sentPayload)
     }
@@ -154,9 +152,6 @@ final class GeneralTest: XCTestCase {
             ),
             entityParams: nil
         )
-
-        // Too many async tasks under the hood so Task.yield is not enough
-        await gammaraySleep(10)
 
         let sentPayloadString = await request.payload
         let sentPayload = try jsonDecoder.decode(LoginResult.self, sentPayloadString)

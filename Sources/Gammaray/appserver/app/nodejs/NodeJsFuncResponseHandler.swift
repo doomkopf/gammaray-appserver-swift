@@ -3,14 +3,22 @@ protocol NodeJsFuncResponseHandler: Sendable {
 }
 
 struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
-    let lib: Lib
+    let responseSender: ResponseSender
+    let apiUser: ApiUserFunctionsImpl
+    let userLogin: UserLogin
+    let userSender: UserSender
+    let entityFunc: ApiEntityFunctionsImpl
+    let httpClient: ApiHttpClientImpl
+    let lists: ApiListsImpl
+    let entityQueries: ApiEntityQueriesImpl
+    let logger: ApiLoggerImpl
 
-    func handle(response: NodeJsFuncResponse, ctx: RequestContext) {
-        handle(response.responseSenderSend)
-        handle(response.userFunctionsLogin, ctx)
-        handle(response.userFunctionsLogout)
-        handle(response.userFunctionsSend)
-        handle(response.entityFunctionsInvoke, ctx)
+    func handle(response: NodeJsFuncResponse, ctx: RequestContext) async {
+        await handle(response.responseSenderSend)
+        await handle(response.userFunctionsLogin, ctx)
+        await handle(response.userFunctionsLogout)
+        await handle(response.userFunctionsSend)
+        await handle(response.entityFunctionsInvoke, ctx)
         handle(response.entityQueriesQuery)
         handle(response.httpClientRequest)
         handle(response.listsAdd)
@@ -20,53 +28,53 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         handle(response.loggerLog)
     }
 
-    private func handle(_ rsPayload: NodeJsResponseSenderSend?) {
+    private func handle(_ rsPayload: NodeJsResponseSenderSend?) async {
         if let rsPayload {
-            lib.responseSender.send(
-                requestId: rsPayload.requestId, obj: rsPayload.objJson)
+            await responseSender.send(
+                requestId: rsPayload.requestId, objJson: rsPayload.objJson)
         }
     }
 
-    private func handle(_ userLogins: [NodeJsUserFunctionsLogin]?, _ ctx: RequestContext) {
+    private func handle(_ userLogins: [NodeJsUserFunctionsLogin]?, _ ctx: RequestContext) async {
         if let userLogins {
             for userLoginCall in userLogins {
-                lib.user.login(
+                await apiUser.login(
                     userId: userLoginCall.userId,
                     loginFinishedFunctionId: userLoginCall.funcId,
-                    customCtx: userLoginCall.customCtxJson,
+                    ctxJson: userLoginCall.customCtxJson,
                     ctx: ctx
                 )
             }
         }
     }
 
-    private func handle(_ userLogouts: [EntityId]?) {
+    private func handle(_ userLogouts: [EntityId]?) async {
         if let userLogouts {
             for userLogoutCall in userLogouts {
-                lib.user.logout(userId: userLogoutCall)
+                await userLogin.logout(userId: userLogoutCall)
             }
         }
     }
 
-    private func handle(_ userSends: [NodeJsUserFunctionsSend]?) {
+    private func handle(_ userSends: [NodeJsUserFunctionsSend]?) async {
         if let userSends {
             for userSendCall in userSends {
-                lib.user.send(
-                    userId: userSendCall.userId, obj: userSendCall.objJson)
+                await userSender.send(
+                    userId: userSendCall.userId, objJson: userSendCall.objJson)
             }
         }
     }
 
     private func handle(
         _ entityFuncInvokes: [NodeJsEntityFunctionsInvoke]?, _ ctx: RequestContext
-    ) {
+    ) async {
         if let entityFuncInvokes {
             for invoke in entityFuncInvokes {
-                lib.entityFunc.invoke(
+                await entityFunc.invoke(
                     entityType: invoke.type,
                     theFunc: invoke._func,
                     entityId: invoke.entityId,
-                    params: invoke.paramsJson,
+                    paramsJson: invoke.paramsJson,
                     ctx: ctx
                 )
             }
@@ -76,7 +84,7 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     private func handle(_ entityQueryInvokes: [NodeJsEntityQueriesQuery]?) {
         if let entityQueryInvokes {
             for invocation in entityQueryInvokes {
-                lib.entityQueries.query(
+                entityQueries.query(
                     entityType: invocation.entityType,
                     queryFinishedFunctionId: invocation.queryFinishedFunctionId,
                     query: map(invocation.query),
@@ -105,7 +113,7 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     private func handle(_ httpClientRequests: [NodeJsHttpClientRequest]?) {
         if let httpClientRequests {
             for httpClientRequest in httpClientRequests {
-                lib.httpClient.request(
+                httpClient.request(
                     url: httpClientRequest.url,
                     method: map(httpClientRequest.method),
                     body: httpClientRequest.body,
@@ -145,7 +153,7 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     private func handle(_ listAdds: [NodeJsListsAdd]?) {
         if let listAdds {
             for listAdd in listAdds {
-                lib.lists.add(listId: listAdd.listId, elemToAdd: listAdd.elemToAdd)
+                lists.add(listId: listAdd.listId, elemToAdd: listAdd.elemToAdd)
             }
         }
     }
@@ -153,7 +161,7 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     private func handle(_ listClears: [NodeJsListsClear]?) {
         if let listClears {
             for listClear in listClears {
-                lib.lists.clear(listId: listClear.listId)
+                lists.clear(listId: listClear.listId)
             }
         }
     }
@@ -161,7 +169,7 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     private func handle(_ listIterates: [NodeJsListsIterate]?) {
         if let listIterates {
             for listIterate in listIterates {
-                lib.lists.iterate(
+                lists.iterate(
                     listId: listIterate.listId,
                     iterationFunctionId: listIterate.iterationFunctionId,
                     iterationFinishedFunctionId: listIterate.iterationFinishedFunctionId,
@@ -174,7 +182,7 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     private func handle(_ listRemoves: [NodeJsListsRemove]?) {
         if let listRemoves {
             for listRemove in listRemoves {
-                lib.lists.remove(listId: listRemove.listId, elemToRemove: listRemove.elemToRemove)
+                lists.remove(listId: listRemove.listId, elemToRemove: listRemove.elemToRemove)
             }
         }
     }
@@ -182,7 +190,7 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     private func handle(_ logs: [NodeJsLoggerLog]?) {
         if let logs {
             for log in logs {
-                lib.log.log(logLevel: map(log.logLevel), message: log.message)
+                logger.log(logLevel: map(log.logLevel), message: log.message)
             }
         }
     }

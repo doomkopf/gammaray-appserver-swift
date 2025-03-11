@@ -3,8 +3,7 @@ protocol ApiUserFunctions: Sendable {
     func login(
         userId: EntityId,
         loginFinishedFunctionId: String,
-        customCtx: String?,
-        ctx: RequestContext  // TODO remove from native API
+        customCtx: String?
     )
     func logout(userId: EntityId)
 }
