@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.1.0
 import PackageDescription
 
 let package = Package(
@@ -14,7 +14,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/hummingbird-project/hummingbird.git",
-            from: "2.9.0"
+            from: "2.13.0"
         )
     ],
     targets: [
