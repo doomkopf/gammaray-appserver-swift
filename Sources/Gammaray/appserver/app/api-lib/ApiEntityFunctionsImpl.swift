@@ -9,10 +9,9 @@ actor ApiEntityFunctionsImpl: ApiEntityFunctions {
         entityType: String,
         theFunc: String,
         entityId: EntityId,
-        params: String?
+        params: String?,
+        ctx: RequestContext
     ) {
-        let ctx = RequestContextContainer.$ctx.get()
-
         Task {
             await invoke(
                 entityType: entityType,

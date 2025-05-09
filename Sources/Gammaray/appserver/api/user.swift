@@ -3,7 +3,8 @@ protocol ApiUserFunctions: Sendable {
     func login(
         userId: EntityId,
         loginFinishedFunctionId: String,
-        customCtx: String?
+        customCtx: String?,
+        ctx: RequestContext
     )
     func logout(userId: EntityId)
 }

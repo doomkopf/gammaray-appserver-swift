@@ -70,7 +70,8 @@ protocol ApiEntityFunctions: Sendable {
         entityType: String,
         theFunc: String,
         entityId: EntityId,
-        params: String?
+        params: String?,
+        ctx: RequestContext
     )
 }
 

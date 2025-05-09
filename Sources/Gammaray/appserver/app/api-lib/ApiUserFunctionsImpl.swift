@@ -27,10 +27,9 @@ actor ApiUserFunctionsImpl: ApiUserFunctions {
     nonisolated func login(
         userId: EntityId,
         loginFinishedFunctionId: String,
-        customCtx: String?
+        customCtx: String?,
+        ctx: RequestContext
     ) {
-        let ctx = RequestContextContainer.$ctx.get()
-
         Task {
             await login(
                 userId: userId,
