@@ -73,7 +73,8 @@ final class GeneralTest: XCTestCase {
                     httpClient: HttpClientMock()
                 ),
                 nodeProcess: nodeApi,
-                jsonEncoder: jsonEncoder
+                jsonEncoder: jsonEncoder,
+                jsonDecoder: jsonDecoder
             )
         )
 

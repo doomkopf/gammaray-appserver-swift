@@ -1,11 +1,7 @@
-actor ApiEntityFunctionsImpl: ApiEntityFunctions {
-    private var entityFuncs: EntityFunctions?
+struct ApiEntityFunctionsImpl: ApiEntityFunctions {
+    let entityFuncs: EntityFunctions
 
-    func lateBind(entityFuncs: EntityFunctions) {
-        self.entityFuncs = entityFuncs
-    }
-
-    nonisolated func invoke(
+    func invoke(
         entityType: String,
         theFunc: String,
         entityId: EntityId,
@@ -13,34 +9,14 @@ actor ApiEntityFunctionsImpl: ApiEntityFunctions {
         ctx: RequestContext
     ) {
         Task {
-            await invoke(
-                entityType: entityType,
-                theFunc: theFunc,
-                entityId: entityId,
-                paramsJson: params,
-                ctx: ctx
+            await entityFuncs.invoke(
+                params: FunctionParams(
+                    theFunc: theFunc,
+                    ctx: ctx,
+                    paramsJson: params
+                ),
+                entityParams: EntityParams(type: entityType, id: entityId)
             )
         }
-    }
-
-    func invoke(
-        entityType: String,
-        theFunc: String,
-        entityId: EntityId,
-        paramsJson: String?,
-        ctx: RequestContext
-    ) async {
-        guard let entityFuncs else {
-            return
-        }
-
-        await entityFuncs.invoke(
-            params: FunctionParams(
-                theFunc: theFunc,
-                ctx: ctx,
-                paramsJson: paramsJson
-            ),
-            entityParams: EntityParams(type: entityType, id: entityId)
-        )
     }
 }

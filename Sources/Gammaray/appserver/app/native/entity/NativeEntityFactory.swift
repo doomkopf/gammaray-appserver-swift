@@ -1,16 +1,20 @@
 struct NativeEntityFactory: EntityFactory {
     let entityType: Codable.Type
     let entityFuncs: [String: EntityFunc<Any, Any>]
-    let lib: Lib
+    let libFactory: LibFactory
     let responseSender: ResponseSender
     let jsonEncoder: StringJSONEncoder
     let jsonDecoder: StringJSONDecoder
 
-    func create(appId: String, type: String, id: EntityId, databaseEntity: String?) throws -> Entity
+    func create(appId: String, type: String, id: EntityId, databaseEntity: String?) async throws
+        -> Entity
     {
         var entity: Codable?
         if let databaseEntity {
             entity = try jsonDecoder.decode(entityType, databaseEntity)
+        }
+        guard let lib = await libFactory.create() else {
+            throw AppserverError.General("Failed to create Lib for native API")
         }
         return NativeEntity(
             entityFuncs: entityFuncs,

@@ -24,7 +24,7 @@ final class EntityFunctions: Sendable {
         await invokePerType(
             params: params,
             id: entityParams.id,
-            type: entityParams.type,
+            typeForLogging: entityParams.type,
             entitiesPerType: entitiesPerType
         )
     }
@@ -32,7 +32,7 @@ final class EntityFunctions: Sendable {
     func invokePerType(
         params: FunctionParams,
         id: EntityId,
-        type: String,
+        typeForLogging: String,
         entitiesPerType: EntitiesPerType
     ) async {
         do {
@@ -45,7 +45,7 @@ final class EntityFunctions: Sendable {
         } catch {
             log.log(
                 LogLevel.ERROR,
-                "Error executing entity function: appId=\(appId), type=\(type), func=\(params.theFunc)",
+                "Error executing entity function: appId=\(appId), type=\(typeForLogging), func=\(params.theFunc)",
                 error)
         }
     }

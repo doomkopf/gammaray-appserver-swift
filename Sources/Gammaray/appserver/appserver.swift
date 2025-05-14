@@ -77,7 +77,8 @@ func createComponents() async throws -> AppserverComponents {
                 httpClient: HttpClientMock()
             ),
             nodeProcess: nodeApi,
-            jsonEncoder: jsonEncoder
+            jsonEncoder: jsonEncoder,
+            jsonDecoder: jsonDecoder
         )
     )
 

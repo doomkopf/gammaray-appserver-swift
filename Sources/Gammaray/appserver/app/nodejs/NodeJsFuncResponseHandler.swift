@@ -2,16 +2,38 @@ protocol NodeJsFuncResponseHandler: Sendable {
     func handle(response: NodeJsFuncResponse, ctx: RequestContext) async
 }
 
-struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
-    let responseSender: ResponseSender
-    let apiUser: ApiUserFunctionsImpl
-    let userLogin: UserLogin
-    let userSender: UserSender
-    let entityFunc: ApiEntityFunctionsImpl
-    let httpClient: ApiHttpClientImpl
-    let lists: ApiListsImpl
-    let entityQueries: ApiEntityQueriesImpl
-    let logger: ApiLoggerImpl
+actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
+    private var entityFunc: EntityFunctions?
+    private var lists: Lists?
+    private var responseSender: ResponseSender?
+    private var appUserLogin: AppUserLogin?
+    private var userLogin: UserLogin?
+    private var userSender: UserSender?
+    private var httpClient: HttpClient?
+    private var entityQueries: EntityQueries?
+    private var logger: Logger?
+
+    func lateBind(
+        entityFunc: EntityFunctions,
+        lists: Lists,
+        responseSender: ResponseSender,
+        appUserLogin: AppUserLogin,
+        userLogin: UserLogin,
+        userSender: UserSender,
+        httpClient: HttpClient,
+        entityQueries: EntityQueries,
+        logger: Logger
+    ) {
+        self.entityFunc = entityFunc
+        self.lists = lists
+        self.responseSender = responseSender
+        self.appUserLogin = appUserLogin
+        self.userLogin = userLogin
+        self.userSender = userSender
+        self.httpClient = httpClient
+        self.entityQueries = entityQueries
+        self.logger = logger
+    }
 
     func handle(response: NodeJsFuncResponse, ctx: RequestContext) async {
         await handle(response.responseSenderSend)
@@ -19,9 +41,9 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         await handle(response.userFunctionsLogout)
         await handle(response.userFunctionsSend)
         await handle(response.entityFunctionsInvoke, ctx)
-        handle(response.entityQueriesQuery)
-        handle(response.httpClientRequest)
-        handle(response.listsAdd)
+        await handle(response.httpClientRequest)
+        await handle(response.listsAdd)
+        await handle(response.entityQueriesQuery)
         handle(response.listsClear)
         handle(response.listsIterate)
         handle(response.listsRemove)
@@ -29,6 +51,9 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     }
 
     private func handle(_ rsPayload: NodeJsResponseSenderSend?) async {
+        guard let responseSender else {
+            return
+        }
         if let rsPayload {
             await responseSender.send(
                 requestId: rsPayload.requestId, objJson: rsPayload.objJson)
@@ -36,9 +61,12 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     }
 
     private func handle(_ userLogins: [NodeJsUserFunctionsLogin]?, _ ctx: RequestContext) async {
+        guard let appUserLogin else {
+            return
+        }
         if let userLogins {
             for userLoginCall in userLogins {
-                await apiUser.login(
+                await appUserLogin.login(
                     userId: userLoginCall.userId,
                     loginFinishedFunctionId: userLoginCall.funcId,
                     ctxJson: userLoginCall.customCtxJson,
@@ -49,6 +77,9 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     }
 
     private func handle(_ userLogouts: [EntityId]?) async {
+        guard let userLogin else {
+            return
+        }
         if let userLogouts {
             for userLogoutCall in userLogouts {
                 await userLogin.logout(userId: userLogoutCall)
@@ -57,6 +88,9 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     }
 
     private func handle(_ userSends: [NodeJsUserFunctionsSend]?) async {
+        guard let userSender else {
+            return
+        }
         if let userSends {
             for userSendCall in userSends {
                 await userSender.send(
@@ -68,23 +102,33 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     private func handle(
         _ entityFuncInvokes: [NodeJsEntityFunctionsInvoke]?, _ ctx: RequestContext
     ) async {
+        guard let entityFunc else {
+            return
+        }
         if let entityFuncInvokes {
             for invoke in entityFuncInvokes {
                 await entityFunc.invoke(
-                    entityType: invoke.type,
-                    theFunc: invoke._func,
-                    entityId: invoke.entityId,
-                    paramsJson: invoke.paramsJson,
-                    ctx: ctx
+                    params: FunctionParams(
+                        theFunc: invoke._func,
+                        ctx: ctx,
+                        paramsJson: invoke.paramsJson
+                    ),
+                    entityParams: EntityParams(
+                        type: invoke.type,
+                        id: invoke.entityId
+                    )
                 )
             }
         }
     }
 
-    private func handle(_ entityQueryInvokes: [NodeJsEntityQueriesQuery]?) {
+    private func handle(_ entityQueryInvokes: [NodeJsEntityQueriesQuery]?) async {
+        guard let entityQueries else {
+            return
+        }
         if let entityQueryInvokes {
             for invocation in entityQueryInvokes {
-                entityQueries.query(
+                await entityQueries.query(
                     entityType: invocation.entityType,
                     queryFinishedFunctionId: invocation.queryFinishedFunctionId,
                     query: map(invocation.query),
@@ -110,16 +154,19 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
             })
     }
 
-    private func handle(_ httpClientRequests: [NodeJsHttpClientRequest]?) {
+    private func handle(_ httpClientRequests: [NodeJsHttpClientRequest]?) async {
+        guard let httpClient else {
+            return
+        }
         if let httpClientRequests {
             for httpClientRequest in httpClientRequests {
-                httpClient.request(
+                await httpClient.request(
                     url: httpClientRequest.url,
                     method: map(httpClientRequest.method),
                     body: httpClientRequest.body,
                     headers: map(httpClientRequest.headers),
                     resultFunc: httpClientRequest.resultFunc,
-                    requestCtx: httpClientRequest.requestCtxJson
+                    requestCtxJson: httpClientRequest.requestCtxJson
                 )
             }
         }
@@ -150,15 +197,21 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         }
     }
 
-    private func handle(_ listAdds: [NodeJsListsAdd]?) {
+    private func handle(_ listAdds: [NodeJsListsAdd]?) async {
+        guard let lists else {
+            return
+        }
         if let listAdds {
             for listAdd in listAdds {
-                lists.add(listId: listAdd.listId, elemToAdd: listAdd.elemToAdd)
+                await lists.add(listId: listAdd.listId, elemToAdd: listAdd.elemToAdd)
             }
         }
     }
 
     private func handle(_ listClears: [NodeJsListsClear]?) {
+        guard let lists else {
+            return
+        }
         if let listClears {
             for listClear in listClears {
                 lists.clear(listId: listClear.listId)
@@ -167,6 +220,9 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     }
 
     private func handle(_ listIterates: [NodeJsListsIterate]?) {
+        guard let lists else {
+            return
+        }
         if let listIterates {
             for listIterate in listIterates {
                 lists.iterate(
@@ -180,6 +236,9 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     }
 
     private func handle(_ listRemoves: [NodeJsListsRemove]?) {
+        guard let lists else {
+            return
+        }
         if let listRemoves {
             for listRemove in listRemoves {
                 lists.remove(listId: listRemove.listId, elemToRemove: listRemove.elemToRemove)
@@ -188,14 +247,17 @@ struct NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     }
 
     private func handle(_ logs: [NodeJsLoggerLog]?) {
+        guard let logger else {
+            return
+        }
         if let logs {
             for log in logs {
-                logger.log(logLevel: map(log.logLevel), message: log.message)
+                logger.log(map(log.logLevel), log.message, nil)
             }
         }
     }
 
-    private func map(_ node: NodeJsLogLevel) -> ApiLogLevel {
+    private func map(_ node: NodeJsLogLevel) -> LogLevel {
         switch node {
         case .DEBUG:
             return .DEBUG
