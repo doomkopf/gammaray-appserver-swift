@@ -26,13 +26,13 @@ actor LibFactory {
     }
 
     func create() -> Lib? {
-        if let responseSender = responseSender,
-            let user = user,
-            let entityFunc = entityFunc,
-            let httpClient = httpClient,
-            let lists = lists,
-            let entityQueries = entityQueries,
-            let log = log
+        if let responseSender,
+            let user,
+            let entityFunc,
+            let httpClient,
+            let lists,
+            let entityQueries,
+            let log
         {
             return Lib(
                 responseSender: responseSender,

@@ -4,7 +4,7 @@ struct NativeFuncContext: FuncContext {
     let responseSender: ResponseSender
 
     func sendResponse(objJson: String) {
-        if let requestId = requestId {
+        if let requestId {
             Task {
                 await responseSender.send(requestId: requestId, objJson: objJson)
             }

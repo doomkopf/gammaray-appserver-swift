@@ -13,8 +13,8 @@ struct ConsoleLogger: Logger {
 
     func log(_ logLevel: LogLevel, _ message: String, _ err: (any Error)?) {
         print("\(logLevel): \(name): \(message)")
-        if let error = err {
-            print(error)
+        if let err {
+            print(err)
         }
     }
 }

@@ -85,8 +85,8 @@ class CacheImpl<V>: Cache {
                 }
             }
 
-            if let k = minKey {
-                if let v = remove(k) {
+            if let minKey {
+                if let v = remove(minKey) {
                     listener?.onEntryEvicted(key: key, value: v)
                 }
             }

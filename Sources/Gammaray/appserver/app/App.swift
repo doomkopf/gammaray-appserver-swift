@@ -14,8 +14,8 @@ struct App {
     }
 
     func handleFunc(params: FunctionParams, entityParams: EntityParams?) async {
-        if let entity = entityParams {
-            await entityFunctions.invoke(params: params, entityParams: entity)
+        if let entityParams {
+            await entityFunctions.invoke(params: params, entityParams: entityParams)
             return
         }
 

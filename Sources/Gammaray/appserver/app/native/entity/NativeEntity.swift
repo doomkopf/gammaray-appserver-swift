@@ -61,7 +61,7 @@ actor NativeEntity: Entity {
     }
 
     func toString() async -> String? {
-        guard let entity = entity else {
+        guard let entity else {
             return nil
         }
 
