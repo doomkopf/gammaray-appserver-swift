@@ -11,7 +11,8 @@ protocol NodeJsAppApi: Sendable {
     func shutdownProcess()
 }
 
-struct NodeJsAppApiImpl: NodeJsAppApi {
+final class NodeJsAppApiImpl: NodeJsAppApi {
+    private let log: Logger
     private let jsonEncoder = StringJSONEncoder()
     private let jsonDecoder = StringJSONDecoder()
     private let resultCallbacks: ResultCallbacks
@@ -23,6 +24,8 @@ struct NodeJsAppApiImpl: NodeJsAppApi {
         config: Config,
         scheduler: Scheduler
     ) throws {
+        log = loggerFactory.createForClass(NodeJsAppApiImpl.self)
+
         let idGen = RequestIdGenerator(
             localHost: LOCAL_HOST,
             localPort: NODE_JS_PROCESS_LOCAL_PORT
@@ -128,8 +131,7 @@ struct NodeJsAppApiImpl: NodeJsAppApi {
         do {
             try await remoteProcessConnection.shutdown()
         } catch {
-            // TODO logger
-            print(error)
+            log.log(.ERROR, "Error shutting down remote process connection", error)
         }
     }
 
