@@ -13,9 +13,7 @@ struct NativeEntityFactory: EntityFactory {
         if let databaseEntity {
             entity = try jsonDecoder.decode(entityType, databaseEntity)
         }
-        guard let lib = await libFactory.create() else {
-            throw AppserverError.General("Failed to create Lib for native API")
-        }
+        let lib = try await libFactory.create()
         return NativeEntity(
             entityFuncs: entityFuncs,
             id: id,

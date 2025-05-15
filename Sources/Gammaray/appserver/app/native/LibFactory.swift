@@ -25,7 +25,7 @@ actor LibFactory {
         self.log = log
     }
 
-    func create() -> Lib? {
+    func create() throws -> Lib {
         if let responseSender,
             let user,
             let entityFunc,
@@ -45,6 +45,6 @@ actor LibFactory {
             )
         }
 
-        return nil
+        throw AppserverError.General("LibFactory not initialized")
     }
 }
