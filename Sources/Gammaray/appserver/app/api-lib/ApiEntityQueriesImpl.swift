@@ -3,7 +3,7 @@ struct ApiEntityQueriesImpl: ApiEntityQueries {
         entityType: String,
         queryFinishedFunctionId: String,
         query: EntityQuery,
-        customCtx: String?
+        ctxPayload: String?
     ) {
     }
 }

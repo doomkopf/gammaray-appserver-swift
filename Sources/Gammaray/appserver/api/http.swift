@@ -15,6 +15,6 @@ protocol ApiHttpClient: Sendable {
         body: String?,
         headers: HttpHeaders,
         resultFunc: String,
-        requestCtx: String?
+        ctxPayload: String?
     )
 }

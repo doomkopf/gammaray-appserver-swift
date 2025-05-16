@@ -69,7 +69,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
                 await appUserLogin.login(
                     userId: userLoginCall.userId,
                     loginFinishedFunctionId: userLoginCall.funcId,
-                    ctxJson: userLoginCall.customCtxJson,
+                    ctxPayload: userLoginCall.customCtxJson,
                     ctx: ctx
                 )
             }
@@ -111,7 +111,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
                     params: FunctionParams(
                         theFunc: invoke._func,
                         ctx: ctx,
-                        paramsJson: invoke.paramsJson
+                        payload: invoke.paramsJson
                     ),
                     entityParams: EntityParams(
                         type: invoke.type,
@@ -229,7 +229,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
                     listId: listIterate.listId,
                     iterationFunctionId: listIterate.iterationFunctionId,
                     iterationFinishedFunctionId: listIterate.iterationFinishedFunctionId,
-                    customCtx: listIterate.customCtxJson
+                    ctxPayload: listIterate.customCtxJson
                 )
             }
         }

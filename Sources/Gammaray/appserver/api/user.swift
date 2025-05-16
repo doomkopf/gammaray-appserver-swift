@@ -3,7 +3,7 @@ protocol ApiUserFunctions: Sendable {
     func login(
         userId: EntityId,
         loginFinishedFunctionId: String,
-        customCtx: String?,
+        ctxPayload: String?,
         ctx: RequestContext
     )
     func logout(userId: EntityId)
@@ -11,5 +11,5 @@ protocol ApiUserFunctions: Sendable {
 
 struct LoginResult: Codable {
     let sessionId: String
-    let ctxJson: String?
+    let ctxPayload: String?
 }

@@ -5,7 +5,7 @@ struct ApiHttpClientImpl: ApiHttpClient {
         body: String?,
         headers: HttpHeaders,
         resultFunc: String,
-        requestCtx: String?
+        ctxPayload: String?
     ) {
     }
 }

@@ -29,14 +29,14 @@ enum EntityFuncResult {
 
 struct EntityFunc {
     let vis: FuncVisibility
-    let paramsType: Decodable.Type
+    let payloadType: Decodable.Type
     let f:
         @Sendable
         (
             _ entity: GammarayEntity?,
             _ id: EntityId,
             _ lib: Lib,
-            _ params: Any?,
+            _ payload: Any?,
             _ ctx: FuncContext
         ) -> EntityFuncResult
 }
@@ -71,7 +71,7 @@ protocol ApiEntityFunctions: Sendable {
         entityType: String,
         theFunc: String,
         entityId: EntityId,
-        params: String?,
+        payload: String?,
         ctx: RequestContext
     )
 }

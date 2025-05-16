@@ -2,7 +2,7 @@ private struct Message: Decodable {
     let appId: String
     let theFunc: String
     let entityMsg: EntityMessage?
-    let paramsJson: String?
+    let payload: String?
 }
 
 private struct EntityMessage: Decodable {
@@ -51,7 +51,7 @@ final class GammarayProtocolRequestHandler: Sendable {
                     requestId: requestId,
                     requestingUserId: nil
                 ),
-                paramsJson: msg.paramsJson
+                payload: msg.payload
             ),
             entityParams: entityParams
         )

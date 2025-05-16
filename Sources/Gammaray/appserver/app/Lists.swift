@@ -12,12 +12,12 @@ private struct AddParams: Decodable {
 
 private let addFunc = EntityFunc(
     vis: .pri,
-    paramsType: AddParams.self,
-    f: { (entity, id, lib, params, ctx) in
+    payloadType: AddParams.self,
+    f: { (entity, id, lib, payload, ctx) in
         let entity = entity as! ListChunk?
-        let params = params as! AddParams?
+        let payload = payload as! AddParams?
 
-        guard let params else {
+        guard let payload else {
             return .none
         }
 
@@ -31,7 +31,7 @@ private let addFunc = EntityFunc(
         if listChunk.list.count >= LIST_FUNCTIONS_MAX_ELEMENTS_PER_CHUNK {
             let nextChunkId = randomUuidString()
 
-            let params = ListChunk(
+            let entityFuncPayload = ListChunk(
                 list: listChunk.list,
                 next: listChunk.next
             )
@@ -39,7 +39,7 @@ private let addFunc = EntityFunc(
                 entityType: ENTITY_TYPE,
                 theFunc: "addNext",
                 entityId: nextChunkId,
-                params: "TODO params",
+                payload: "TODO entityFuncPayload",
                 ctx: EMPTY_REQUEST_CONTEXT
             )
 
@@ -47,7 +47,7 @@ private let addFunc = EntityFunc(
             listChunk.next = nextChunkId
         }
 
-        listChunk.list.append(params.e)
+        listChunk.list.append(payload.e)
 
         return .setEntity(listChunk)
     }
@@ -90,7 +90,7 @@ struct Lists {
             params: FunctionParams(
                 theFunc: "add",
                 ctx: EMPTY_REQUEST_CONTEXT,
-                paramsJson: nil
+                payload: nil  // TODO
             ),
             id: "",  // TODO
             typeForLogging: ENTITY_TYPE,
@@ -105,7 +105,7 @@ struct Lists {
         listId: EntityId,
         iterationFunctionId: String,
         iterationFinishedFunctionId: String,
-        customCtx: String?
+        ctxPayload: String?
     ) {
     }
 

@@ -72,7 +72,7 @@ final class NodeJsEntityTest: XCTestCase {
 
         let result = await subject.invokeFunction(
             theFunc: "",
-            paramsJson: nil,
+            payload: nil,
             ctx: EMPTY_REQUEST_CONTEXT
         )
 

@@ -38,7 +38,7 @@ final class EntityFunctions: Sendable {
         do {
             let entityContainer = try await entitiesPerType.retrieveEntity(id)
             let result = try await entityContainer.invokeFunction(
-                theFunc: params.theFunc, paramsJson: params.paramsJson, ctx: params.ctx)
+                theFunc: params.theFunc, payload: params.payload, ctx: params.ctx)
             if result == .deleteEntity {
                 await entitiesPerType.deleteEntity(id)
             }

@@ -5,7 +5,7 @@ struct ApiEntityFunctionsImpl: ApiEntityFunctions {
         entityType: String,
         theFunc: String,
         entityId: EntityId,
-        params: String?,
+        payload: String?,
         ctx: RequestContext
     ) {
         Task {
@@ -13,7 +13,7 @@ struct ApiEntityFunctionsImpl: ApiEntityFunctions {
                 params: FunctionParams(
                     theFunc: theFunc,
                     ctx: ctx,
-                    paramsJson: params
+                    payload: payload
                 ),
                 entityParams: EntityParams(type: entityType, id: entityId)
             )

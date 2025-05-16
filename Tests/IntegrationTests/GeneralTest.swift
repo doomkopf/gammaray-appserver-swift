@@ -100,7 +100,7 @@ final class GeneralTest: XCTestCase {
                     requestId: requestId,
                     requestingUserId: nil
                 ),
-                paramsJson: echoParamsJson
+                payload: echoParamsJson
             ),
             entityParams: nil
         )
@@ -118,7 +118,7 @@ final class GeneralTest: XCTestCase {
             params: FunctionParams(
                 theFunc: "createPerson",
                 ctx: EMPTY_REQUEST_CONTEXT,
-                paramsJson: createPersonParamsJson
+                payload: createPersonParamsJson
             ),
             entityParams: EntityParams(
                 type: "person",
@@ -149,7 +149,7 @@ final class GeneralTest: XCTestCase {
                     requestId: requestId,
                     requestingUserId: nil
                 ),
-                paramsJson: nil
+                payload: nil
             ),
             entityParams: nil
         )
@@ -157,6 +157,6 @@ final class GeneralTest: XCTestCase {
         let sentPayloadString = await request.payload
         let sentPayload = try jsonDecoder.decode(LoginResult.self, sentPayloadString)
         XCTAssertEqual("1", sentPayload.sessionId)
-        XCTAssertEqual("{\"myCustomContext\":\"test\"}", sentPayload.ctxJson)
+        XCTAssertEqual("{\"myCustomContext\":\"test\"}", sentPayload.ctxPayload)
     }
 }

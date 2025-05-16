@@ -5,7 +5,7 @@ protocol ApiLists: Sendable {
         listId: EntityId,
         iterationFunctionId: String,
         iterationFinishedFunctionId: String,
-        customCtx: String?
+        ctxPayload: String?
     )
     func remove(listId: EntityId, elemToRemove: String)
 }

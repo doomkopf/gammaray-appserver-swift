@@ -3,6 +3,6 @@ protocol ApiEntityQueries: Sendable {
         entityType: String,
         queryFinishedFunctionId: String,
         query: EntityQuery,
-        customCtx: String?
+        ctxPayload: String?
     )
 }

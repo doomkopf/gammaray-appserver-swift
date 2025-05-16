@@ -26,20 +26,20 @@ actor NativeEntity: Entity {
         self.entity = entity
     }
 
-    func invokeFunction(theFunc: String, paramsJson: String?, ctx: RequestContext) throws
+    func invokeFunction(theFunc: String, payload: String?, ctx: RequestContext) throws
         -> EntityAction
     {
         guard let entityFunc = entityFuncs[theFunc] else {
             return .none
         }
 
-        var params: Decodable?
-        if let paramsJson {
-            params = try jsonDecoder.decode(entityFunc.paramsType, paramsJson)
+        var decodedPayload: Decodable?
+        if let payload {
+            decodedPayload = try jsonDecoder.decode(entityFunc.payloadType, payload)
         }
 
         let result = entityFunc.f(
-            entity, id, lib, params,
+            entity, id, lib, decodedPayload,
             NativeFuncContext(
                 requestId: ctx.requestId,
                 requestingUserId: ctx.requestingUserId,

@@ -9,7 +9,7 @@ struct ApiListsImpl: ApiLists {
         listId: EntityId,
         iterationFunctionId: String,
         iterationFinishedFunctionId: String,
-        customCtx: String?
+        ctxPayload: String?
     ) {
     }
 

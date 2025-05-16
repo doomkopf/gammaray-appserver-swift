@@ -11,7 +11,7 @@ struct EntityParams {
 struct FunctionParams {
     let theFunc: String
     let ctx: RequestContext
-    let paramsJson: String?
+    let payload: String?
 }
 
 let EMPTY_REQUEST_CONTEXT = RequestContext(

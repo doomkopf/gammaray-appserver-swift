@@ -5,7 +5,7 @@ struct ApiUserFunctionsImpl: ApiUserFunctions {
     func login(
         userId: EntityId,
         loginFinishedFunctionId: String,
-        customCtx: String?,
+        ctxPayload: String?,
         ctx: RequestContext
     ) {
     }

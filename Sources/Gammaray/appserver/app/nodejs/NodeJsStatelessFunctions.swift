@@ -25,7 +25,7 @@ final class NodeJsStatelessFunctions: StatelessFunctions {
                     requestId: params.ctx.requestId,
                     requestingUserId: params.ctx.requestingUserId,
                     sfunc: params.theFunc,
-                    paramsJson: params.paramsJson
+                    paramsJson: params.payload
                 ))
 
             await funcResponseHandler.handle(response: response.general, ctx: params.ctx)

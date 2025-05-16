@@ -32,7 +32,7 @@ actor NodeJsEntity: Entity {
         self.e = e
     }
 
-    func invokeFunction(theFunc: String, paramsJson: String?, ctx: RequestContext) async
+    func invokeFunction(theFunc: String, payload: String?, ctx: RequestContext) async
         -> EntityAction
     {
         await withCheckedContinuation { c in
@@ -40,7 +40,7 @@ actor NodeJsEntity: Entity {
                 try await invokeFunctionCallback(
                     FuncCall(
                         theFunc: theFunc,
-                        paramsJson: paramsJson,
+                        paramsJson: payload,
                         ctx: ctx,
                         callback: { result in
                             c.resume(returning: result)
