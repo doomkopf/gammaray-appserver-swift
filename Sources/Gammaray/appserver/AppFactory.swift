@@ -120,7 +120,10 @@ struct AppFactory {
                 responseSender: globalAppLibComponents.responseSender
             ),
             user: ApiUserFunctionsImpl(),
-            entityFunc: ApiEntityFunctionsImpl(entityFuncs: entityFunctions),
+            entityFunc: ApiEntityFunctionsImpl(
+                entityFuncs: entityFunctions,
+                jsonEncoder: jsonEncoder
+            ),
             httpClient: ApiHttpClientImpl(),
             lists: ApiListsImpl(),
             entityQueries: ApiEntityQueriesImpl(),

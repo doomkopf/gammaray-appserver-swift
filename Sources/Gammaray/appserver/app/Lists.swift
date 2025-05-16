@@ -39,7 +39,7 @@ private let addFunc = EntityFunc(
                 entityType: ENTITY_TYPE,
                 theFunc: "addNext",
                 entityId: nextChunkId,
-                payload: "TODO entityFuncPayload",
+                payload: entityFuncPayload,
                 ctx: EMPTY_REQUEST_CONTEXT
             )
 

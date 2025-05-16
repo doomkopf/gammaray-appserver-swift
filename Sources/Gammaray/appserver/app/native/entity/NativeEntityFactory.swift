@@ -9,7 +9,7 @@ struct NativeEntityFactory: EntityFactory {
     func create(appId: String, type: String, id: EntityId, databaseEntity: String?) async throws
         -> Entity
     {
-        var entity: Codable?
+        var entity: Encodable?
         if let databaseEntity {
             entity = try jsonDecoder.decode(entityType, databaseEntity)
         }

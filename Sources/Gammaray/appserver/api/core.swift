@@ -7,6 +7,7 @@ typealias EntityId = String
 typealias RequestId = String
 typealias SessionId = String
 typealias GammarayEntity = Encodable
+typealias FuncPayload = Encodable
 
 enum FuncVisibility {
     case pri
@@ -33,7 +34,7 @@ struct EntityFunc {
     let f:
         @Sendable
         (
-            _ entity: GammarayEntity?,
+            _ entity: Any?,
             _ id: EntityId,
             _ lib: Lib,
             _ payload: Any?,
@@ -71,7 +72,7 @@ protocol ApiEntityFunctions: Sendable {
         entityType: String,
         theFunc: String,
         entityId: EntityId,
-        payload: String?,
+        payload: FuncPayload?,
         ctx: RequestContext
     )
 }
