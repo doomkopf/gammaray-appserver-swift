@@ -6,6 +6,7 @@ struct GammarayApp {
 typealias EntityId = String
 typealias RequestId = String
 typealias SessionId = String
+typealias GammarayEntity = Encodable
 
 enum FuncVisibility {
     case pri
@@ -17,25 +18,25 @@ struct StatelessFunc {
 }
 
 struct EntityType {
-    let efunc: [String: EntityFunc<Any, Any>]
+    let efunc: [String: EntityFunc]
 }
 
 enum EntityFuncResult {
     case none
-    case setEntity(Encodable)
+    case setEntity(GammarayEntity)
     case deleteEntity
 }
 
-struct EntityFunc<E, P> {
+struct EntityFunc {
     let vis: FuncVisibility
     let paramsType: Decodable.Type
     let f:
         @Sendable
         (
-            _ entity: E?,
+            _ entity: GammarayEntity?,
             _ id: EntityId,
             _ lib: Lib,
-            _ params: P?,
+            _ params: Any?,
             _ ctx: FuncContext
         ) -> EntityFuncResult
 }

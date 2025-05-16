@@ -1,5 +1,5 @@
 actor NativeEntity: Entity {
-    private let entityFuncs: [String: EntityFunc<Any, Any>]
+    private let entityFuncs: [String: EntityFunc]
     private let id: EntityId
     private let lib: Lib
     private let responseSender: ResponseSender
@@ -9,7 +9,7 @@ actor NativeEntity: Entity {
     private var entity: Encodable?
 
     init(
-        entityFuncs: [String: EntityFunc<Any, Any>],
+        entityFuncs: [String: EntityFunc],
         id: EntityId,
         lib: Lib,
         responseSender: ResponseSender,

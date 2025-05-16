@@ -1,22 +1,59 @@
+private let ENTITY_TYPE = "gmrlists"
+private let LIST_FUNCTIONS_MAX_ELEMENTS_PER_CHUNK = 500000
+
 private struct ListChunk: Codable {
-    let list: [String]
-    let next: String?
+    var list: [String]
+    var next: String?
 }
 
 private struct AddParams: Decodable {
+    let e: String
 }
 
-private let add = EntityFunc<ListChunk, AddParams>(
+private let addFunc = EntityFunc(
     vis: .pri,
     paramsType: AddParams.self,
     f: { (entity, id, lib, params, ctx) in
-        .none
+        let entity = entity as! ListChunk?
+        let params = params as! AddParams?
+
+        guard let params else {
+            return .none
+        }
+
+        var listChunk: ListChunk
+        if let entity {
+            listChunk = entity
+        } else {
+            listChunk = ListChunk(list: [], next: nil)
+        }
+
+        if listChunk.list.count >= LIST_FUNCTIONS_MAX_ELEMENTS_PER_CHUNK {
+            let nextChunkId = randomUuidString()
+
+            let params = ListChunk(
+                list: listChunk.list,
+                next: listChunk.next
+            )
+            lib.entityFunc.invoke(
+                entityType: ENTITY_TYPE,
+                theFunc: "addNext",
+                entityId: nextChunkId,
+                params: "TODO params",
+                ctx: EMPTY_REQUEST_CONTEXT
+            )
+
+            listChunk.list = []
+            listChunk.next = nextChunkId
+        }
+
+        listChunk.list.append(params.e)
+
+        return .setEntity(listChunk)
     }
 )
 
 struct Lists {
-    private static let ENTITY_TYPE = "gmrlists"
-
     private let entityFuncs: EntityFunctions
     private let listEntities: EntitiesPerType
 
@@ -34,10 +71,10 @@ struct Lists {
 
         listEntities = try EntitiesPerType(
             appId: appId,
-            type: Lists.ENTITY_TYPE,
+            type: ENTITY_TYPE,
             entityFactory: NativeEntityFactory(
                 entityType: ListChunk.self,
-                entityFuncs: [:],
+                entityFuncs: ["add": addFunc],
                 libFactory: libFactory,
                 responseSender: responseSender,
                 jsonEncoder: jsonEncoder,
@@ -56,7 +93,7 @@ struct Lists {
                 paramsJson: nil
             ),
             id: "",  // TODO
-            typeForLogging: Lists.ENTITY_TYPE,
+            typeForLogging: ENTITY_TYPE,
             entitiesPerType: listEntities
         )
     }

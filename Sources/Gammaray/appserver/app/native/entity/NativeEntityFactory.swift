@@ -1,6 +1,6 @@
 struct NativeEntityFactory: EntityFactory {
     let entityType: Codable.Type
-    let entityFuncs: [String: EntityFunc<Any, Any>]
+    let entityFuncs: [String: EntityFunc]
     let libFactory: LibFactory
     let responseSender: ResponseSender
     let jsonEncoder: StringJSONEncoder
