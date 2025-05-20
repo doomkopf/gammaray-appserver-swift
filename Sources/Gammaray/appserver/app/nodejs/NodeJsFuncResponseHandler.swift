@@ -3,7 +3,7 @@ protocol NodeJsFuncResponseHandler: Sendable {
 }
 
 actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
-    private var entityFunc: EntityFunctions?
+    private var appEntities: AppEntities?
     private var lists: Lists?
     private var responseSender: ResponseSender?
     private var appUserLogin: AppUserLogin?
@@ -14,7 +14,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     private var logger: Logger?
 
     func lateBind(
-        entityFunc: EntityFunctions,
+        appEntities: AppEntities,
         lists: Lists,
         responseSender: ResponseSender,
         appUserLogin: AppUserLogin,
@@ -24,7 +24,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         entityQueries: EntityQueries,
         logger: Logger
     ) {
-        self.entityFunc = entityFunc
+        self.appEntities = appEntities
         self.lists = lists
         self.responseSender = responseSender
         self.appUserLogin = appUserLogin
@@ -102,12 +102,12 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     private func handle(
         _ entityFuncInvokes: [NodeJsEntityFunctionsInvoke]?, _ ctx: RequestContext
     ) async {
-        guard let entityFunc else {
+        guard let appEntities else {
             return
         }
         if let entityFuncInvokes {
             for invoke in entityFuncInvokes {
-                await entityFunc.invoke(
+                await appEntities.invoke(
                     params: FunctionParams(
                         theFunc: invoke._func,
                         ctx: ctx,

@@ -27,7 +27,18 @@ struct AppEntities {
         }
     }
 
-    func getEntitiesByType(_ type: String) -> EntitiesPerType? {
-        typeToEntities[type]
+    func invoke(params: FunctionParams, entityParams: EntityParams) async {
+        guard
+            let entitiesPerType = typeToEntities[entityParams.type]
+        else {
+            // TODO
+            //log.log(LogLevel.WARN, "Unknown entity type: \(entityParams.type)", nil)
+            return
+        }
+
+        await entitiesPerType.invoke(
+            params: params,
+            id: entityParams.id
+        )
     }
 }

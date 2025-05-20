@@ -67,7 +67,25 @@ actor EntitiesPerType: CacheListener {
         }
     }
 
-    func retrieveEntity(_ key: EntityId) async throws -> EntityContainer {
+    func invoke(params: FunctionParams, id: EntityId) async {
+        do {
+            let entityContainer = try await retrieveEntity(id)
+            let result = try await entityContainer.invokeFunction(
+                theFunc: params.theFunc, payload: params.payload, ctx: params.ctx)
+            if result == .deleteEntity {
+                await deleteEntity(id)
+            }
+        } catch {
+            // TODO
+            /*log.log(
+                LogLevel.ERROR,
+                "Error executing entity function: appId=\(appId), type=\(type), func=\(params.theFunc)",
+                error
+            )*/
+        }
+    }
+
+    private func retrieveEntity(_ key: EntityId) async throws -> EntityContainer {
         guard let entityContainer = cache.get(key: key)
         else {
             let databaseEntity = await db.getAppEntity(

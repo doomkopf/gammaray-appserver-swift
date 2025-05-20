@@ -1,5 +1,5 @@
 struct ApiEntityFunctionsImpl: ApiEntityFunctions {
-    let entityFuncs: EntityFunctions
+    let appEntities: AppEntities
     let jsonEncoder: StringJSONEncoder
 
     func invoke(
@@ -14,7 +14,7 @@ struct ApiEntityFunctionsImpl: ApiEntityFunctions {
             stringPayload = jsonEncoder.encode(payload)
         }
         Task {
-            await entityFuncs.invoke(
+            await appEntities.invoke(
                 params: FunctionParams(
                     theFunc: theFunc,
                     ctx: ctx,

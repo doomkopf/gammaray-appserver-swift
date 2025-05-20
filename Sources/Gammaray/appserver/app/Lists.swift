@@ -68,14 +68,12 @@ private let addNextFunc = EntityFunc(
 )
 
 struct Lists {
-    private let entityFuncs: EntityFunctions
     private let listEntities: EntitiesPerType
     private let jsonEncoder: StringJSONEncoder
     private let maxElemsPerChunk: Int
 
     init(
         appId: String,
-        entityFuncs: EntityFunctions,
         libFactory: LibFactory,
         responseSender: ResponseSender,
         jsonEncoder: StringJSONEncoder,
@@ -83,7 +81,6 @@ struct Lists {
         db: AppserverDatabase,
         config: Config
     ) throws {
-        self.entityFuncs = entityFuncs
         self.jsonEncoder = jsonEncoder
 
         maxElemsPerChunk = config.getInt(.listEntityMaxElemsPerChunk)
@@ -108,15 +105,13 @@ struct Lists {
     }
 
     func add(listId: EntityId, elemToAdd: String) async {
-        await entityFuncs.invokePerType(
+        await listEntities.invoke(
             params: FunctionParams(
                 theFunc: "add",
                 ctx: EMPTY_REQUEST_CONTEXT,
                 payload: jsonEncoder.encode(AddParams(e: elemToAdd, maxElems: maxElemsPerChunk))
             ),
-            id: listId,
-            typeForLogging: ENTITY_TYPE,
-            entitiesPerType: listEntities
+            id: listId
         )
     }
 

@@ -72,12 +72,6 @@ struct AppFactory {
             config: config
         )
 
-        let entityFunctions = EntityFunctions(
-            loggerFactory: loggerFactory,
-            appId: appId,
-            appEntities: appEntities
-        )
-
         let statelessFunctions = NodeJsStatelessFunctions(
             loggerFactory: loggerFactory,
             appId: appId,
@@ -89,7 +83,6 @@ struct AppFactory {
 
         let lists = try Lists(
             appId: appId,
-            entityFuncs: entityFunctions,
             libFactory: libFactory,
             responseSender: globalAppLibComponents.responseSender,
             jsonEncoder: jsonEncoder,
@@ -105,7 +98,7 @@ struct AppFactory {
         )
 
         await funcResponseHandler.lateBind(
-            entityFunc: entityFunctions,
+            appEntities: appEntities,
             lists: lists,
             responseSender: globalAppLibComponents.responseSender,
             appUserLogin: appUserLogin,
@@ -121,7 +114,7 @@ struct AppFactory {
             ),
             user: ApiUserFunctionsImpl(),
             entityFunc: ApiEntityFunctionsImpl(
-                entityFuncs: entityFunctions,
+                appEntities: appEntities,
                 jsonEncoder: jsonEncoder
             ),
             httpClient: ApiHttpClientImpl(),
@@ -135,7 +128,6 @@ struct AppFactory {
 
         return App(
             statelessFunctions: statelessFunctions,
-            entityFunctions: entityFunctions,
             appEntities: appEntities,
             lists: lists
         )
