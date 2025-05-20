@@ -1,6 +1,7 @@
 actor EntitiesPerType: CacheListener {
     typealias V = EntityContainer
 
+    private let log: Logger
     private let appId: String
     private let type: String
     private let entityFactory: EntityFactory
@@ -8,12 +9,14 @@ actor EntitiesPerType: CacheListener {
     private let cache: any Cache<EntityContainer>
 
     init(
+        loggerFactory: LoggerFactory,
         appId: String,
         type: String,
         entityFactory: EntityFactory,
         db: AppserverDatabase,
         cache: any Cache<EntityContainer>
     ) {
+        log = loggerFactory.createForClass(EntitiesPerType.self)
         self.appId = appId
         self.type = type
         self.entityFactory = entityFactory
@@ -22,6 +25,7 @@ actor EntitiesPerType: CacheListener {
     }
 
     init(
+        loggerFactory: LoggerFactory,
         appId: String,
         type: String,
         entityFactory: EntityFactory,
@@ -29,7 +33,11 @@ actor EntitiesPerType: CacheListener {
         config: Config
     ) throws {
         self.init(
-            appId: appId, type: type, entityFactory: entityFactory, db: db,
+            loggerFactory: loggerFactory,
+            appId: appId,
+            type: type,
+            entityFactory: entityFactory,
+            db: db,
             cache: try CacheImpl(
                 entryEvictionTimeMillis: config.getInt64(
                     ConfigProperty.entityCacheEvictionTimeMillis),
@@ -76,12 +84,11 @@ actor EntitiesPerType: CacheListener {
                 await deleteEntity(id)
             }
         } catch {
-            // TODO
-            /*log.log(
-                LogLevel.ERROR,
+            log.log(
+                .ERROR,
                 "Error executing entity function: appId=\(appId), type=\(type), func=\(params.theFunc)",
                 error
-            )*/
+            )
         }
     }
 

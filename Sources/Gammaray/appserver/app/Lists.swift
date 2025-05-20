@@ -73,6 +73,7 @@ struct Lists {
     private let maxElemsPerChunk: Int
 
     init(
+        loggerFactory: LoggerFactory,
         appId: String,
         libFactory: LibFactory,
         responseSender: ResponseSender,
@@ -86,6 +87,7 @@ struct Lists {
         maxElemsPerChunk = config.getInt(.listEntityMaxElemsPerChunk)
 
         listEntities = try EntitiesPerType(
+            loggerFactory: loggerFactory,
             appId: appId,
             type: ENTITY_TYPE,
             entityFactory: NativeEntityFactory(

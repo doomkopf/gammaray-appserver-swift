@@ -1,16 +1,20 @@
-struct AppEntities {
+final class AppEntities: Sendable {
+    private let log: Logger
     private let typeToEntities: [String: EntitiesPerType]
 
     init(
+        loggerFactory: LoggerFactory,
         appId: String,
         entityTypes: [String],
         entityFactory: EntityFactory,
         db: AppserverDatabase,
         config: Config
     ) throws {
+        log = loggerFactory.createForClass(AppEntities.self)
         var typeToEntities: [String: EntitiesPerType] = [:]
         for type in entityTypes {
             typeToEntities[type] = try EntitiesPerType(
+                loggerFactory: loggerFactory,
                 appId: appId,
                 type: type,
                 entityFactory: entityFactory,
@@ -31,8 +35,7 @@ struct AppEntities {
         guard
             let entitiesPerType = typeToEntities[entityParams.type]
         else {
-            // TODO
-            //log.log(LogLevel.WARN, "Unknown entity type: \(entityParams.type)", nil)
+            log.log(.WARN, "Unknown entity type: \(entityParams.type)", nil)
             return
         }
 

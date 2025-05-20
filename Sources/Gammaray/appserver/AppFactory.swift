@@ -60,6 +60,7 @@ struct AppFactory {
         let funcResponseHandler = NodeJsFuncResponseHandlerImpl()
 
         let appEntities = try AppEntities(
+            loggerFactory: loggerFactory,
             appId: appId,
             entityTypes: appDef.entity.map { (key, value) in
                 key
@@ -82,6 +83,7 @@ struct AppFactory {
         let libFactory = LibFactory()
 
         let lists = try Lists(
+            loggerFactory: loggerFactory,
             appId: appId,
             libFactory: libFactory,
             responseSender: globalAppLibComponents.responseSender,
