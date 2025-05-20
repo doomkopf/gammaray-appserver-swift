@@ -1,13 +1,13 @@
-private let ENTITY_TYPE = "gmrlists"
-private let LIST_FUNCTIONS_MAX_ELEMENTS_PER_CHUNK = 500000
+private let ENTITY_TYPE = "gamlists"
 
 private struct ListChunk: Codable {
     var list: [String]
     var next: String?
 }
 
-private struct AddParams: Decodable {
+private struct AddParams: Codable {
     let e: String
+    let maxElems: Int
 }
 
 private let addFunc = EntityFunc(
@@ -28,7 +28,7 @@ private let addFunc = EntityFunc(
             listChunk = ListChunk(list: [], next: nil)
         }
 
-        if listChunk.list.count >= LIST_FUNCTIONS_MAX_ELEMENTS_PER_CHUNK {
+        if listChunk.list.count >= payload.maxElems {
             let nextChunkId = randomUuidString()
 
             let entityFuncPayload = ListChunk(
@@ -53,9 +53,25 @@ private let addFunc = EntityFunc(
     }
 )
 
+private let addNextFunc = EntityFunc(
+    vis: .pri,
+    payloadType: ListChunk.self,
+    f: { (entity, id, lib, payload, ctx) in
+        let listChunk = payload as! ListChunk?
+
+        guard let listChunk else {
+            return .none
+        }
+
+        return .setEntity(listChunk)
+    }
+)
+
 struct Lists {
     private let entityFuncs: EntityFunctions
     private let listEntities: EntitiesPerType
+    private let jsonEncoder: StringJSONEncoder
+    private let maxElemsPerChunk: Int
 
     init(
         appId: String,
@@ -68,13 +84,19 @@ struct Lists {
         config: Config
     ) throws {
         self.entityFuncs = entityFuncs
+        self.jsonEncoder = jsonEncoder
+
+        maxElemsPerChunk = config.getInt(.listEntityMaxElemsPerChunk)
 
         listEntities = try EntitiesPerType(
             appId: appId,
             type: ENTITY_TYPE,
             entityFactory: NativeEntityFactory(
                 entityType: ListChunk.self,
-                entityFuncs: ["add": addFunc],
+                entityFuncs: [
+                    "add": addFunc,
+                    "addNext": addNextFunc,
+                ],
                 libFactory: libFactory,
                 responseSender: responseSender,
                 jsonEncoder: jsonEncoder,
@@ -90,9 +112,9 @@ struct Lists {
             params: FunctionParams(
                 theFunc: "add",
                 ctx: EMPTY_REQUEST_CONTEXT,
-                payload: nil  // TODO
+                payload: jsonEncoder.encode(AddParams(e: elemToAdd, maxElems: maxElemsPerChunk))
             ),
-            id: "",  // TODO
+            id: listId,
             typeForLogging: ENTITY_TYPE,
             entitiesPerType: listEntities
         )
@@ -110,5 +132,9 @@ struct Lists {
     }
 
     func remove(listId: EntityId, elemToRemove: String) {
+    }
+
+    func scheduledTasks() async {
+        await listEntities.scheduledTasks()
     }
 }

@@ -7,7 +7,7 @@ final class NodeJsCommunicationTest: XCTestCase {
     func testCom() async throws {
         let reader = ResourceFileReaderImpl(module: Bundle.module)
 
-        let config = try Config(reader: reader)
+        let config = try Config(reader: reader, customConfig: [:])
 
         let p = try NodeJsProcess(
             jsFile: "Resources/NodeJsCommunicationTest", module: Bundle.module,

@@ -38,7 +38,7 @@ struct AppserverComponents {
 
 func createComponents() async throws -> AppserverComponents {
     let fileReader = ResourceFileReaderImpl(module: Bundle.module)
-    let config = try Config(reader: fileReader)
+    let config = try Config(reader: fileReader, customConfig: [:])
     let loggerFactory = LoggerFactory()
     let jsonEncoder = StringJSONEncoder()
     let jsonDecoder = StringJSONDecoder()

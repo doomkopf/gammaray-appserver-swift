@@ -2,15 +2,18 @@ struct App {
     private let statelessFunctions: StatelessFunctions
     private let entityFunctions: EntityFunctions
     private let appEntities: AppEntities
+    private let lists: Lists
 
     init(
         statelessFunctions: StatelessFunctions,
         entityFunctions: EntityFunctions,
-        appEntities: AppEntities
+        appEntities: AppEntities,
+        lists: Lists
     ) {
         self.statelessFunctions = statelessFunctions
         self.entityFunctions = entityFunctions
         self.appEntities = appEntities
+        self.lists = lists
     }
 
     func handleFunc(params: FunctionParams, entityParams: EntityParams?) async {
@@ -24,5 +27,6 @@ struct App {
 
     func scheduledTasks() async {
         await appEntities.scheduledTasks()
+        await lists.scheduledTasks()
     }
 }

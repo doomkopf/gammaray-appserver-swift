@@ -22,7 +22,7 @@ final class NodeJsAppApiTest: XCTestCase {
 
     private func setup() async throws -> NodeJsAppApiImpl {
         let scheduler = SchedulerImpl()
-        let config = try Config(reader: reader)
+        let config = try Config(reader: reader, customConfig: [:])
 
         let nodeApi = try NodeJsAppApiImpl(
             loggerFactory: LoggerFactory(),

@@ -17,13 +17,15 @@ final class ConfigTest: XCTestCase {
         }
 
         let readerWithEmptyFile = ResourceFileReaderMock("")
-        let configExpectedToUseDefaultValue = try Config(reader: readerWithEmptyFile)
+        let configExpectedToUseDefaultValue = try Config(
+            reader: readerWithEmptyFile, customConfig: [:])
         XCTAssertEqual(
             "dummyDefaultValue", configExpectedToUseDefaultValue.getString(ConfigProperty.dummy))
 
         let readerWithContent = ResourceFileReaderMock(
             "dummy=the=dummyValue\nnodeJsBinaryPath=some/path\n")
-        let configExpectedToUseConfiguredValue = try Config(reader: readerWithContent)
+        let configExpectedToUseConfiguredValue = try Config(
+            reader: readerWithContent, customConfig: [:])
         XCTAssertEqual(
             "the=dummyValue", configExpectedToUseConfiguredValue.getString(ConfigProperty.dummy))
         XCTAssertEqual(

@@ -136,7 +136,8 @@ struct AppFactory {
         return App(
             statelessFunctions: statelessFunctions,
             entityFunctions: entityFunctions,
-            appEntities: appEntities
+            appEntities: appEntities,
+            lists: lists
         )
     }
 }

@@ -8,6 +8,7 @@ enum ConfigProperty: String {
     case entityCacheMaxEntries
     case appScheduledTasksIntervalMillis
     case webserverPort
+    case listEntityMaxElemsPerChunk
 }
 
 private func defaultValue(_ configProperty: ConfigProperty) -> String {
@@ -21,13 +22,14 @@ private func defaultValue(_ configProperty: ConfigProperty) -> String {
     case .entityCacheMaxEntries: "100000"
     case .appScheduledTasksIntervalMillis: "3000"
     case .webserverPort: "8080"
+    case .listEntityMaxElemsPerChunk: "500000"
     }
 }
 
 struct Config {
     private let config: [ConfigProperty: String]
 
-    init(reader: ResourceFileReader) throws {
+    init(reader: ResourceFileReader, customConfig: [ConfigProperty: String]) throws {
         let configString = try reader.readStringFile(name: "gammaray", ext: "cfg")
         let lines = configString.split(separator: "\n")
 
@@ -39,6 +41,10 @@ struct Config {
                 throw AppserverError.General("Unknown config property: \(keySubstring)")
             }
             config[key] = String(keyValue[1])
+        }
+
+        for custom in customConfig {
+            config[custom.key] = custom.value
         }
 
         self.config = config
