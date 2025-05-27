@@ -30,7 +30,7 @@ final class NodeJsStatelessFunctions: StatelessFunctions {
 
             await funcResponseHandler.handle(response: response.general, ctx: params.ctx)
         } catch {
-            log.log(LogLevel.ERROR, "Error executing node func", error)
+            log.log(.ERROR, "Error executing node func", error)
         }
     }
 }
