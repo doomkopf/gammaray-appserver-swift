@@ -4,34 +4,28 @@ protocol NodeJsFuncResponseHandler: Sendable {
 
 actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     private var appEntities: AppEntities?
-    private var lists: Lists?
     private var responseSender: ResponseSender?
     private var appUserLogin: AppUserLogin?
     private var userLogin: UserLogin?
     private var userSender: UserSender?
     private var httpClient: HttpClient?
-    private var entityQueries: EntityQueries?
     private var logger: Logger?
 
     func lateBind(
         appEntities: AppEntities,
-        lists: Lists,
         responseSender: ResponseSender,
         appUserLogin: AppUserLogin,
         userLogin: UserLogin,
         userSender: UserSender,
         httpClient: HttpClient,
-        entityQueries: EntityQueries,
         logger: Logger
     ) {
         self.appEntities = appEntities
-        self.lists = lists
         self.responseSender = responseSender
         self.appUserLogin = appUserLogin
         self.userLogin = userLogin
         self.userSender = userSender
         self.httpClient = httpClient
-        self.entityQueries = entityQueries
         self.logger = logger
     }
 
@@ -42,11 +36,6 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         await handle(response.userFunctionsSend)
         await handle(response.entityFunctionsInvoke, ctx)
         await handle(response.httpClientRequest)
-        await handle(response.listsAdd)
-        await handle(response.entityQueriesQuery)
-        handle(response.listsClear)
-        handle(response.listsIterate)
-        handle(response.listsRemove)
         handle(response.loggerLog)
     }
 
@@ -122,38 +111,6 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         }
     }
 
-    private func handle(_ entityQueryInvokes: [NodeJsEntityQueriesQuery]?) async {
-        guard let entityQueries else {
-            return
-        }
-        if let entityQueryInvokes {
-            for invocation in entityQueryInvokes {
-                await entityQueries.query(
-                    entityType: invocation.entityType,
-                    queryFinishedFunctionId: invocation.queryFinishedFunctionId,
-                    query: map(invocation.query),
-                    customCtx: invocation.customCtxJson
-                )
-            }
-        }
-    }
-
-    private func map(_ node: NodeJsEntityQuery) -> EntityQuery {
-        EntityQuery(
-            attributes: node.attributes.map { nodeAttr in
-                EntityQueryAttribute(
-                    name: nodeAttr.name,
-                    value: EntityQueryAttributeValue(
-                        match: nodeAttr.value.match,
-                        range: EntityQueryAttributeNumberRange(
-                            min: nodeAttr.value.range?.min,
-                            max: nodeAttr.value.range?.max
-                        )
-                    )
-                )
-            })
-    }
-
     private func handle(_ httpClientRequests: [NodeJsHttpClientRequest]?) async {
         guard let httpClient else {
             return
@@ -194,55 +151,6 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
             return .PATCH
         case .DELETE:
             return .DELETE
-        }
-    }
-
-    private func handle(_ listAdds: [NodeJsListsAdd]?) async {
-        guard let lists else {
-            return
-        }
-        if let listAdds {
-            for listAdd in listAdds {
-                await lists.add(listId: listAdd.listId, elemToAdd: listAdd.elemToAdd)
-            }
-        }
-    }
-
-    private func handle(_ listClears: [NodeJsListsClear]?) {
-        guard let lists else {
-            return
-        }
-        if let listClears {
-            for listClear in listClears {
-                lists.clear(listId: listClear.listId)
-            }
-        }
-    }
-
-    private func handle(_ listIterates: [NodeJsListsIterate]?) {
-        guard let lists else {
-            return
-        }
-        if let listIterates {
-            for listIterate in listIterates {
-                lists.iterate(
-                    listId: listIterate.listId,
-                    iterationFunctionId: listIterate.iterationFunctionId,
-                    iterationFinishedFunctionId: listIterate.iterationFinishedFunctionId,
-                    ctxPayload: listIterate.customCtxJson
-                )
-            }
-        }
-    }
-
-    private func handle(_ listRemoves: [NodeJsListsRemove]?) {
-        guard let lists else {
-            return
-        }
-        if let listRemoves {
-            for listRemove in listRemoves {
-                lists.remove(listId: listRemove.listId, elemToRemove: listRemove.elemToRemove)
-            }
         }
     }
 

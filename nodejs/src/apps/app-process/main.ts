@@ -1,8 +1,6 @@
 import { BigObjectsImpl } from "./api-lib-impl/BigObjectsImpl"
 import { EntityFunctionsImpl } from "./api-lib-impl/EntityFunctionsImpl"
-import { EntityQueriesImpl } from "./api-lib-impl/EntityQueriesImpl"
 import { HttpClientImpl } from "./api-lib-impl/HttpClientImpl"
-import { ListFunctionsImpl } from "./api-lib-impl/ListFunctionsImpl"
 import { LoggerImpl } from "./api-lib-impl/LoggerImpl"
 import { ResponseSenderImpl } from "./api-lib-impl/ResponseSenderImpl"
 import { ToolsImpl } from "./api-lib-impl/ToolsImpl"
@@ -19,8 +17,6 @@ class AppProcess {
             new UserFunctionsImpl(),
             new ToolsImpl(),
             new EntityFunctionsImpl(),
-            new ListFunctionsImpl(),
-            new EntityQueriesImpl(),
             new HttpClientImpl(),
             new LoggerImpl(),
             new BigObjectsImpl(),

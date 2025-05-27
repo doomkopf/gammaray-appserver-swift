@@ -3,8 +3,6 @@ actor LibFactory {
     private var user: ApiUserFunctions?
     private var entityFunc: ApiEntityFunctions?
     private var httpClient: ApiHttpClient?
-    private var lists: ApiLists?
-    private var entityQueries: ApiEntityQueries?
     private var log: ApiLogger?
 
     func lateBind(
@@ -12,16 +10,12 @@ actor LibFactory {
         user: ApiUserFunctions,
         entityFunc: ApiEntityFunctions,
         httpClient: ApiHttpClient,
-        lists: ApiLists,
-        entityQueries: ApiEntityQueries,
         log: ApiLogger
     ) {
         self.responseSender = responseSender
         self.user = user
         self.entityFunc = entityFunc
         self.httpClient = httpClient
-        self.lists = lists
-        self.entityQueries = entityQueries
         self.log = log
     }
 
@@ -30,8 +24,6 @@ actor LibFactory {
             let user,
             let entityFunc,
             let httpClient,
-            let lists,
-            let entityQueries,
             let log
         {
             return Lib(
@@ -39,8 +31,6 @@ actor LibFactory {
                 user: user,
                 entityFunc: entityFunc,
                 httpClient: httpClient,
-                lists: lists,
-                entityQueries: entityQueries,
                 log: log
             )
         }

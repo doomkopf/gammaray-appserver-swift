@@ -80,19 +80,6 @@ struct AppFactory {
             nodeProcess: nodeProcess
         )
 
-        let libFactory = LibFactory()
-
-        let lists = try Lists(
-            loggerFactory: loggerFactory,
-            appId: appId,
-            libFactory: libFactory,
-            responseSender: globalAppLibComponents.responseSender,
-            jsonEncoder: jsonEncoder,
-            jsonDecoder: jsonDecoder,
-            db: db,
-            config: config
-        )
-
         let appUserLogin = AppUserLogin(
             userLogin: globalAppLibComponents.userLogin,
             statelessFuncs: statelessFunctions,
@@ -101,37 +88,17 @@ struct AppFactory {
 
         await funcResponseHandler.lateBind(
             appEntities: appEntities,
-            lists: lists,
             responseSender: globalAppLibComponents.responseSender,
             appUserLogin: appUserLogin,
             userLogin: globalAppLibComponents.userLogin,
             userSender: globalAppLibComponents.userSender,
             httpClient: globalAppLibComponents.httpClient,
-            entityQueries: EntityQueries(),
             logger: loggerFactory.createLogger("nodeJsApp:\(appId)")
-        )
-        await libFactory.lateBind(
-            responseSender: ApiResponseSenderImpl(
-                responseSender: globalAppLibComponents.responseSender
-            ),
-            user: ApiUserFunctionsImpl(),
-            entityFunc: ApiEntityFunctionsImpl(
-                appEntities: appEntities,
-                jsonEncoder: jsonEncoder
-            ),
-            httpClient: ApiHttpClientImpl(),
-            lists: ApiListsImpl(),
-            entityQueries: ApiEntityQueriesImpl(),
-            log: ApiLoggerImpl(
-                appId: appId,
-                loggerFactory: loggerFactory
-            )
         )
 
         return App(
             statelessFunctions: statelessFunctions,
             appEntities: appEntities,
-            lists: lists
         )
     }
 }

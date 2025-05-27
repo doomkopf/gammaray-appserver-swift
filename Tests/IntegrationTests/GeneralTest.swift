@@ -89,8 +89,6 @@ final class GeneralTest: XCTestCase {
         await createPersonEntityAndStoreToDatabase(apps: apps, db: db, config: config)
         try await userLoginCallsLoginFinishedFunctionWithSessionId(
             apps: apps, responseSender: responseSender, jsonDecoder: jsonDecoder)
-        try await listAddAndStoreToDatabase(
-            apps: apps, db: db, config: config, jsonDecoder: jsonDecoder)
     }
 
     private func echoFuncResponds(apps: Apps, responseSender: ResponseSender) async {
@@ -164,60 +162,5 @@ final class GeneralTest: XCTestCase {
         let sentPayload = try jsonDecoder.decode(LoginResult.self, sentPayloadString)
         XCTAssertEqual("1", sentPayload.sessionId)
         XCTAssertEqual("{\"myCustomContext\":\"test\"}", sentPayload.ctxPayload)
-    }
-
-    private func listAddAndStoreToDatabase(
-        apps: Apps,
-        db: AppserverDatabase,
-        config: Config,
-        jsonDecoder: StringJSONDecoder
-    ) async throws {
-        await apps.handleFunc(
-            appId: appId,
-            params: FunctionParams(
-                theFunc: "listAdd",
-                ctx: RequestContext(
-                    requestId: nil,
-                    requestingUserId: nil
-                ),
-                payload: nil
-            ),
-            entityParams: nil
-        )
-
-        // sleep twice the amount to be sure the entity was stored
-        await gammaraySleep(config.getInt64(.appScheduledTasksIntervalMillis) * 2)
-
-        struct ListChunk: Decodable {
-            var list: [String]
-            var next: String?
-        }
-
-        guard
-            let dbEntity1 = await db.getAppEntity(
-                appId: appId, entityType: "gamlists", entityId: "myList")
-        else {
-            XCTFail("DB entity not present")
-            return
-        }
-
-        let listChunk1 = try jsonDecoder.decode(ListChunk.self, dbEntity1)
-
-        XCTAssertEqual(1, listChunk1.list.count)
-        XCTAssertEqual("elem3", listChunk1.list[0])
-
-        guard
-            let dbEntity2 = await db.getAppEntity(
-                appId: appId, entityType: "gamlists", entityId: listChunk1.next!)
-        else {
-            XCTFail("DB entity \(listChunk1.next!) not present")
-            return
-        }
-
-        let listChunk2 = try jsonDecoder.decode(ListChunk.self, dbEntity2)
-
-        XCTAssertEqual(2, listChunk2.list.count)
-        XCTAssertEqual("elem1", listChunk2.list[0])
-        XCTAssertEqual("elem2", listChunk2.list[1])
     }
 }

@@ -65,12 +65,7 @@ export interface NodeJsFuncResponse {
     userFunctionsLogout?: string[]
     userFunctionsSend?: NodeJsUserFunctionsSend[]
     entityFunctionsInvoke?: NodeJsEntityFunctionsInvoke[]
-    entityQueriesQuery?: NodeJsEntityQueriesQuery[]
     httpClientRequest?: NodeJsHttpClientRequest[]
-    listsAdd?: NodeJsListsAdd[]
-    listsClear?: NodeJsListsClear[]
-    listsIterate?: NodeJsListsIterate[]
-    listsRemove?: NodeJsListsRemove[]
     loggerLog?: NodeJsLoggerLog[]
 }
 
@@ -115,32 +110,6 @@ export interface NodeJsEntityFunctionsInvoke {
     paramsJson: string | null
 }
 
-export interface NodeJsEntityQueriesQuery {
-    entityType: string
-    queryFinishedFunctionId: string
-    query: NodeJsEntityQuery
-    customCtxJson?: string
-}
-
-export interface NodeJsEntityQuery {
-    attributes: NodeJsEntityQueryAttribute[]
-}
-
-export interface NodeJsEntityQueryAttribute {
-    name: string
-    value: NodeJsEntityQueryAttributeValue
-}
-
-export interface NodeJsEntityQueryAttributeValue {
-    match?: string
-    range?: NodeJsEntityQueryAttributeNumberRange
-}
-
-export interface NodeJsEntityQueryAttributeNumberRange {
-    min?: number
-    max?: number
-}
-
 export interface NodeJsHttpClientRequest {
     url: string
     method: NodeJsHttpMethod
@@ -161,27 +130,6 @@ export enum NodeJsHttpMethod {
 export interface NodeJsHttpHeader {
     key: string
     value: string
-}
-
-export interface NodeJsListsAdd {
-    listId: string,
-    elemToAdd: string,
-}
-
-export interface NodeJsListsClear {
-    listId: string,
-}
-
-export interface NodeJsListsIterate {
-    listId: string
-    iterationFunctionId: string
-    iterationFinishedFunctionId: string
-    customCtxJson?: string
-}
-
-export interface NodeJsListsRemove {
-    listId: string
-    elemToRemove: string
 }
 
 export interface NodeJsLoggerLog {

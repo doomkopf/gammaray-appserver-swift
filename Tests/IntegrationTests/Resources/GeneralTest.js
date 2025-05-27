@@ -29,21 +29,11 @@ const loginFinished = {
     },
 }
 
-const listAdd = {
-    vis: 1,
-    func(lib, params, ctx) {
-        lib.listFunc.add("myList", "elem1")
-        lib.listFunc.add("myList", "elem2")
-        lib.listFunc.add("myList", "elem3")
-    },
-}
-
 const app = {
     func: {
         echo,
         testUserLogin,
         loginFinished,
-        listAdd,
     },
     entity: {
         person: {

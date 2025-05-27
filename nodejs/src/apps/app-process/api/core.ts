@@ -1,6 +1,5 @@
 import { HttpResponseData } from "./http"
 import { Lib } from "./lib"
-import { EntityIndexing } from "./query"
 import { RestApi } from "./rest"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -122,10 +121,6 @@ export interface EntityType<E extends JsonObject> {
      * A mapping from a version to migrate to, to the actual migration function.
      */
     migrate?: { [version: number]: MigrateEntity<E> }
-    /**
-     * Optional indexation configuration for this entity type.
-     */
-    index?: EntityIndexing
     /**
      * The current version this entity type.
      * Just for the migration system to know where to stop migrating.
