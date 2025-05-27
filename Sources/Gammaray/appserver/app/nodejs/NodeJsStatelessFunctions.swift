@@ -23,7 +23,7 @@ final class NodeJsStatelessFunctions: StatelessFunctions {
                 NodeJsStatelessFuncRequest(
                     appId: appId,
                     requestId: params.ctx.requestId,
-                    requestingUserId: params.ctx.requestingUserId,
+                    requestingUserId: params.ctx.requestingUserId?.value,
                     sfunc: params.theFunc,
                     paramsJson: params.payload
                 ))

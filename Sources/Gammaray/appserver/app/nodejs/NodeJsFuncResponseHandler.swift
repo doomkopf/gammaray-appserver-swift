@@ -3,6 +3,7 @@ protocol NodeJsFuncResponseHandler: Sendable {
 }
 
 actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
+    private let log: Logger
     private var appEntities: AppEntities?
     private var responseSender: ResponseSender?
     private var appUserLogin: AppUserLogin?
@@ -10,6 +11,10 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
     private var userSender: UserSender?
     private var httpClient: HttpClient?
     private var logger: Logger?
+
+    init(loggerFactory: LoggerFactory) {
+        log = loggerFactory.createForClass(NodeJsFuncResponseHandlerImpl.self)
+    }
 
     func lateBind(
         appEntities: AppEntities,
@@ -55,8 +60,15 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         }
         if let userLogins {
             for userLoginCall in userLogins {
+                let userId: EntityId
+                do {
+                    userId = try EntityIdImpl(userLoginCall.userId)
+                } catch {
+                    log.log(.ERROR, "Invalid userId in login call", error)
+                    continue
+                }
                 await appUserLogin.login(
-                    userId: userLoginCall.userId,
+                    userId: userId,
                     loginFinishedFunctionId: userLoginCall.funcId,
                     ctxPayload: userLoginCall.customCtxJson,
                     ctx: ctx
@@ -65,13 +77,20 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         }
     }
 
-    private func handle(_ userLogouts: [EntityId]?) async {
+    private func handle(_ userLogouts: [String]?) async {
         guard let userLogin else {
             return
         }
         if let userLogouts {
             for userLogoutCall in userLogouts {
-                await userLogin.logout(userId: userLogoutCall)
+                let userId: EntityId
+                do {
+                    userId = try EntityIdImpl(userLogoutCall)
+                } catch {
+                    log.log(.ERROR, "Invalid userId in logout call", error)
+                    continue
+                }
+                await userLogin.logout(userId: userId)
             }
         }
     }
@@ -82,8 +101,17 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         }
         if let userSends {
             for userSendCall in userSends {
+                let userId: EntityId
+                do {
+                    userId = try EntityIdImpl(userSendCall.userId)
+                } catch {
+                    log.log(.ERROR, "Invalid userId in send call", error)
+                    continue
+                }
                 await userSender.send(
-                    userId: userSendCall.userId, objJson: userSendCall.objJson)
+                    userId: userId,
+                    objJson: userSendCall.objJson
+                )
             }
         }
     }
@@ -96,6 +124,16 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         }
         if let entityFuncInvokes {
             for invoke in entityFuncInvokes {
+                let entityId: EntityId
+                do {
+                    entityId = try EntityIdImpl(invoke.entityId)
+                } catch {
+                    log.log(
+                        .ERROR,
+                        "Invalid entityId invoking func=\(invoke._func), type=\(invoke.type)", error
+                    )
+                    continue
+                }
                 await appEntities.invoke(
                     params: FunctionParams(
                         theFunc: invoke._func,
@@ -104,7 +142,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
                     ),
                     entityParams: EntityParams(
                         type: invoke.type,
-                        id: invoke.entityId
+                        id: entityId
                     )
                 )
             }

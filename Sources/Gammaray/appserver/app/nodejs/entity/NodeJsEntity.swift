@@ -71,7 +71,7 @@ actor NodeJsEntity: Entity {
             NodeJsEntityFuncRequest(
                 appId: appId,
                 requestId: params.ctx.requestId,
-                requestingUserId: params.ctx.requestingUserId,
+                requestingUserId: params.ctx.requestingUserId?.value,
                 id: entityId,
                 type: entityType,
                 efunc: params.theFunc,

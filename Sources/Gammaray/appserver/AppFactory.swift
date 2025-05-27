@@ -57,7 +57,7 @@ struct AppFactory {
         let appDef = try await nodeProcess.getAppDefinition(
             NodeJsGetAppDefinitionRequest(appId: appId))
 
-        let funcResponseHandler = NodeJsFuncResponseHandlerImpl()
+        let funcResponseHandler = NodeJsFuncResponseHandlerImpl(loggerFactory: loggerFactory)
 
         let appEntities = try AppEntities(
             loggerFactory: loggerFactory,

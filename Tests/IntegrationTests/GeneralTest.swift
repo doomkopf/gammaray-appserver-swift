@@ -117,6 +117,7 @@ final class GeneralTest: XCTestCase {
         apps: Apps, db: AppserverDatabase, config: Config
     ) async {
         let createPersonParamsJson = "{\"entityName\":\"TestName\"}"
+        let entityId = try! EntityIdImpl("theEntityId")
         await apps.handleFunc(
             appId: appId,
             params: FunctionParams(
@@ -126,7 +127,7 @@ final class GeneralTest: XCTestCase {
             ),
             entityParams: EntityParams(
                 type: "person",
-                id: "theEntityId"
+                id: entityId
             )
         )
 
@@ -134,7 +135,7 @@ final class GeneralTest: XCTestCase {
         await gammaraySleep(config.getInt64(.appScheduledTasksIntervalMillis) * 2)
 
         let dbEntity = await db.getAppEntity(
-            appId: appId, entityType: "person", entityId: "theEntityId")
+            appId: appId, entityType: "person", entityId: entityId)
 
         XCTAssertEqual("{\"name\":\"TestName\"}", dbEntity)
     }

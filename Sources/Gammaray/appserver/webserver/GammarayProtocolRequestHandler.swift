@@ -37,11 +37,22 @@ final class GammarayProtocolRequestHandler: Sendable {
             return
         }
 
-        let requestId = await responseSender.addRequest(request: request)
         var entityParams: EntityParams?
         if let entityMsg = msg.entityMsg {
-            entityParams = EntityParams(type: entityMsg.entityType, id: entityMsg.entityId)
+            let entityId: EntityId
+            do {
+                entityId = try EntityIdImpl(entityMsg.entityId)
+            } catch {
+                log.log(.ERROR, "Error creating entityId", error)
+                return
+            }
+            entityParams = EntityParams(
+                type: entityMsg.entityType,
+                id: entityId
+            )
         }
+
+        let requestId = await responseSender.addRequest(request: request)
 
         await apps.handleFunc(
             appId: msg.appId,

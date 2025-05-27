@@ -3,7 +3,10 @@ struct GammarayApp {
     let entity: [String: EntityType]
 }
 
-typealias EntityId = String
+protocol EntityId: Sendable {
+    var value: String { get }
+}
+
 typealias RequestId = String
 typealias SessionId = String
 typealias GammarayEntity = Encodable

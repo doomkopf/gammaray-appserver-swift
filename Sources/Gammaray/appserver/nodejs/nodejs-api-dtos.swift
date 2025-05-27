@@ -89,7 +89,7 @@ struct NodeJsEntityFuncRequest: Encodable {
 struct NodeJsFuncResponse: Decodable {
     let responseSenderSend: NodeJsResponseSenderSend?
     let userFunctionsLogin: [NodeJsUserFunctionsLogin]?
-    let userFunctionsLogout: [EntityId]?
+    let userFunctionsLogout: [String]?
     let userFunctionsSend: [NodeJsUserFunctionsSend]?
     let entityFunctionsInvoke: [NodeJsEntityFunctionsInvoke]?
     let httpClientRequest: [NodeJsHttpClientRequest]?
@@ -120,13 +120,13 @@ struct NodeJsResponseSenderSend: Decodable {
 }
 
 struct NodeJsUserFunctionsLogin: Decodable {
-    let userId: EntityId
+    let userId: String
     let funcId: String
     let customCtxJson: String?
 }
 
 struct NodeJsUserFunctionsSend: Decodable {
-    let userId: EntityId
+    let userId: String
     let objJson: String
 }
 

@@ -51,7 +51,7 @@ actor EntitiesPerType: CacheListener {
             await value.store(
                 appId: appId,
                 entityType: type,
-                entityId: key,
+                entityId: try EntityIdImpl(key),
                 db: db
             )
         }
@@ -68,7 +68,7 @@ actor EntitiesPerType: CacheListener {
                 await value.store(
                     appId: self.appId,
                     entityType: self.type,
-                    entityId: key,
+                    entityId: try EntityIdImpl(key),
                     db: self.db
                 )
             }
@@ -93,12 +93,12 @@ actor EntitiesPerType: CacheListener {
     }
 
     private func retrieveEntity(_ key: EntityId) async throws -> EntityContainer {
-        guard let entityContainer = cache.get(key: key)
+        guard let entityContainer = cache.get(key: key.value)
         else {
             let databaseEntity = await db.getAppEntity(
                 appId: appId, entityType: type, entityId: key)
 
-            if let meanwhileCreatedEntityContainer = cache.get(key: key) {
+            if let meanwhileCreatedEntityContainer = cache.get(key: key.value) {
                 return meanwhileCreatedEntityContainer
             }
 
@@ -112,7 +112,7 @@ actor EntitiesPerType: CacheListener {
                 dirty: false
             )
 
-            cache.put(key: key, value: entityContainer)
+            cache.put(key: key.value, value: entityContainer)
 
             return entityContainer
         }
@@ -121,7 +121,7 @@ actor EntitiesPerType: CacheListener {
     }
 
     func deleteEntity(_ key: EntityId) async {
-        _ = cache.remove(key)
+        _ = cache.remove(key.value)
         await db.removeAppEntity(appId: appId, entityType: type, entityId: key)
     }
 }
