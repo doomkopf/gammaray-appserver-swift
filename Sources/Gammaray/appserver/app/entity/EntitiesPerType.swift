@@ -118,7 +118,7 @@ actor EntitiesPerType: CacheListener {
         return entityContainer
     }
 
-    func deleteEntity(_ key: EntityId) async {
+    private func deleteEntity(_ key: EntityId) async {
         _ = cache.remove(key.value)
         await db.removeAppEntity(appId: appId, entityType: type, entityId: key)
     }
