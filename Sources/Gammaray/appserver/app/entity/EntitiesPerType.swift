@@ -1,6 +1,4 @@
 actor EntitiesPerType: CacheListener {
-    typealias V = EntityContainer
-
     private let log: Logger
     private let appId: String
     private let type: String

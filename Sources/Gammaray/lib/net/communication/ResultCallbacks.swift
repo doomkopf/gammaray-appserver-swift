@@ -11,8 +11,6 @@ struct RequestResult {
 typealias ResultCallback = @Sendable (_ result: RequestResult) -> Void
 
 actor ResultCallbacks: CacheListener {
-    typealias V = ResultCallback
-
     private let cache: any Cache<ResultCallback>
     private let cacheCleanTask: ScheduledTask
 

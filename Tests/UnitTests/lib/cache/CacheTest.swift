@@ -28,7 +28,6 @@ final class CacheTest: XCTestCase {
 
     func testInvalidateOutdatedKeys() throws {
         class TestListener: CacheListener {
-            typealias V = String
             var key1 = 0
             var key3 = 0
             func onEntryEvicted(key: String, value: String) {

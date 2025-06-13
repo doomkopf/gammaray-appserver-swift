@@ -16,8 +16,6 @@ struct SendQueueEntry {
 }
 
 actor SendQueue: CacheListener {
-    typealias V = SendQueueEntry
-
     private let cache: any Cache<SendQueueEntry>
     private let cacheCleanTask: ScheduledTask
 

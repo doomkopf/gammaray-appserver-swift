@@ -16,11 +16,9 @@ final class ResponseSenderTest: XCTestCase {
         }
 
         struct CacheMock: Cache {
-            typealias V = GammarayProtocolRequest
-
             let request = GammarayProtocolRequestMock()
 
-            func setListener(_ listener: any CacheListener<V>) {
+            func setListener(_ listener: any CacheListener<GammarayProtocolRequest>) {
             }
 
             func put(key: String, value: V) {
@@ -117,11 +115,9 @@ final class ResponseSenderTest: XCTestCase {
         }
 
         struct CacheMock: Cache {
-            typealias V = GammarayProtocolRequest
-
             let state = CacheMutableState()
 
-            func setListener(_ listener: any CacheListener<V>) {
+            func setListener(_ listener: any CacheListener<GammarayProtocolRequest>) {
             }
 
             func put(key: String, value: V) {

@@ -1,6 +1,4 @@
 actor ResponseSender: CacheListener {
-    typealias V = GammarayProtocolRequest
-
     private var idCounter = 0
     private let requestsCache: any Cache<GammarayProtocolRequest>
     private let task: ScheduledTask
@@ -49,7 +47,7 @@ actor ResponseSender: CacheListener {
         return RequestId(idCounter)
     }
 
-    nonisolated func onEntryEvicted(key: String, value: V) {
+    nonisolated func onEntryEvicted(key: String, value: GammarayProtocolRequest) {
         Task {
             await value.cancel()
         }

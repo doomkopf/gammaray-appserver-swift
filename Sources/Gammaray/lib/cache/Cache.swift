@@ -36,8 +36,6 @@ protocol Cache<V> {
 }
 
 class CacheImpl<V>: Cache {
-    typealias V = V
-
     private let entryEvictionTimeMillis: Int64
     private let maxEntries: Int
     private var listener: (any CacheListener<V>)?
