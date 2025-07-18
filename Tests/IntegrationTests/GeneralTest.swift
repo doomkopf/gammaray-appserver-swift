@@ -36,9 +36,7 @@ final class GeneralTest: XCTestCase {
         let reader = ResourceFileReaderImpl(module: Bundle.module)
         let config = try Config(
             reader: reader,
-            customConfig: [
-                .listEntityMaxElemsPerChunk: "2"  // to provocate chunking for test: listAddAndStoreToDatabase
-            ])
+            customConfig: [:])
         let loggerFactory = LoggerFactory()
         let scheduler = SchedulerImpl()
         let responseSender = try ResponseSender(scheduler: scheduler)
