@@ -52,7 +52,7 @@ final class GeneralTest: XCTestCase {
         )
 
         let nodeApi = try NodeJsAppApiImpl(
-            loggerFactory: LoggerFactory(),
+            loggerFactory: loggerFactory,
             config: config,
             scheduler: scheduler
         )
@@ -82,8 +82,16 @@ final class GeneralTest: XCTestCase {
             )
         )
 
+        let admin = AdminCommandProcessor(
+            loggerFactory: loggerFactory,
+            jsonDecoder: jsonDecoder,
+            deployAppCommandProcessor: DeployAppCommandProcessor(db: db)
+        )
+
         let code = try reader.readStringFile(name: "GeneralTest", ext: "js")
-        await db.putApp(appId: appId, app: DatabaseApp(type: .NODEJS, code: code))
+        await admin.process(
+            type: .DEPLOY_NODEJS_APP,
+            payload: jsonEncoder.encode(DeployNodeJsAppCommandPayload(appId: appId, code: code)))
 
         await echoFuncResponds(apps: apps, responseSender: responseSender)
         await createPersonEntityAndStoreToDatabase(apps: apps, db: db, config: config)
