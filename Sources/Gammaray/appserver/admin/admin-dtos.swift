@@ -1,8 +1,11 @@
-enum AdminCommandType: Int {
+enum AdminCommandType: Int, Decodable {
     case DEPLOY_NODEJS_APP = 0
 }
 
-struct DeployNodeJsAppCommandPayload: Codable {
+struct DeployNodeJsAppCommandRequest: Codable {
     let appId: String
     let code: String
+}
+
+struct DeployNodeJsAppCommandResponse: Codable {
 }

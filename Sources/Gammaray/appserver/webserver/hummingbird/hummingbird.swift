@@ -5,7 +5,7 @@ func runWebserver(components: AppserverComponents) async throws {
         responder: CallbackResponder<BasicRequestContext> {
             request, _ -> Response in
 
-            if request.uri.string == "/gmrapi" {
+            if request.uri.string == "/gamapi" {
                 var buf = try await request.body.collect(upTo: 65536)
                 guard let requestBody = buf.readString(length: buf.readableBytes) else {
                     return Response(status: HTTPResponse.Status.badRequest)

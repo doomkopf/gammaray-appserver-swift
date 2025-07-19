@@ -1,4 +1,9 @@
 private struct Message: Decodable {
+    let app: AppMessage?
+    let admin: AdminMessage?
+}
+
+private struct AppMessage: Decodable {
     let appId: String
     let theFunc: String
     let entityMsg: EntityMessage?
@@ -10,22 +15,30 @@ private struct EntityMessage: Decodable {
     let entityId: String
 }
 
+private struct AdminMessage: Decodable {
+    let type: AdminCommandType
+    let payload: String
+}
+
 final class GammarayProtocolRequestHandler: Sendable {
     private let log: Logger
     private let jsonDecoder: StringJSONDecoder
     private let responseSender: ResponseSender
     private let apps: Apps
+    private let adminCommandProcessor: AdminCommandProcessor
 
     init(
         loggerFactory: LoggerFactory,
         jsonDecoder: StringJSONDecoder,
         responseSender: ResponseSender,
-        apps: Apps
+        apps: Apps,
+        adminCommandProcessor: AdminCommandProcessor,
     ) {
         log = loggerFactory.createForClass(GammarayProtocolRequestHandler.self)
         self.jsonDecoder = jsonDecoder
         self.responseSender = responseSender
         self.apps = apps
+        self.adminCommandProcessor = adminCommandProcessor
     }
 
     func handle(request: GammarayProtocolRequest, payload: String) async {
@@ -37,8 +50,16 @@ final class GammarayProtocolRequestHandler: Sendable {
             return
         }
 
+        if let appMsg = msg.app {
+            await handleAppMessage(request: request, appMsg: appMsg)
+        } else if let adminMsg = msg.admin {
+            await handleAdminMessage(request: request, adminMsg: adminMsg)
+        }
+    }
+
+    private func handleAppMessage(request: GammarayProtocolRequest, appMsg: AppMessage) async {
         var entityParams: EntityParams?
-        if let entityMsg = msg.entityMsg {
+        if let entityMsg = appMsg.entityMsg {
             let entityId: EntityId
             do {
                 entityId = try EntityIdImpl(entityMsg.entityId)
@@ -55,16 +76,22 @@ final class GammarayProtocolRequestHandler: Sendable {
         let requestId = await responseSender.addRequest(request: request)
 
         await apps.handleFunc(
-            appId: msg.appId,
+            appId: appMsg.appId,
             params: FunctionParams(
-                theFunc: msg.theFunc,
+                theFunc: appMsg.theFunc,
                 ctx: RequestContext(
                     requestId: requestId,
                     requestingUserId: nil
                 ),
-                payload: msg.payload
+                payload: appMsg.payload
             ),
             entityParams: entityParams
         )
+    }
+
+    private func handleAdminMessage(request: GammarayProtocolRequest, adminMsg: AdminMessage) async
+    {
+        await adminCommandProcessor.process(
+            request: request, type: adminMsg.type, payload: adminMsg.payload)
     }
 }

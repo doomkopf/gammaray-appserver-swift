@@ -86,7 +86,16 @@ func createComponents() async throws -> AppserverComponents {
         loggerFactory: loggerFactory,
         jsonDecoder: jsonDecoder,
         responseSender: responseSender,
-        apps: apps
+        apps: apps,
+        adminCommandProcessor: AdminCommandProcessor(
+            loggerFactory: loggerFactory,
+            jsonDecoder: jsonDecoder,
+            jsonEncoder: jsonEncoder,
+            deployAppCommandProcessor: DeployAppCommandProcessor(
+                db: appserverDb,
+                jsonEncoder: jsonEncoder,
+            ),
+        ),
     )
 
     return AppserverComponents(

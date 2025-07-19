@@ -83,13 +83,15 @@ final class GeneralTest: XCTestCase {
         let admin = AdminCommandProcessor(
             loggerFactory: loggerFactory,
             jsonDecoder: jsonDecoder,
-            deployAppCommandProcessor: DeployAppCommandProcessor(db: db)
+            jsonEncoder: jsonEncoder,
+            deployAppCommandProcessor: DeployAppCommandProcessor(db: db, jsonEncoder: jsonEncoder)
         )
 
         let code = try reader.readStringFile(name: "GeneralTest", ext: "js")
         await admin.process(
+            request: NoopGammarayProtocolRequest(),
             type: .DEPLOY_NODEJS_APP,
-            payload: jsonEncoder.encode(DeployNodeJsAppCommandPayload(appId: appId, code: code)))
+            payload: jsonEncoder.encode(DeployNodeJsAppCommandRequest(appId: appId, code: code)))
 
         await echoFuncResponds(apps: apps, responseSender: responseSender)
         await createPersonEntityAndStoreToDatabase(apps: apps, db: db, config: config)
