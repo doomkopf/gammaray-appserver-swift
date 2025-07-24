@@ -94,6 +94,7 @@ func createComponents() async throws -> AppserverComponents {
             deployAppCommandProcessor: DeployAppCommandProcessor(
                 db: appserverDb,
                 jsonEncoder: jsonEncoder,
+                config: config,
             ),
         ),
     )

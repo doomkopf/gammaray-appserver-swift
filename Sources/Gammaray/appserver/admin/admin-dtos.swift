@@ -4,8 +4,10 @@ enum AdminCommandType: Int, Decodable {
 
 struct DeployNodeJsAppCommandRequest: Codable {
     let appId: String
-    let code: String
+    let pw: String
+    let script: String
 }
 
 struct DeployNodeJsAppCommandResponse: Codable {
+    let errorMsg: String?
 }
