@@ -97,6 +97,7 @@ func createComponents() async throws -> AppserverComponents {
                 config: config,
             ),
         ),
+        userLogin: userLogin,
     )
 
     return AppserverComponents(

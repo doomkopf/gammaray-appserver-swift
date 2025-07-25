@@ -8,6 +8,7 @@ private struct AppMessage: Decodable {
     let theFunc: String
     let entityMsg: EntityMessage?
     let payload: String?
+    let sid: String?
     let rid: String?
 }
 
@@ -27,6 +28,7 @@ final class GammarayProtocolRequestHandler: Sendable {
     private let responseSender: ResponseSender
     private let apps: Apps
     private let adminCommandProcessor: AdminCommandProcessor
+    private let userLogin: UserLogin
 
     init(
         loggerFactory: LoggerFactory,
@@ -34,12 +36,14 @@ final class GammarayProtocolRequestHandler: Sendable {
         responseSender: ResponseSender,
         apps: Apps,
         adminCommandProcessor: AdminCommandProcessor,
+        userLogin: UserLogin,
     ) {
         log = loggerFactory.createForClass(GammarayProtocolRequestHandler.self)
         self.jsonDecoder = jsonDecoder
         self.responseSender = responseSender
         self.apps = apps
         self.adminCommandProcessor = adminCommandProcessor
+        self.userLogin = userLogin
     }
 
     func handle(request: GammarayProtocolRequest, payload: String) async {
@@ -75,6 +79,10 @@ final class GammarayProtocolRequestHandler: Sendable {
         }
 
         let requestId = await responseSender.addRequest(request: request)
+        var userId: EntityId? = nil
+        if let sessionId = appMsg.sid {
+            userId = await userLogin.getUserId(sessionId: sessionId)
+        }
 
         await apps.handleFunc(
             appId: appMsg.appId,
@@ -82,7 +90,7 @@ final class GammarayProtocolRequestHandler: Sendable {
                 theFunc: appMsg.theFunc,
                 ctx: RequestContext(
                     requestId: requestId,
-                    requestingUserId: nil,
+                    requestingUserId: userId,
                     clientRequestId: appMsg.rid,
                 ),
                 payload: appMsg.payload

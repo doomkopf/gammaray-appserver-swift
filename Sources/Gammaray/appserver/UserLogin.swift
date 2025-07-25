@@ -34,6 +34,10 @@ actor UserLogin: CacheListener {
         return sessionId
     }
 
+    func getUserId(sessionId: SessionId) -> EntityId? {
+        sessionId2UserIdCache.get(key: sessionId)
+    }
+
     func logout(userId: EntityId) {
         if let sessionId = userId2SessionId[userId.value] {
             remove(sessionId: sessionId, userId: userId)
