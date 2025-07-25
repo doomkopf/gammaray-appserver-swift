@@ -52,6 +52,7 @@ export interface NodeJsFuncRequest {
     appId: string
     requestId?: string
     requestingUserId?: string
+    clientRequestId?: string
     fun: string
     paramsJson?: string
 }

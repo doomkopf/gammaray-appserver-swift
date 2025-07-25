@@ -113,7 +113,8 @@ final class GeneralTest: XCTestCase {
                 theFunc: "echo",
                 ctx: RequestContext(
                     requestId: requestId,
-                    requestingUserId: nil
+                    requestingUserId: nil,
+                    clientRequestId: nil,
                 ),
                 payload: echoParamsJson
             ),
@@ -163,7 +164,8 @@ final class GeneralTest: XCTestCase {
                 theFunc: "testUserLogin",
                 ctx: RequestContext(
                     requestId: requestId,
-                    requestingUserId: nil
+                    requestingUserId: nil,
+                    clientRequestId: nil,
                 ),
                 payload: nil
             ),

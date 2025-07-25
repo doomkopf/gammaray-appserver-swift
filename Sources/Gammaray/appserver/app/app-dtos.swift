@@ -1,6 +1,7 @@
 struct RequestContext {
     let requestId: RequestId?
     let requestingUserId: EntityId?
+    let clientRequestId: String?
 }
 
 struct EntityParams {
@@ -15,5 +16,5 @@ struct FunctionParams {
 }
 
 let EMPTY_REQUEST_CONTEXT = RequestContext(
-    requestId: nil, requestingUserId: nil
+    requestId: nil, requestingUserId: nil, clientRequestId: nil
 )

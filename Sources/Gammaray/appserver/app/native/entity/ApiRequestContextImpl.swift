@@ -1,6 +1,7 @@
 struct ApiRequestContextImpl: ApiRequestContext {
     let requestId: RequestId?
     let requestingUserId: EntityId?
+    let clientRequestId: String?
     let responseSender: ResponseSender
 
     func sendResponse(objJson: String) {

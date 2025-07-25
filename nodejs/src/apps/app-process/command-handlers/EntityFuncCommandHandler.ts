@@ -28,7 +28,12 @@ export class EntityFuncCommandHandler extends AppCommandHandler {
             payload.id,
             this.lib,
             (payload.funcRequest.paramsJson ? JSON.parse(payload.funcRequest.paramsJson) : null) as never,
-            new RequestContextImpl(this.lib.responseSender, payload.funcRequest.requestId, payload.funcRequest.requestingUserId),
+            new RequestContextImpl(
+                this.lib.responseSender,
+                payload.funcRequest.requestId,
+                payload.funcRequest.requestingUserId,
+                payload.funcRequest.clientRequestId,
+            ),
         )
 
         const response: NodeJsEntityFuncResponse = {

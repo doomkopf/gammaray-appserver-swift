@@ -8,6 +8,7 @@ private struct AppMessage: Decodable {
     let theFunc: String
     let entityMsg: EntityMessage?
     let payload: String?
+    let rid: String?
 }
 
 private struct EntityMessage: Decodable {
@@ -81,7 +82,8 @@ final class GammarayProtocolRequestHandler: Sendable {
                 theFunc: appMsg.theFunc,
                 ctx: RequestContext(
                     requestId: requestId,
-                    requestingUserId: nil
+                    requestingUserId: nil,
+                    clientRequestId: appMsg.rid,
                 ),
                 payload: appMsg.payload
             ),

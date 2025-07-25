@@ -79,6 +79,7 @@ struct NodeJsFuncRequest: Encodable {
     let appId: String
     let requestId: String?
     let requestingUserId: String?
+    let clientRequestId: String?
     let fun: String
     let paramsJson: String?
 }

@@ -43,6 +43,7 @@ actor NativeEntity: Entity {
             ApiRequestContextImpl(
                 requestId: ctx.requestId,
                 requestingUserId: ctx.requestingUserId,
+                clientRequestId: ctx.clientRequestId,
                 responseSender: responseSender
             ))
 

@@ -6,6 +6,7 @@ export class RequestContextImpl implements RequestContext {
         private readonly responseSender: ResponseSender,
         readonly requestId?: string,
         readonly requestingUserId?: EntityId,
+        readonly clientRequestId?: string,
     ) {
     }
 

@@ -48,6 +48,7 @@ struct EntityFunc {
 protocol ApiRequestContext: Sendable {
     var requestId: RequestId? { get }
     var requestingUserId: EntityId? { get }
+    var clientRequestId: String? { get }
     func sendResponse(objJson: String)
 }
 

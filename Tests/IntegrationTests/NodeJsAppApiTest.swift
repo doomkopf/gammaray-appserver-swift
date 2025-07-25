@@ -59,6 +59,7 @@ final class NodeJsAppApiTest: XCTestCase {
                     appId: appId,
                     requestId: "123",
                     requestingUserId: nil,
+                    clientRequestId: "321",
                     fun: "test",
                     paramsJson: "{\"moreTest\":\"er\"}",
                 ),
@@ -84,6 +85,7 @@ final class NodeJsAppApiTest: XCTestCase {
                 appId: appId,
                 requestId: "123",
                 requestingUserId: nil,
+                clientRequestId: "321",
                 fun: "test",
                 paramsJson: "{\"text\":\"stuff\"}"
             )
@@ -102,7 +104,7 @@ final class NodeJsAppApiTest: XCTestCase {
         XCTAssertEqual(generalFuncResponse.responseSenderSend?.requestId, "123")
         XCTAssertEqual(
             generalFuncResponse.responseSenderSend?.objJson,
-            "{\"response\":\"\(prefix)someResponse\"}")
+            "{\"response\":\"\(prefix)someResponse\",\"clientRequestId\":\"321\"}")
 
         XCTAssertEqual(generalFuncResponse.entityFunctionsInvoke?[0].type, "\(prefix)theType")
         XCTAssertEqual(generalFuncResponse.entityFunctionsInvoke?[0]._func, "theFunc")

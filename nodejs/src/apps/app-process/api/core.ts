@@ -47,6 +47,8 @@ export interface RequestContext {
      */
     readonly requestingUserId?: EntityId
 
+    readonly clientRequestId?: string
+
     /**
      * A helper method to send the response back to the client. Only works when the requestId is available in the context. Uses the {@link ResponseSender} internally.
      * @param body the response body as JSON

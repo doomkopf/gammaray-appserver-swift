@@ -20,6 +20,7 @@ struct ApiEntityFunctionsImpl: ApiEntityFunctions {
                     ctx: RequestContext(
                         requestId: ctx.requestId,
                         requestingUserId: ctx.requestingUserId,
+                        clientRequestId: ctx.clientRequestId,
                     ),
                     payload: stringPayload
                 ),
