@@ -1,11 +1,11 @@
-import { RequestContext } from "../../../lib/communication/RequestContext"
-import { FuncContextImpl } from "../api-lib-impl/FuncContextImpl"
+import { CommandContext } from "../../../lib/communication/CommandContext"
+import { RequestContextImpl } from "../api-lib-impl/RequestContextImpl"
 import { AppCommandHandler } from "../AppCommandHandler"
 import { NodeJsEntityAction, NodeJsEntityFuncRequest, NodeJsEntityFuncResponse } from "./dtos"
 import { buildNodeJsFuncResponse } from "./util"
 
 export class EntityFuncCommandHandler extends AppCommandHandler {
-    handleAppCommand(payload: NodeJsEntityFuncRequest, ctx?: RequestContext): void {
+    handleAppCommand(payload: NodeJsEntityFuncRequest, ctx?: CommandContext): void {
         const app = this.apps.getApp(payload.funcRequest.appId)
         if (!app) {
             return
@@ -28,7 +28,7 @@ export class EntityFuncCommandHandler extends AppCommandHandler {
             payload.id,
             this.lib,
             (payload.funcRequest.paramsJson ? JSON.parse(payload.funcRequest.paramsJson) : null) as never,
-            new FuncContextImpl(this.lib.responseSender, payload.funcRequest.requestId, payload.funcRequest.requestingUserId),
+            new RequestContextImpl(this.lib.responseSender, payload.funcRequest.requestId, payload.funcRequest.requestingUserId),
         )
 
         const response: NodeJsEntityFuncResponse = {

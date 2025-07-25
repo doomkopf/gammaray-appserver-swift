@@ -1,7 +1,7 @@
 import { ReceptionSource } from "../connection/ReceptionSource"
 import { responseCommand } from "./communication"
 
-export class RequestContext {
+export class CommandContext {
     constructor(
         readonly source: ReceptionSource,
         private readonly requestId: string,

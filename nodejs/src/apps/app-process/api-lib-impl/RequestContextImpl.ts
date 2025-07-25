@@ -1,7 +1,7 @@
-import { EntityId, FuncContext, JsonObject, ResponseSender } from "../api/core"
+import { EntityId, JsonObject, RequestContext, ResponseSender } from "../api/core"
 import { HttpResponseData } from "../api/http"
 
-export class FuncContextImpl implements FuncContext {
+export class RequestContextImpl implements RequestContext {
     constructor(
         private readonly responseSender: ResponseSender,
         readonly requestId?: string,

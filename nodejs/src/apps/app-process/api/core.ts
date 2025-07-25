@@ -35,9 +35,9 @@ export enum FuncVisibility {
 }
 
 /**
- * Contains context about the current function call.
+ * Contains context about the current request.
  */
-export interface FuncContext {
+export interface RequestContext {
     /**
      * A unique id for the current client request or undefined when the current call wasn't triggered through a client.
      */
@@ -63,7 +63,7 @@ export interface StatelessFunc<P> {
     /**
      * The actual function implementation.
      */
-    func: (lib: Lib, params: P, ctx: FuncContext) => void
+    func: (lib: Lib, params: P, ctx: RequestContext) => void
     vis: FuncVisibility
     /**
      * An optional REST API definition.
@@ -86,7 +86,7 @@ export interface EntityFunc<E, P> {
      * Returning nothing indicates to do nothing thus potential changes to the entity might get lost.
      * @param id the id of the entity
      */
-    func: (entity: E, id: EntityId, lib: Lib, params: P, ctx: FuncContext) => E | void | "delete"
+    func: (entity: E, id: EntityId, lib: Lib, params: P, ctx: RequestContext) => E | void | "delete"
     vis: FuncVisibility
 }
 
@@ -135,7 +135,7 @@ export interface EntityType<E extends JsonObject> {
 export interface ResponseSender {
     /**
      * Sends a resulting response to a clients request.
-     * @param requestId the id of the request. It should always be available as {@link FuncContext.requestId} as long as the request has been made by a client
+     * @param requestId the id of the request. It should always be available as {@link RequestContext.requestId} as long as the request has been made by a client
      * @param obj the actual json body to send
      * @param httpData optional http response data in case you need to set the status or headers
      */

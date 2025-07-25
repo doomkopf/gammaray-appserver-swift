@@ -1,11 +1,11 @@
-import { RequestContext } from "../../../lib/communication/RequestContext";
-import { FuncContextImpl } from "../api-lib-impl/FuncContextImpl";
+import { CommandContext } from "../../../lib/communication/CommandContext";
+import { RequestContextImpl } from "../api-lib-impl/RequestContextImpl";
 import { AppCommandHandler } from "../AppCommandHandler";
 import { NodeJsFuncRequest, NodeJsStatelessFuncResponse } from "./dtos";
 import { buildNodeJsFuncResponse } from "./util";
 
 export class StatelessFuncCommandHandler extends AppCommandHandler {
-    handleAppCommand(payload: NodeJsFuncRequest, ctx?: RequestContext): void {
+    handleAppCommand(payload: NodeJsFuncRequest, ctx?: CommandContext): void {
         const app = this.apps.getApp(payload.appId)
         if (!app) {
             return
@@ -15,7 +15,7 @@ export class StatelessFuncCommandHandler extends AppCommandHandler {
         statelessFunc.func(
             this.lib,
             (payload.paramsJson ? JSON.parse(payload.paramsJson) : null) as never,
-            new FuncContextImpl(this.lib.responseSender, payload.requestId, payload.requestingUserId),
+            new RequestContextImpl(this.lib.responseSender, payload.requestId, payload.requestingUserId),
         )
 
         const response: NodeJsStatelessFuncResponse = {

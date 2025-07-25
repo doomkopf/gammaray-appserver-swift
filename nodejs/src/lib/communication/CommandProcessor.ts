@@ -1,8 +1,8 @@
 import { ReceptionListener } from "../connection/ReceptionListener"
 import { ReceptionSource } from "../connection/ReceptionSource"
+import { CommandContext } from "./CommandContext"
 import { CommandHandler } from "./CommandHandler"
 import { Command } from "./communication"
-import { RequestContext } from "./RequestContext"
 
 export class CommandProcessor implements ReceptionListener {
     constructor(
@@ -24,6 +24,6 @@ export class CommandProcessor implements ReceptionListener {
             return
         }
 
-        handler.handle(cmd.pl, cmd.id ? new RequestContext(source, cmd.id) : undefined)
+        handler.handle(cmd.pl, cmd.id ? new CommandContext(source, cmd.id) : undefined)
     }
 }

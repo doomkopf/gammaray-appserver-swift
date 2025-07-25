@@ -1,5 +1,5 @@
-import { RequestContext } from "./RequestContext"
+import { CommandContext } from "./CommandContext"
 
 export interface CommandHandler {
-    handle(payload: string, ctx?: RequestContext): void
+    handle(payload: string, ctx?: CommandContext): void
 }

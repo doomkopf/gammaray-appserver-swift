@@ -1,10 +1,10 @@
-import { RequestContext } from "../../../lib/communication/RequestContext";
+import { CommandContext } from "../../../lib/communication/CommandContext";
 import { GammarayApp } from "../api/core";
 import { AppCommandHandler } from "../AppCommandHandler";
 import { NodeJsSetAppErrorResponseType, NodeJsSetAppRequest, NodeJsSetAppResponse } from "./dtos";
 
 export class SetAppCommandHandler extends AppCommandHandler {
-    handleAppCommand(payload: NodeJsSetAppRequest, ctx?: RequestContext): void {
+    handleAppCommand(payload: NodeJsSetAppRequest, ctx?: CommandContext): void {
         const response: NodeJsSetAppResponse = {}
 
         try {
