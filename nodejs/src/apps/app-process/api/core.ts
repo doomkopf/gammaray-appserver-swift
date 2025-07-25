@@ -39,13 +39,13 @@ export enum FuncVisibility {
  */
 export interface FuncContext {
     /**
-     * A unique id for the current client request or null when the current call wasn't triggered through a client.
+     * A unique id for the current client request or undefined when the current call wasn't triggered through a client.
      */
-    readonly requestId: string | null
+    readonly requestId?: string
     /**
-     * The logged-in user that triggered the request or null in case the request was done anonymously or when the current call wasn't triggered through a client.
+     * The logged-in user that triggered the request or undefined in case the request was done anonymously or when the current call wasn't triggered through a client.
      */
-    readonly requestingUserId: EntityId | null
+    readonly requestingUserId?: EntityId
 
     /**
      * A helper method to send the response back to the client. Only works when the requestId is available in the context. Uses the {@link ResponseSender} internally.

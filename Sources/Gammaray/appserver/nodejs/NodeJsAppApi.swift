@@ -5,7 +5,7 @@ protocol NodeJsAppApi: Sendable {
     func getAppDefinition(_ request: NodeJsGetAppDefinitionRequest) async throws
         -> NodeJsGammarayApp
     func entityFunc(_ request: NodeJsEntityFuncRequest) async throws -> NodeJsEntityFuncResponse
-    func statelessFunc(_ request: NodeJsStatelessFuncRequest) async throws
+    func statelessFunc(_ request: NodeJsFuncRequest) async throws
         -> NodeJsStatelessFuncResponse
     func shutdown() async
     func shutdownProcess()
@@ -108,7 +108,7 @@ final class NodeJsAppApiImpl: NodeJsAppApi {
         throw AppserverError.NodeJsApp("entityFunc failed in an unexpected case")
     }
 
-    func statelessFunc(_ request: NodeJsStatelessFuncRequest) async throws
+    func statelessFunc(_ request: NodeJsFuncRequest) async throws
         -> NodeJsStatelessFuncResponse
     {
         let result = await remoteProcessConnection.request(

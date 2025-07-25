@@ -1,5 +1,5 @@
 private struct FuncCall {
-    let theFunc: String
+    let fun: String
     let paramsJson: String?
     let ctx: RequestContext
     let callback: @Sendable (_ result: EntityAction) -> Void
@@ -39,7 +39,7 @@ actor NodeJsEntity: Entity {
             Task {
                 try await invokeFunctionCallback(
                     FuncCall(
-                        theFunc: theFunc,
+                        fun: theFunc,
                         paramsJson: payload,
                         ctx: ctx,
                         callback: { result in
@@ -69,14 +69,16 @@ actor NodeJsEntity: Entity {
     private func nodeCall(_ params: FuncCall) async throws {
         let response = try await nodeJs.entityFunc(
             NodeJsEntityFuncRequest(
-                appId: appId,
-                requestId: params.ctx.requestId,
-                requestingUserId: params.ctx.requestingUserId?.value,
+                funcRequest: NodeJsFuncRequest(
+                    appId: appId,
+                    requestId: params.ctx.requestId,
+                    requestingUserId: params.ctx.requestingUserId?.value,
+                    fun: params.fun,
+                    paramsJson: params.paramsJson,
+                ),
                 id: entityId,
                 type: entityType,
-                efunc: params.theFunc,
                 entityJson: e,
-                paramsJson: params.paramsJson
             ))
 
         if let json = response.entityJson {

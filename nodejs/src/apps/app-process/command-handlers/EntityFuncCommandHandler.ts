@@ -6,7 +6,7 @@ import { buildNodeJsFuncResponse } from "./util"
 
 export class EntityFuncCommandHandler extends AppCommandHandler {
     handleAppCommand(payload: NodeJsEntityFuncRequest, ctx?: RequestContext): void {
-        const app = this.apps.getApp(payload.appId)
+        const app = this.apps.getApp(payload.funcRequest.appId)
         if (!app) {
             return
         }
@@ -21,14 +21,14 @@ export class EntityFuncCommandHandler extends AppCommandHandler {
             }
         }
 
-        const entityFunc = entityType.func[payload.efunc]
+        const entityFunc = entityType.func[payload.funcRequest.fun]
 
         const result = entityFunc.func(
             entity,
             payload.id,
             this.lib,
-            (payload.paramsJson ? JSON.parse(payload.paramsJson) : null) as never,
-            new FuncContextImpl(payload.requestId, payload.requestingUserId, this.lib.responseSender),
+            (payload.funcRequest.paramsJson ? JSON.parse(payload.funcRequest.paramsJson) : null) as never,
+            new FuncContextImpl(this.lib.responseSender, payload.funcRequest.requestId, payload.funcRequest.requestingUserId),
         )
 
         const response: NodeJsEntityFuncResponse = {

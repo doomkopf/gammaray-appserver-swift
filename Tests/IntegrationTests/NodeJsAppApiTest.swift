@@ -55,14 +55,16 @@ final class NodeJsAppApiTest: XCTestCase {
     private func entityFuncReturnsAllResultingActions(_ nodeApi: NodeJsAppApi) async throws {
         let entityFuncResponse = try await nodeApi.entityFunc(
             NodeJsEntityFuncRequest(
-                appId: appId,
-                requestId: "123",
-                requestingUserId: nil,
+                funcRequest: NodeJsFuncRequest(
+                    appId: appId,
+                    requestId: "123",
+                    requestingUserId: nil,
+                    fun: "test",
+                    paramsJson: "{\"moreTest\":\"er\"}",
+                ),
                 id: "",
                 type: "person",
-                efunc: "test",
                 entityJson: "{\"name\":\"Timo\"}",
-                paramsJson: "{\"moreTest\":\"er\"}"
             )
         )
 
@@ -78,11 +80,11 @@ final class NodeJsAppApiTest: XCTestCase {
 
     private func statelessFuncReturnsAllResultingActions(_ nodeApi: NodeJsAppApi) async throws {
         let statelessFuncResponse = try await nodeApi.statelessFunc(
-            NodeJsStatelessFuncRequest(
+            NodeJsFuncRequest(
                 appId: appId,
                 requestId: "123",
                 requestingUserId: nil,
-                sfunc: "test",
+                fun: "test",
                 paramsJson: "{\"text\":\"stuff\"}"
             )
         )

@@ -24,7 +24,7 @@ final class NodeJsEntityTest: XCTestCase {
             }
 
             // never called
-            func statelessFunc(_ request: NodeJsStatelessFuncRequest) async throws
+            func statelessFunc(_ request: NodeJsFuncRequest) async throws
                 -> NodeJsStatelessFuncResponse
             {
                 throw AppserverError.General("")

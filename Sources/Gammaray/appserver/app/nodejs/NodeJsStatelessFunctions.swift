@@ -20,11 +20,11 @@ final class NodeJsStatelessFunctions: StatelessFunctions {
     func invoke(_ params: FunctionParams) async {
         do {
             let response = try await nodeProcess.statelessFunc(
-                NodeJsStatelessFuncRequest(
+                NodeJsFuncRequest(
                     appId: appId,
                     requestId: params.ctx.requestId,
                     requestingUserId: params.ctx.requestingUserId?.value,
-                    sfunc: params.theFunc,
+                    fun: params.theFunc,
                     paramsJson: params.payload
                 ))
 

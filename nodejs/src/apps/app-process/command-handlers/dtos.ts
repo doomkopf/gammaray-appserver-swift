@@ -48,15 +48,19 @@ export enum NodeJsEntityAction {
     DELETE_ENTITY = 2,
 }
 
-export interface NodeJsEntityFuncRequest {
+export interface NodeJsFuncRequest {
     appId: string
-    requestId: string | null
-    requestingUserId: string | null
+    requestId?: string
+    requestingUserId?: string
+    fun: string
+    paramsJson?: string
+}
+
+export interface NodeJsEntityFuncRequest {
+    funcRequest: NodeJsFuncRequest
     id: string
     type: string
-    efunc: string
-    entityJson: string | null
-    paramsJson: string | null
+    entityJson?: string
 }
 
 export interface NodeJsFuncResponse {
@@ -73,14 +77,6 @@ export interface NodeJsEntityFuncResponse {
     general: NodeJsFuncResponse
     action: NodeJsEntityAction
     entityJson?: string
-}
-
-export interface NodeJsStatelessFuncRequest {
-    appId: string
-    requestId: string | null
-    requestingUserId: string | null
-    sfunc: string
-    paramsJson: string | null
 }
 
 export interface NodeJsStatelessFuncResponse {

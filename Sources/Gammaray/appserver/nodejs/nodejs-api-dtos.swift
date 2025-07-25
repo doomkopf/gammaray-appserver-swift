@@ -75,15 +75,19 @@ enum NodeJsEntityAction: Int, Decodable {
     }
 }
 
-struct NodeJsEntityFuncRequest: Encodable {
+struct NodeJsFuncRequest: Encodable {
     let appId: String
     let requestId: String?
     let requestingUserId: String?
+    let fun: String
+    let paramsJson: String?
+}
+
+struct NodeJsEntityFuncRequest: Encodable {
+    let funcRequest: NodeJsFuncRequest
     let id: String
     let type: String
-    let efunc: String
     let entityJson: String?
-    let paramsJson: String?
 }
 
 struct NodeJsFuncResponse: Decodable {
@@ -100,14 +104,6 @@ struct NodeJsEntityFuncResponse: Decodable {
     let general: NodeJsFuncResponse
     let action: NodeJsEntityAction
     let entityJson: String?
-}
-
-struct NodeJsStatelessFuncRequest: Encodable {
-    let appId: String
-    let requestId: String?
-    let requestingUserId: String?
-    let sfunc: String
-    let paramsJson: String?
 }
 
 struct NodeJsStatelessFuncResponse: Decodable {
