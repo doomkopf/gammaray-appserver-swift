@@ -40,7 +40,7 @@ actor NativeEntity: Entity {
 
         let result = entityFunc.f(
             entity, id, lib, decodedPayload,
-            NativeFuncContext(
+            ApiRequestContextImpl(
                 requestId: ctx.requestId,
                 requestingUserId: ctx.requestingUserId,
                 responseSender: responseSender

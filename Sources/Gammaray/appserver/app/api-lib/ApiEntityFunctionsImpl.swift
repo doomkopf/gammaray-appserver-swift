@@ -7,7 +7,7 @@ struct ApiEntityFunctionsImpl: ApiEntityFunctions {
         theFunc: String,
         entityId: EntityId,
         payload: FuncPayload?,
-        ctx: RequestContext
+        ctx: ApiRequestContext,
     ) {
         var stringPayload: String?
         if let payload {
@@ -17,7 +17,10 @@ struct ApiEntityFunctionsImpl: ApiEntityFunctions {
             await appEntities.invoke(
                 params: FunctionParams(
                     theFunc: theFunc,
-                    ctx: ctx,
+                    ctx: RequestContext(
+                        requestId: ctx.requestId,
+                        requestingUserId: ctx.requestingUserId,
+                    ),
                     payload: stringPayload
                 ),
                 entityParams: EntityParams(type: entityType, id: entityId)

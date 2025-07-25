@@ -1,4 +1,4 @@
-struct NativeFuncContext: FuncContext {
+struct ApiRequestContextImpl: ApiRequestContext {
     let requestId: RequestId?
     let requestingUserId: EntityId?
     let responseSender: ResponseSender

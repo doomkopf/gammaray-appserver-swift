@@ -41,11 +41,11 @@ struct EntityFunc {
             _ id: EntityId,
             _ lib: Lib,
             _ payload: Any?,
-            _ ctx: FuncContext
+            _ ctx: ApiRequestContext
         ) -> EntityFuncResult
 }
 
-protocol FuncContext: Sendable {
+protocol ApiRequestContext: Sendable {
     var requestId: RequestId? { get }
     var requestingUserId: EntityId? { get }
     func sendResponse(objJson: String)
@@ -76,7 +76,7 @@ protocol ApiEntityFunctions: Sendable {
         theFunc: String,
         entityId: EntityId,
         payload: FuncPayload?,
-        ctx: RequestContext
+        ctx: ApiRequestContext,
     )
 }
 
