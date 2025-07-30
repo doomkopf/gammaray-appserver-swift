@@ -9,7 +9,10 @@ struct AppUserLogin {
         ctxPayload: String?,
         ctx: RequestContext
     ) async {
-        let sessionId = await userLogin.login(userId: userId)
+        let sessionId = await userLogin.login(
+            userId: userId,
+            persistentSession: ctx.persistentSession,
+        )
         let loginResult = LoginResult(
             sessionId: sessionId,
             ctxPayload: ctxPayload

@@ -6,11 +6,6 @@ import XCTest
 final class GeneralTest: XCTestCase {
     private let appId = "test"
 
-    struct UserSenderMock: UserSender {
-        func send(userId: EntityId, objJson: String) async {
-        }
-    }
-
     struct HttpClientMock: HttpClient {
         func request(
             url: String,
@@ -49,6 +44,8 @@ final class GeneralTest: XCTestCase {
             jsonDecoder: jsonDecoder
         )
 
+        let userSender = UserSender()
+
         let nodeApi = try NodeJsAppApiImpl(
             loggerFactory: loggerFactory,
             config: config,
@@ -70,8 +67,8 @@ final class GeneralTest: XCTestCase {
                 loggerFactory: loggerFactory,
                 globalAppLibComponents: GlobalAppLibComponents(
                     responseSender: responseSender,
-                    userLogin: try UserLogin(scheduler: scheduler),
-                    userSender: UserSenderMock(),
+                    userLogin: try UserLogin(userSender: userSender, scheduler: scheduler),
+                    userSender: userSender,
                     httpClient: HttpClientMock()
                 ),
                 nodeProcess: nodeApi,
@@ -115,6 +112,7 @@ final class GeneralTest: XCTestCase {
                     requestId: requestId,
                     requestingUserId: nil,
                     clientRequestId: nil,
+                    persistentSession: nil,
                 ),
                 payload: echoParamsJson
             ),
@@ -166,6 +164,7 @@ final class GeneralTest: XCTestCase {
                     requestId: requestId,
                     requestingUserId: nil,
                     clientRequestId: nil,
+                    persistentSession: nil,
                 ),
                 payload: nil
             ),

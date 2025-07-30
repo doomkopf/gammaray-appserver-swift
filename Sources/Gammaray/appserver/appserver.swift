@@ -1,10 +1,5 @@
 import Foundation
 
-struct UserSenderMock: UserSender {
-    func send(userId: EntityId, objJson: String) async {
-    }
-}
-
 struct HttpClientMock: HttpClient {
     func request(
         url: String,
@@ -59,7 +54,8 @@ func createComponents() async throws -> AppserverComponents {
         jsonDecoder: jsonDecoder
     )
 
-    let userLogin = try UserLogin(scheduler: scheduler)
+    let userSender = UserSender()
+    let userLogin = try UserLogin(userSender: userSender, scheduler: scheduler)
 
     let apps = Apps(
         loggerFactory: loggerFactory,
@@ -73,7 +69,7 @@ func createComponents() async throws -> AppserverComponents {
             globalAppLibComponents: GlobalAppLibComponents(
                 responseSender: responseSender,
                 userLogin: userLogin,
-                userSender: UserSenderMock(),
+                userSender: userSender,
                 httpClient: HttpClientMock()
             ),
             nodeProcess: nodeApi,

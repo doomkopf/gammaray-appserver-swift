@@ -2,6 +2,7 @@ struct RequestContext {
     let requestId: RequestId?
     let requestingUserId: EntityId?
     let clientRequestId: String?
+    let persistentSession: GammarayPersistentSession?
 }
 
 struct EntityParams {
@@ -16,5 +17,5 @@ struct FunctionParams {
 }
 
 let EMPTY_REQUEST_CONTEXT = RequestContext(
-    requestId: nil, requestingUserId: nil, clientRequestId: nil
+    requestId: nil, requestingUserId: nil, clientRequestId: nil, persistentSession: nil
 )

@@ -110,7 +110,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
                 }
                 await userSender.send(
                     userId: userId,
-                    objJson: userSendCall.objJson
+                    payload: userSendCall.objJson
                 )
             }
         }

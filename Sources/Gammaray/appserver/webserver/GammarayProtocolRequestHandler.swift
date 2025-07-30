@@ -46,7 +46,11 @@ final class GammarayProtocolRequestHandler: Sendable {
         self.userLogin = userLogin
     }
 
-    func handle(request: GammarayProtocolRequest, payload: String) async {
+    func handle(
+        request: GammarayProtocolRequest,
+        persistentSession: GammarayPersistentSession?,
+        payload: String,
+    ) async {
         let msg: Message
         do {
             msg = try jsonDecoder.decode(Message.self, payload)
@@ -56,13 +60,21 @@ final class GammarayProtocolRequestHandler: Sendable {
         }
 
         if let appMsg = msg.app {
-            await handleAppMessage(request: request, appMsg: appMsg)
+            await handleAppMessage(
+                request: request,
+                persistentSession: persistentSession,
+                appMsg: appMsg,
+            )
         } else if let adminMsg = msg.admin {
             await handleAdminMessage(request: request, adminMsg: adminMsg)
         }
     }
 
-    private func handleAppMessage(request: GammarayProtocolRequest, appMsg: AppMessage) async {
+    private func handleAppMessage(
+        request: GammarayProtocolRequest,
+        persistentSession: GammarayPersistentSession?,
+        appMsg: AppMessage,
+    ) async {
         var entityParams: EntityParams?
         if let entityMsg = appMsg.entityMsg {
             let entityId: EntityId
@@ -79,9 +91,12 @@ final class GammarayProtocolRequestHandler: Sendable {
         }
 
         let requestId = await responseSender.addRequest(request: request)
+
         var userId: EntityId? = nil
         if let sessionId = appMsg.sid {
             userId = await userLogin.getUserId(sessionId: sessionId)
+        } else if let userIdFromSession = await persistentSession?.getUserId() {
+            userId = userIdFromSession
         }
 
         await apps.handleFunc(
@@ -92,6 +107,7 @@ final class GammarayProtocolRequestHandler: Sendable {
                     requestId: requestId,
                     requestingUserId: userId,
                     clientRequestId: appMsg.rid,
+                    persistentSession: persistentSession,
                 ),
                 payload: appMsg.payload
             ),

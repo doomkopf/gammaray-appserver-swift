@@ -1,4 +1,5 @@
 import Hummingbird
+import HummingbirdWebSocket
 
 func runWebserver(components: AppserverComponents) async throws {
     let hummingbird = Application(
@@ -14,7 +15,10 @@ func runWebserver(components: AppserverComponents) async throws {
                 let gmrRequest = HummingbirdGammarayProtocolRequest()
 
                 await components.protocolRequestHandler.handle(
-                    request: gmrRequest, payload: requestBody)
+                    request: gmrRequest,
+                    persistentSession: nil,
+                    payload: requestBody,
+                )
 
                 guard let responseBody = await gmrRequest.awaitResponse() else {
                     return Response(status: HTTPResponse.Status.internalServerError)
@@ -27,6 +31,30 @@ func runWebserver(components: AppserverComponents) async throws {
             }
 
             return Response(status: HTTPResponse.Status.badRequest)
+        },
+        server: .http1WebSocketUpgrade { request, channel, logger in
+            guard request.path == "/gamwsapi" else {
+                return .dontUpgrade
+            }
+            return .upgrade([:]) { inbound, outbound, context in
+                // channel connected
+                let session = HummingbirdGammarayPersistentSession(outbound: outbound)
+                do {
+                    for try await frame in inbound {
+                        var buf = frame.data
+                        if let frameStr = buf.readString(length: buf.readableBytes) {
+                            await components.protocolRequestHandler.handle(
+                                request: session,
+                                persistentSession: session,
+                                payload: frameStr,
+                            )
+                        }
+                    }
+                } catch {
+                    // channel disconnected
+                }
+                // channel closed (gracefully?)
+            }
         },
         configuration: .init(
             address: .hostname("127.0.0.1", port: components.config.getInt(.webserverPort)))

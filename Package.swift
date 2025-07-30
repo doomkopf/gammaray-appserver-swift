@@ -14,16 +14,19 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/hummingbird-project/hummingbird.git",
-            from: "2.13.0"
-        )
+            from: "2.15.0"
+        ),
+        .package(
+            url: "https://github.com/hummingbird-project/hummingbird-websocket.git",
+            from: "2.6.0"
+        ),
     ],
     targets: [
         .executableTarget(
             name: "Gammaray",
             dependencies: [
-                .product(
-                    name: "Hummingbird",
-                    package: "hummingbird")
+                .product(name: "Hummingbird", package: "hummingbird"),
+                .product(name: "HummingbirdWebSocket", package: "hummingbird-websocket"),
             ],
             resources: [
                 .copy("Resources/")
