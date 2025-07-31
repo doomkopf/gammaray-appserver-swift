@@ -47,7 +47,7 @@ func createComponents() async throws -> AppserverComponents {
     )
     await nodeApi.start()
 
-    let db = InMemoryDatabase()
+    let db = try createDatabase(config: config)
     let appserverDb = AppserverDatabaseImpl(
         db: db,
         jsonEncoder: jsonEncoder,
@@ -106,4 +106,16 @@ func createComponents() async throws -> AppserverComponents {
         responseSender: responseSender,
         userLogin: userLogin
     )
+}
+
+private func createDatabase(config: Config) throws -> Database {
+    let databaseType = config.getString(.databaseType)
+    switch databaseType {
+    case CONFIG_DATABASETYPE_FILE:
+        return FileDatabase(path: config.getString(.fileDatabasePath), ext: "json")
+    case CONFIG_DATABASETYPE_INMEMORY:
+        return InMemoryDatabase()
+    default:
+        throw AppserverError.General("Invalid database type: \(databaseType)")
+    }
 }

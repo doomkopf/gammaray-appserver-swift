@@ -9,6 +9,8 @@ enum ConfigProperty: String {
     case appScheduledTasksIntervalMillis
     case webserverPort
     case appDeploymentPassword
+    case databaseType
+    case fileDatabasePath
 }
 
 private func defaultValue(_ configProperty: ConfigProperty) -> String {
@@ -23,6 +25,8 @@ private func defaultValue(_ configProperty: ConfigProperty) -> String {
     case .appScheduledTasksIntervalMillis: "3000"
     case .webserverPort: "8080"
     case .appDeploymentPassword: "thisdefaultpasswordshouldnotbeused"
+    case .databaseType: CONFIG_DATABASETYPE_INMEMORY
+    case .fileDatabasePath: "pathNotConfigured"
     }
 }
 
