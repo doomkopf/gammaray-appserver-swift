@@ -27,6 +27,20 @@ final class GeneralTest: XCTestCase {
         }
     }
 
+    actor GammarayPersistentSessionMock: GammarayPersistentSession {
+        var userId: EntityId?
+        var payload = ""
+        func send(payload: String) {
+            self.payload = payload
+        }
+        func assignUserId(userId: EntityId) {
+            self.userId = userId
+        }
+        func getUserId() -> EntityId? {
+            nil
+        }
+    }
+
     func testGeneral() async throws {
         let reader = ResourceFileReaderImpl(module: Bundle.module)
         let config = try Config(
@@ -95,8 +109,9 @@ final class GeneralTest: XCTestCase {
 
         await echoFuncResponds(apps: apps, responseSender: responseSender)
         await createPersonEntityAndStoreToDatabase(apps: apps, db: db, config: config)
-        try await userLoginCallsLoginFinishedFunctionWithSessionId(
-            apps: apps, responseSender: responseSender, jsonDecoder: jsonDecoder)
+        try await
+            userLoginCallsLoginFinishedFunctionWithSessionIdAndSetsUserIdToPersistentSessionAndPushesExtraMessageToUser(
+                apps: apps, responseSender: responseSender, jsonDecoder: jsonDecoder)
     }
 
     private func echoFuncResponds(apps: Apps, responseSender: ResponseSender) async {
@@ -150,11 +165,14 @@ final class GeneralTest: XCTestCase {
         XCTAssertEqual("{\"name\":\"TestName\"}", dbEntity)
     }
 
-    private func userLoginCallsLoginFinishedFunctionWithSessionId(
-        apps: Apps, responseSender: ResponseSender, jsonDecoder: StringJSONDecoder
-    ) async throws {
+    private func
+        userLoginCallsLoginFinishedFunctionWithSessionIdAndSetsUserIdToPersistentSessionAndPushesExtraMessageToUser(
+            apps: Apps, responseSender: ResponseSender, jsonDecoder: StringJSONDecoder
+        ) async throws
+    {
         let request = TestRequest()
         let requestId = await responseSender.addRequest(request: request)
+        let persistentSession = GammarayPersistentSessionMock()
 
         await apps.handleFunc(
             appId: appId,
@@ -164,16 +182,21 @@ final class GeneralTest: XCTestCase {
                     requestId: requestId,
                     requestingUserId: nil,
                     clientRequestId: nil,
-                    persistentSession: nil,
+                    persistentSession: persistentSession,
                 ),
-                payload: nil
+                payload: nil,
             ),
-            entityParams: nil
+            entityParams: nil,
         )
 
         let sentPayloadString = await request.payload
         let sentPayload = try jsonDecoder.decode(LoginResult.self, sentPayloadString)
         XCTAssertEqual("1", sentPayload.sessionId)
         XCTAssertEqual("{\"myCustomContext\":\"test\"}", sentPayload.ctxPayload)
+
+        let setUserId = await persistentSession.userId
+        let pushedPayload = await persistentSession.payload
+        XCTAssertEqual("myUserId", setUserId?.value)
+        XCTAssertEqual("{\"msg\":\"pushed message\"}", pushedPayload)
     }
 }

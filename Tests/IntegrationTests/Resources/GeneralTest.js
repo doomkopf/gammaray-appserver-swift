@@ -26,6 +26,7 @@ const loginFinished = {
     vis: 1,
     func(lib, params, ctx) {
         ctx.sendResponse(params)
+        lib.user.send("myUserId", { msg: "pushed message" })
     },
 }
 
