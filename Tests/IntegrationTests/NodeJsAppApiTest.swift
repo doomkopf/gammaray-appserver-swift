@@ -63,7 +63,7 @@ final class NodeJsAppApiTest: XCTestCase {
                     fun: "test",
                     paramsJson: "{\"moreTest\":\"er\"}",
                 ),
-                id: "",
+                id: "theEntityId",
                 type: "person",
                 entityJson: "{\"name\":\"Timo\"}",
             )
@@ -75,7 +75,7 @@ final class NodeJsAppApiTest: XCTestCase {
 
         verifyFuncReturnsAllGeneralResultingActions(
             generalFuncResponse: entityFuncResponse.general,
-            prefix: "entity"
+            statelessFunc: false,
         )
     }
 
@@ -93,14 +93,16 @@ final class NodeJsAppApiTest: XCTestCase {
 
         verifyFuncReturnsAllGeneralResultingActions(
             generalFuncResponse: statelessFuncResponse.general,
-            prefix: "stateless"
+            statelessFunc: true,
         )
     }
 
     private func verifyFuncReturnsAllGeneralResultingActions(
         generalFuncResponse: NodeJsFuncResponse,
-        prefix: String
+        statelessFunc: Bool,
     ) {
+        let prefix = statelessFunc ? "stateless" : "entity"
+
         XCTAssertEqual(generalFuncResponse.responseSenderSend?.requestId, "123")
         XCTAssertEqual(
             generalFuncResponse.responseSenderSend?.objJson,
@@ -151,8 +153,15 @@ final class NodeJsAppApiTest: XCTestCase {
         XCTAssertNil(generalFuncResponse.httpClientRequest?[1].requestCtxJson)
 
         XCTAssertEqual(generalFuncResponse.loggerLog?[0].logLevel, .INFO)
-        XCTAssertEqual(generalFuncResponse.loggerLog?[0].message, "this is a log message")
+        let expectedLogMessageId = statelessFunc ? "noEntityId" : "theEntityId"
+        XCTAssertEqual(
+            generalFuncResponse.loggerLog?[0].message,
+            "this is a log message - id: \(expectedLogMessageId)")
         XCTAssertEqual(generalFuncResponse.loggerLog?[1].logLevel, .ERROR)
-        XCTAssertEqual(generalFuncResponse.loggerLog?[1].message, "this is an error message")
+        let expectedLogMessagePayload =
+            statelessFunc ? "{\"text\":\"stuff\"}" : "{\"moreTest\":\"er\"}"
+        XCTAssertEqual(
+            generalFuncResponse.loggerLog?[1].message,
+            "this is an error message - payload: \(expectedLogMessagePayload)")
     }
 }
