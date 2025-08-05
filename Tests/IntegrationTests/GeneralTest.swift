@@ -58,7 +58,7 @@ final class GeneralTest: XCTestCase {
             jsonDecoder: jsonDecoder
         )
 
-        let userSender = UserSender()
+        let userSender = UserSenderImpl()
 
         let nodeApi = try NodeJsAppApiImpl(
             loggerFactory: loggerFactory,

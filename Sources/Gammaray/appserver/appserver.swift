@@ -54,7 +54,7 @@ func createComponents() async throws -> AppserverComponents {
         jsonDecoder: jsonDecoder
     )
 
-    let userSender = UserSender()
+    let userSender = UserSenderImpl()
     let userLogin = try UserLogin(userSender: userSender, scheduler: scheduler)
 
     let apps = Apps(

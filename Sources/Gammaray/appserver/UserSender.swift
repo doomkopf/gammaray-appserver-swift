@@ -1,4 +1,10 @@
-actor UserSender {
+protocol UserSender: Sendable {
+    func send(userId: EntityId, payload: String) async
+    func putUserSession(session: GammarayPersistentSession, userId: EntityId) async
+    func removeUserSession(userId: EntityId) async
+}
+
+actor UserSenderImpl: UserSender {
     private var userId2Session: [String: GammarayPersistentSession] = [:]
 
     func send(userId: EntityId, payload: String) async {
