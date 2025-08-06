@@ -81,4 +81,40 @@ final class UserLoginTest: XCTestCase {
         let userSenderRemovedUserId = await userSender.removedUserId
         XCTAssertEqual(userId.value, userSenderRemovedUserId?.value)
     }
+
+    func testLogsOutSameIdBeforeLogin() async throws {
+        actor UserSenderMock: UserSender {
+            var removedUserId: EntityId?
+
+            func send(userId: EntityId, payload: String) {
+            }
+
+            func putUserSession(
+                session: GammarayPersistentSession, userId: EntityId
+            ) {
+            }
+
+            func removeUserSession(userId: EntityId) {
+                removedUserId = userId
+            }
+        }
+
+        let userSender = UserSenderMock()
+
+        let subject = try UserLogin(
+            userSender: userSender,
+            scheduler: NoopScheduler(),
+        )
+
+        let userId = SimpleEntityId(value: "testId")
+
+        _ = await subject.login(
+            userId: userId, persistentSession: NoopGammarayPersistentSession())
+        _ = await subject.login(
+            userId: userId, persistentSession: NoopGammarayPersistentSession())
+
+        let userSenderRemovedUserId = await userSender.removedUserId
+
+        XCTAssertEqual(userId.value, userSenderRemovedUserId?.value)
+    }
 }

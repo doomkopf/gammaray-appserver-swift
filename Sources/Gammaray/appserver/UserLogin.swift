@@ -32,6 +32,8 @@ actor UserLogin: CacheListener {
     }
 
     func login(userId: EntityId, persistentSession: GammarayPersistentSession?) async -> SessionId {
+        await logout(userId: userId)
+
         let sessionId = generateSessionId()
         sessionId2UserIdCache.put(key: sessionId, value: userId)
         userId2SessionId[userId.value] = sessionId
