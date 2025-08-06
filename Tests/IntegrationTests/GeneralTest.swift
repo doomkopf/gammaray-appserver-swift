@@ -96,7 +96,11 @@ final class GeneralTest: XCTestCase {
             jsonDecoder: jsonDecoder,
             jsonEncoder: jsonEncoder,
             deployAppCommandProcessor: DeployAppCommandProcessor(
-                db: db, jsonEncoder: jsonEncoder, config: config)
+                loggerFactory: loggerFactory,
+                db: db,
+                jsonEncoder: jsonEncoder,
+                config: config,
+            )
         )
 
         let code = try reader.readStringFile(name: "GeneralTest", ext: "js")

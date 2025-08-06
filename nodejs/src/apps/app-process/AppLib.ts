@@ -1,4 +1,3 @@
-import { BigObjectsImpl } from "./api-lib-impl/BigObjectsImpl"
 import { EntityFunctionsImpl } from "./api-lib-impl/EntityFunctionsImpl"
 import { HttpClientImpl } from "./api-lib-impl/HttpClientImpl"
 import { LoggerImpl } from "./api-lib-impl/LoggerImpl"
@@ -15,7 +14,6 @@ export class AppLib implements Lib {
         readonly entityFunc: EntityFunctionsImpl,
         readonly httpClient: HttpClientImpl,
         readonly log: LoggerImpl,
-        readonly bigObjects: BigObjectsImpl,
     ) {
     }
 }

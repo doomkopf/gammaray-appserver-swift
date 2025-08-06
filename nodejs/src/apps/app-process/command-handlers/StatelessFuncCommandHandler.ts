@@ -1,4 +1,5 @@
 import { CommandContext } from "../../../lib/communication/CommandContext";
+import { LogLevel } from "../../../lib/logging/LogLevel";
 import { RequestContextImpl } from "../api-lib-impl/RequestContextImpl";
 import { AppCommandHandler } from "../AppCommandHandler";
 import { NodeJsFuncRequest, NodeJsStatelessFuncResponse } from "./dtos";
@@ -12,16 +13,21 @@ export class StatelessFuncCommandHandler extends AppCommandHandler {
         }
 
         const statelessFunc = app.func[payload.fun]
-        statelessFunc.func(
-            this.lib,
-            (payload.paramsJson ? JSON.parse(payload.paramsJson) : null) as never,
-            new RequestContextImpl(
-                this.lib.responseSender,
-                payload.requestId,
-                payload.requestingUserId,
-                payload.clientRequestId,
-            ),
-        )
+
+        try {
+            statelessFunc.func(
+                this.lib,
+                (payload.paramsJson ? JSON.parse(payload.paramsJson) : null) as never,
+                new RequestContextImpl(
+                    this.lib.responseSender,
+                    payload.requestId,
+                    payload.requestingUserId,
+                    payload.clientRequestId,
+                ),
+            )
+        } catch (err) {
+            this.log.log(LogLevel.ERROR, "", err)
+        }
 
         const response: NodeJsStatelessFuncResponse = {
             general: buildNodeJsFuncResponse(this.lib)

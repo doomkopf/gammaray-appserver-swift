@@ -1,4 +1,3 @@
-import { BigObjects } from "./bigobjects"
 import { EntityFunctions, ResponseSender } from "./core"
 import { HttpClient } from "./http"
 import { Logger } from "./log"
@@ -15,5 +14,4 @@ export interface Lib {
     readonly entityFunc: EntityFunctions
     readonly httpClient: HttpClient
     readonly log: Logger
-    readonly bigObjects: BigObjects
 }

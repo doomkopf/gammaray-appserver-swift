@@ -6,7 +6,7 @@ struct EntityIdImpl: EntityId {
         if value.count >= 3 && value.count <= 128 && isMatch {
             self.value = value
         } else {
-            throw AppserverError.General("Invalid entity id")
+            throw AppserverError.General("Invalid entity id: \(value)")
         }
     }
 

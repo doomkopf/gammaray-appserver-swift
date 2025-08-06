@@ -1,6 +1,7 @@
 import { CommandHandler } from "../../lib/communication/CommandHandler"
 import { CommandProcessor } from "../../lib/communication/CommandProcessor"
 import { Receiver } from "../../lib/connection/Receiver"
+import { LoggerFactory } from "../../lib/logging/LoggerFactory"
 import { GammarayApp } from "./api/core"
 import { AppLib } from "./AppLib"
 import { AppDefinitionCommandHandler } from "./command-handlers/AppDefinitionCommandHandler"
@@ -15,13 +16,14 @@ export class Apps {
     private readonly apps = new Map<string, GammarayApp>()
 
     constructor(
+        loggerFactory: LoggerFactory,
         lib: AppLib,
     ) {
         const commandHandlers = new Map<number, CommandHandler>()
-        commandHandlers.set(Commands.ENTITY_FUNC, new EntityFuncCommandHandler(this, lib))
-        commandHandlers.set(Commands.STATELESS_FUNC, new StatelessFuncCommandHandler(this, lib))
-        commandHandlers.set(Commands.APP_DEFINITION, new AppDefinitionCommandHandler(this, lib))
-        commandHandlers.set(Commands.SET_APP, new SetAppCommandHandler(this, lib))
+        commandHandlers.set(Commands.ENTITY_FUNC, new EntityFuncCommandHandler(loggerFactory, this, lib))
+        commandHandlers.set(Commands.STATELESS_FUNC, new StatelessFuncCommandHandler(loggerFactory, this, lib))
+        commandHandlers.set(Commands.APP_DEFINITION, new AppDefinitionCommandHandler(loggerFactory, this, lib))
+        commandHandlers.set(Commands.SET_APP, new SetAppCommandHandler(loggerFactory, this, lib))
 
         this.rec = new Receiver(LOCAL_PORT, new CommandProcessor(commandHandlers))
     }
