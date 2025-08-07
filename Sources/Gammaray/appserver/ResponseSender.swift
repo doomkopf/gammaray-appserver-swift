@@ -35,14 +35,14 @@ actor ResponseSender: CacheListener {
         requestsCache.cleanup()
     }
 
-    func send(requestId: RequestId, objJson: String) async {
+    func send(requestId: RequestId, payload: String) async {
         guard let request = requestsCache.remove(requestId) else {
             return
         }
 
-        await request.respond(payload: objJson)
+        await request.respond(payload: payload)
         if log.isLevel(.DEBUG) {
-            log.log(.DEBUG, "RESP - requestId=\(requestId) payload=\(objJson)", nil)
+            log.log(.DEBUG, "RESP - requestId=\(requestId) payload=\(payload)", nil)
         }
     }
 

@@ -57,7 +57,7 @@ final class ResponseSenderTest: XCTestCase {
             requestsCache: cache
         )
 
-        await subject.send(requestId: "id", objJson: "thePayload")
+        await subject.send(requestId: "id", payload: "thePayload")
 
         let respondPayload = await cache.request.respondPayload
 

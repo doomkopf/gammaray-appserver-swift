@@ -3,7 +3,7 @@ struct ApiResponseSenderImpl: ApiResponseSender {
 
     func send(requestId: RequestId, obj: String) {
         Task {
-            await responseSender.send(requestId: requestId, objJson: obj)
+            await responseSender.send(requestId: requestId, payload: obj)
         }
     }
 }

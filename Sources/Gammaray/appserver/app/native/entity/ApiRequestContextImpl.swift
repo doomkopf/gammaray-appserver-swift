@@ -7,7 +7,7 @@ struct ApiRequestContextImpl: ApiRequestContext {
     func sendResponse(objJson: String) {
         if let requestId {
             Task {
-                await responseSender.send(requestId: requestId, objJson: objJson)
+                await responseSender.send(requestId: requestId, payload: objJson)
             }
         }
     }

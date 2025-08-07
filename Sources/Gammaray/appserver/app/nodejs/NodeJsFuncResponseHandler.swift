@@ -50,7 +50,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
         }
         if let rsPayload {
             await responseSender.send(
-                requestId: rsPayload.requestId, objJson: rsPayload.objJson)
+                requestId: rsPayload.requestId, payload: rsPayload.objJson)
         }
     }
 
