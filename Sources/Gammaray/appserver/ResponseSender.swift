@@ -1,12 +1,17 @@
 actor ResponseSender: CacheListener {
+    private let log: Logger
+
     private var idCounter = 0
     private let requestsCache: any Cache<GammarayProtocolRequest>
     private let task: ScheduledTask
 
     init(
+        loggerFactory: LoggerFactory,
         scheduler: Scheduler,
         requestsCache: any Cache<GammarayProtocolRequest>
     ) {
+        log = loggerFactory.createForClass(ResponseSender.self)
+
         self.requestsCache = requestsCache
         task = scheduler.scheduleInterval(millis: 5000)
 
@@ -17,9 +22,11 @@ actor ResponseSender: CacheListener {
     }
 
     init(
+        loggerFactory: LoggerFactory,
         scheduler: Scheduler
     ) throws {
         self.init(
+            loggerFactory: loggerFactory,
             scheduler: scheduler,
             requestsCache: try CacheImpl(entryEvictionTimeMillis: 10000, maxEntries: 100000))
     }
@@ -34,6 +41,9 @@ actor ResponseSender: CacheListener {
         }
 
         await request.respond(payload: objJson)
+        if log.isLevel(.DEBUG) {
+            log.log(.DEBUG, "RESP - requestId=\(requestId) payload=\(objJson)", nil)
+        }
     }
 
     func addRequest(request: GammarayProtocolRequest) -> RequestId {

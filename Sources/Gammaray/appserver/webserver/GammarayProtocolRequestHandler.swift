@@ -3,7 +3,7 @@ private struct Message: Decodable {
     let admin: AdminMessage?
 }
 
-private struct AppMessage: Decodable {
+private struct AppMessage: Codable {
     let appId: String
     let theFunc: String
     let entityMsg: EntityMessage?
@@ -12,7 +12,7 @@ private struct AppMessage: Decodable {
     let rid: String?
 }
 
-private struct EntityMessage: Decodable {
+private struct EntityMessage: Codable {
     let entityType: String
     let entityId: String
 }
@@ -24,6 +24,7 @@ private struct AdminMessage: Decodable {
 
 final class GammarayProtocolRequestHandler: Sendable {
     private let log: Logger
+    private let jsonEncoder: StringJSONEncoder
     private let jsonDecoder: StringJSONDecoder
     private let responseSender: ResponseSender
     private let apps: Apps
@@ -32,6 +33,7 @@ final class GammarayProtocolRequestHandler: Sendable {
 
     init(
         loggerFactory: LoggerFactory,
+        jsonEncoder: StringJSONEncoder,
         jsonDecoder: StringJSONDecoder,
         responseSender: ResponseSender,
         apps: Apps,
@@ -39,6 +41,7 @@ final class GammarayProtocolRequestHandler: Sendable {
         userLogin: UserLogin,
     ) {
         log = loggerFactory.createForClass(GammarayProtocolRequestHandler.self)
+        self.jsonEncoder = jsonEncoder
         self.jsonDecoder = jsonDecoder
         self.responseSender = responseSender
         self.apps = apps
@@ -75,6 +78,10 @@ final class GammarayProtocolRequestHandler: Sendable {
         persistentSession: GammarayPersistentSession?,
         appMsg: AppMessage,
     ) async {
+        if log.isLevel(.DEBUG) {
+            log.log(.DEBUG, "RECV - \(jsonEncoder.encode(appMsg))", nil)
+        }
+
         var entityParams: EntityParams?
         if let entityMsg = appMsg.entityMsg {
             let entityId: EntityId

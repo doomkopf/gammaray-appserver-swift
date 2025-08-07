@@ -48,7 +48,10 @@ final class GeneralTest: XCTestCase {
             customConfig: [:])
         let loggerFactory = LoggerFactory()
         let scheduler = SchedulerImpl()
-        let responseSender = try ResponseSender(scheduler: scheduler)
+        let responseSender = try ResponseSender(
+            loggerFactory: loggerFactory,
+            scheduler: scheduler,
+        )
         let jsonEncoder = StringJSONEncoder()
         let jsonDecoder = StringJSONDecoder()
 
@@ -58,7 +61,7 @@ final class GeneralTest: XCTestCase {
             jsonDecoder: jsonDecoder
         )
 
-        let userSender = UserSenderImpl()
+        let userSender = UserSenderImpl(loggerFactory: loggerFactory)
 
         let nodeApi = try NodeJsAppApiImpl(
             loggerFactory: loggerFactory,

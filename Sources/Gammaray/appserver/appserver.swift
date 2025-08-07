@@ -38,7 +38,10 @@ func createComponents() async throws -> AppserverComponents {
     let jsonEncoder = StringJSONEncoder()
     let jsonDecoder = StringJSONDecoder()
     let scheduler = SchedulerImpl()
-    let responseSender = try ResponseSender(scheduler: scheduler)
+    let responseSender = try ResponseSender(
+        loggerFactory: loggerFactory,
+        scheduler: scheduler,
+    )
 
     let nodeApi = try NodeJsAppApiImpl(
         loggerFactory: LoggerFactory(),
@@ -54,7 +57,7 @@ func createComponents() async throws -> AppserverComponents {
         jsonDecoder: jsonDecoder
     )
 
-    let userSender = UserSenderImpl()
+    let userSender = UserSenderImpl(loggerFactory: loggerFactory)
     let userLogin = try UserLogin(userSender: userSender, scheduler: scheduler)
 
     let apps = Apps(
@@ -80,6 +83,7 @@ func createComponents() async throws -> AppserverComponents {
 
     let protocolRequestHandler = GammarayProtocolRequestHandler(
         loggerFactory: loggerFactory,
+        jsonEncoder: jsonEncoder,
         jsonDecoder: jsonDecoder,
         responseSender: responseSender,
         apps: apps,

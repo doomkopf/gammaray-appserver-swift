@@ -52,6 +52,7 @@ final class ResponseSenderTest: XCTestCase {
 
         let cache = CacheMock()
         let subject = ResponseSender(
+            loggerFactory: LoggerFactory(),
             scheduler: NoopScheduler(),
             requestsCache: cache
         )
@@ -65,6 +66,7 @@ final class ResponseSenderTest: XCTestCase {
 
     func testGenerateUniqueIds() async {
         let subject = ResponseSender(
+            loggerFactory: LoggerFactory(),
             scheduler: NoopScheduler(),
             requestsCache: NoopCache<GammarayProtocolRequest>()
         )
@@ -155,6 +157,7 @@ final class ResponseSenderTest: XCTestCase {
         let scheduler = SchedulerMock()
         let requestsCache = CacheMock()
         _ = ResponseSender(
+            loggerFactory: LoggerFactory(),
             scheduler: scheduler,
             requestsCache: requestsCache
         )
