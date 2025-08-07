@@ -7,7 +7,6 @@ export interface UserFunctions {
     /**
      * Sends/pushes data to a connected user.
      * In case of a persistent client e.g. a websocket connection, this doesn't require a previous request.
-     * For non-persistent clients it only works once per request as an alternative to {@link ResponseSender.send}.
      */
     send(userId: EntityId, obj: JsonObject): void
 
