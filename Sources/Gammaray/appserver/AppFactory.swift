@@ -66,6 +66,7 @@ struct AppFactory {
                 key
             },
             entityFactory: NodeJsEntityFactory(
+                loggerFactory: loggerFactory,
                 nodeJs: nodeProcess,
                 funcResponseHandler: funcResponseHandler
             ),

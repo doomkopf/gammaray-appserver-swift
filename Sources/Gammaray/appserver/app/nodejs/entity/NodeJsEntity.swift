@@ -6,6 +6,7 @@ private struct FuncCall {
 }
 
 actor NodeJsEntity: Entity {
+    private let log: Logger
     private let appId: String
     private let entityId: String
     private let entityType: String
@@ -17,13 +18,15 @@ actor NodeJsEntity: Entity {
     private var queuedCalls: [FuncCall] = []
 
     init(
+        loggerFactory: LoggerFactory,
         appId: String,
         entityId: String,
         entityType: String,
         nodeJs: NodeJsAppApi,
         funcResponseHandler: NodeJsFuncResponseHandler,
-        e: String?
+        e: String?,
     ) {
+        log = loggerFactory.createForClass(NodeJsEntity.self)
         self.appId = appId
         self.entityId = entityId
         self.entityType = entityType
@@ -37,7 +40,7 @@ actor NodeJsEntity: Entity {
     {
         await withCheckedContinuation { c in
             Task {
-                try await invokeFunctionCallback(
+                await invokeFunctionCallback(
                     FuncCall(
                         fun: theFunc,
                         paramsJson: payload,
@@ -50,37 +53,44 @@ actor NodeJsEntity: Entity {
         }
     }
 
-    private func invokeFunctionCallback(_ params: FuncCall) async throws {
+    private func invokeFunctionCallback(_ params: FuncCall) async {
         if inJsProcessing {
             queuedCalls.append(params)
         } else {
             inJsProcessing = true
 
-            try await nodeCall(params)
+            await nodeCall(params)
 
             for funcCall in queuedCalls {
-                try await nodeCall(funcCall)
+                await nodeCall(funcCall)
             }
 
             inJsProcessing = false
         }
     }
 
-    private func nodeCall(_ params: FuncCall) async throws {
-        let response = try await nodeJs.entityFunc(
-            NodeJsEntityFuncRequest(
-                funcRequest: NodeJsFuncRequest(
-                    appId: appId,
-                    requestId: params.ctx.requestId,
-                    requestingUserId: params.ctx.requestingUserId?.value,
-                    clientRequestId: params.ctx.clientRequestId,
-                    fun: params.fun,
-                    paramsJson: params.paramsJson,
-                ),
-                id: entityId,
-                type: entityType,
-                entityJson: e,
-            ))
+    private func nodeCall(_ params: FuncCall) async {
+        let response: NodeJsEntityFuncResponse
+        do {
+            response = try await nodeJs.entityFunc(
+                NodeJsEntityFuncRequest(
+                    funcRequest: NodeJsFuncRequest(
+                        appId: appId,
+                        requestId: params.ctx.requestId,
+                        requestingUserId: params.ctx.requestingUserId?.value,
+                        clientRequestId: params.ctx.clientRequestId,
+                        fun: params.fun,
+                        paramsJson: params.paramsJson,
+                    ),
+                    id: entityId,
+                    type: entityType,
+                    entityJson: e,
+                ))
+        } catch {
+            params.callback(.none)
+            log.log(.ERROR, "Error in nodejs entity func", error)
+            return
+        }
 
         if let json = response.entityJson {
             e = json

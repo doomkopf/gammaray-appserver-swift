@@ -64,3 +64,8 @@ actor NoopGammarayPersistentSession: GammarayPersistentSession {
         nil
     }
 }
+
+struct NoopNodeJsFuncResponseHandler: NodeJsFuncResponseHandler {
+    func handle(response: NodeJsFuncResponse, ctx: RequestContext) async {
+    }
+}
