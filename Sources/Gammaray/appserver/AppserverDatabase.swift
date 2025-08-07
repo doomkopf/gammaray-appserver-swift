@@ -23,7 +23,7 @@ struct AppserverDatabaseImpl: AppserverDatabase {
     }
 
     private func entityFullKey(appId: String, entityType: String, entityId: EntityId) -> String {
-        "\(appId)_\(entityType)_\(entityId)"
+        "\(appId)_\(entityType)_\(entityId.value)"
     }
 
     func getAppEntity(appId: String, entityType: String, entityId: EntityId) async -> String? {
