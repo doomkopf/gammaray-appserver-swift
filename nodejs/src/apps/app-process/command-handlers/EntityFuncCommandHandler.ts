@@ -18,7 +18,13 @@ export class EntityFuncCommandHandler extends AppCommandHandler {
         if (payload.entityJson) {
             entity = JSON.parse(payload.entityJson)
             if (entityType.deserializeEntity) {
-                entity = entityType.deserializeEntity(payload.id, entity)
+                try {
+                    entity = entityType.deserializeEntity(payload.id, entity)
+                } catch (err) {
+                    this.log.log(LogLevel.ERROR, "Error deserializing entity - id: " + payload.id, err)
+                    this.respondDefault()
+                    return
+                }
             }
         }
 
@@ -39,7 +45,7 @@ export class EntityFuncCommandHandler extends AppCommandHandler {
                 ),
             )
         } catch (err) {
-            this.log.log(LogLevel.ERROR, "", err)
+            this.log.log(LogLevel.ERROR, "Error in entity func: " + payload.type + "." + payload.funcRequest.fun, err)
         }
 
         const response: NodeJsEntityFuncResponse = {
@@ -48,6 +54,15 @@ export class EntityFuncCommandHandler extends AppCommandHandler {
         }
 
         if (typeof (result) === "object") {
+            if (entityType.serializeEntity) {
+                try {
+                    result = entityType.serializeEntity(payload.id, result)
+                } catch (err) {
+                    this.log.log(LogLevel.ERROR, "Error serializing entity - id: " + payload.id, err)
+                    this.respondDefault()
+                    return
+                }
+            }
             response.action = NodeJsEntityAction.SET_ENTITY
             response.entityJson = JSON.stringify(result)
         } else if (result === "delete") {
@@ -55,5 +70,15 @@ export class EntityFuncCommandHandler extends AppCommandHandler {
         }
 
         ctx?.respond(JSON.stringify(response))
+    }
+
+    private respondDefault(ctx?: CommandContext) {
+        if (ctx) {
+            const response: NodeJsEntityFuncResponse = {
+                general: buildNodeJsFuncResponse(this.lib),
+                action: NodeJsEntityAction.NONE,
+            }
+            ctx.respond(JSON.stringify(response))
+        }
     }
 }

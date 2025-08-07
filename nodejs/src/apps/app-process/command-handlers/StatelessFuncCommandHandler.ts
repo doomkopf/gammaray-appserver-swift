@@ -26,7 +26,7 @@ export class StatelessFuncCommandHandler extends AppCommandHandler {
                 ),
             )
         } catch (err) {
-            this.log.log(LogLevel.ERROR, "", err)
+            this.log.log(LogLevel.ERROR, "Error in stateless func: " + payload.fun, err)
         }
 
         const response: NodeJsStatelessFuncResponse = {
