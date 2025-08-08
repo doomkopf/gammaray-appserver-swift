@@ -10,6 +10,8 @@
     "editor.foldingImportsByDefault": false,
     "terminal.integrated.fontFamily": "Andale Mono",
     "terminal.integrated.fontSize": 16,
+    "debug.console.fontFamily": "Andale Mono",
+    "debug.console.fontSize": 16,
     "files.insertFinalNewline": true,
     "workbench.editor.enablePreview": false,
     "workbench.list.openMode": "doubleClick",
