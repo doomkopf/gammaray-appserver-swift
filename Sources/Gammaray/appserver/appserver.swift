@@ -25,6 +25,7 @@ struct AppserverComponents {
     func shutdown() async {
         await apps.shutdown()
         await nodeJsAppApi.shutdown()
+        nodeJsAppApi.shutdownProcess()
         await responseSender.shutdown()
         await userLogin.shutdown()
         await db.shutdown()
