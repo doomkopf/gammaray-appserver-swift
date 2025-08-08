@@ -93,8 +93,8 @@ func createComponents() async throws -> AppserverComponents {
             jsonEncoder: jsonEncoder,
             deployAppCommandProcessor: DeployAppCommandProcessor(
                 loggerFactory: loggerFactory,
-                db: appserverDb,
                 jsonEncoder: jsonEncoder,
+                apps: apps,
                 config: config,
             ),
         ),

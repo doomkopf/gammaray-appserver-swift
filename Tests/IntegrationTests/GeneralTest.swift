@@ -100,8 +100,8 @@ final class GeneralTest: XCTestCase {
             jsonEncoder: jsonEncoder,
             deployAppCommandProcessor: DeployAppCommandProcessor(
                 loggerFactory: loggerFactory,
-                db: db,
                 jsonEncoder: jsonEncoder,
+                apps: apps,
                 config: config,
             )
         )

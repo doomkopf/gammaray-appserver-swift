@@ -1,18 +1,18 @@
 final class DeployAppCommandProcessor: Sendable {
     private let log: Logger
-    private let db: AppserverDatabase
     private let jsonEncoder: StringJSONEncoder
+    private let apps: Apps
     private let pw: String
 
     init(
         loggerFactory: LoggerFactory,
-        db: AppserverDatabase,
         jsonEncoder: StringJSONEncoder,
+        apps: Apps,
         config: Config,
     ) {
         log = loggerFactory.createForClass(DeployAppCommandProcessor.self)
-        self.db = db
         self.jsonEncoder = jsonEncoder
+        self.apps = apps
 
         pw = config.getString(.appDeploymentPassword)
     }
@@ -25,7 +25,8 @@ final class DeployAppCommandProcessor: Sendable {
             return
         }
 
-        await db.putApp(appId: payload.appId, app: DatabaseApp(type: .NODEJS, code: payload.script))
+        await apps.deployNodeJsApp(appId: payload.appId, code: payload.script)
+
         await request.respond(
             payload: jsonEncoder.encode(DeployNodeJsAppCommandResponse(errorMsg: nil)))
 
