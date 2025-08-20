@@ -1,4 +1,6 @@
-struct EntityIdImpl: EntityId {
+import Foundation
+
+struct EntityId {
     let value: String
 
     init(_ value: String) throws {
@@ -6,11 +8,11 @@ struct EntityIdImpl: EntityId {
         if value.count >= 3 && value.count <= 128 && isMatch {
             self.value = value
         } else {
-            throw AppserverError.General("Invalid entity id: \(value)")
+            throw AppError.General("Invalid entity id: \(value)")
         }
     }
 
     init() {
-        value = randomUuidString().lowercased()
+        value = UUID().uuidString.lowercased()
     }
 }

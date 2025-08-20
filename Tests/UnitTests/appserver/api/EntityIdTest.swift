@@ -7,12 +7,12 @@ final class EntityIdImplTest: XCTestCase {
         XCTAssertTrue(
             (try Regex(
                 "^[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
-            ).wholeMatch(in: EntityIdImpl().value)) != nil)
+            ).wholeMatch(in: EntityId().value)) != nil)
     }
 
     func testGeneratedIsValid() throws {
-        let generated = EntityIdImpl()
-        _ = try EntityIdImpl(generated.value)
+        let generated = EntityId()
+        _ = try EntityId(generated.value)
     }
 
     func testValidAndInvalid() {
@@ -35,7 +35,7 @@ final class EntityIdImplTest: XCTestCase {
 
     private func assertValid(_ value: String) {
         do {
-            _ = try EntityIdImpl(value)
+            _ = try EntityId(value)
         } catch {
             XCTFail("Expected to be valid, but invalid: \(value)")
         }
@@ -43,7 +43,7 @@ final class EntityIdImplTest: XCTestCase {
 
     private func assertInvalid(_ value: String) {
         do {
-            _ = try EntityIdImpl(value)
+            _ = try EntityId(value)
         } catch {
             return
         }

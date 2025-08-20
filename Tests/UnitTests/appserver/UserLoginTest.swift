@@ -29,7 +29,7 @@ final class UserLoginTest: XCTestCase {
             scheduler: NoopScheduler(),
         )
 
-        let expectedUserId = SimpleEntityId(value: "testId")
+        let expectedUserId = try EntityId("testId")
 
         let sessionId = await subject.login(
             userId: expectedUserId,
@@ -69,7 +69,7 @@ final class UserLoginTest: XCTestCase {
             scheduler: NoopScheduler(),
         )
 
-        let userId = SimpleEntityId(value: "testId")
+        let userId = try EntityId("testId")
 
         let sessionId = await subject.login(
             userId: userId, persistentSession: NoopGammarayPersistentSession())
@@ -106,7 +106,7 @@ final class UserLoginTest: XCTestCase {
             scheduler: NoopScheduler(),
         )
 
-        let userId = SimpleEntityId(value: "testId")
+        let userId = try EntityId("testId")
 
         _ = await subject.login(
             userId: userId, persistentSession: NoopGammarayPersistentSession())

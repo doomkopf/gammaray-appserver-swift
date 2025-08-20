@@ -149,7 +149,7 @@ final class GeneralTest: XCTestCase {
         apps: Apps, db: AppserverDatabase, config: Config
     ) async {
         let createPersonParamsJson = "{\"entityName\":\"TestName\"}"
-        let entityId = try! EntityIdImpl("theEntityId")
+        let entityId = try! EntityId("theEntityId")
         await apps.handleFunc(
             appId: appId,
             params: FunctionParams(

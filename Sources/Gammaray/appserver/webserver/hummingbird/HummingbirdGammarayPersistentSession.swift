@@ -26,7 +26,7 @@ actor HummingbirdGammarayPersistentSession: GammarayPersistentSession, GammarayP
         }
     }
 
-    func assignUserId(userId: any EntityId) {
+    func assignUserId(userId: EntityId) {
         self.userId = userId
     }
 

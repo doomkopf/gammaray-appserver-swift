@@ -62,7 +62,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
             for userLoginCall in userLogins {
                 let userId: EntityId
                 do {
-                    userId = try EntityIdImpl(userLoginCall.userId)
+                    userId = try EntityId(userLoginCall.userId)
                 } catch {
                     log.log(.ERROR, "Invalid userId in login call", error)
                     continue
@@ -85,7 +85,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
             for userLogoutCall in userLogouts {
                 let userId: EntityId
                 do {
-                    userId = try EntityIdImpl(userLogoutCall)
+                    userId = try EntityId(userLogoutCall)
                 } catch {
                     log.log(.ERROR, "Invalid userId in logout call", error)
                     continue
@@ -103,7 +103,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
             for userSendCall in userSends {
                 let userId: EntityId
                 do {
-                    userId = try EntityIdImpl(userSendCall.userId)
+                    userId = try EntityId(userSendCall.userId)
                 } catch {
                     log.log(.ERROR, "Invalid userId in send call", error)
                     continue
@@ -126,7 +126,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
             for invoke in entityFuncInvokes {
                 let entityId: EntityId
                 do {
-                    entityId = try EntityIdImpl(invoke.entityId)
+                    entityId = try EntityId(invoke.entityId)
                 } catch {
                     log.log(
                         .ERROR,

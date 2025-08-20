@@ -86,7 +86,7 @@ final class GammarayProtocolRequestHandler: Sendable {
         if let entityMsg = appMsg.entityMsg {
             let entityId: EntityId
             do {
-                entityId = try EntityIdImpl(entityMsg.entityId)
+                entityId = try EntityId(entityMsg.entityId)
             } catch {
                 log.log(.ERROR, "Error creating entityId", error)
                 return

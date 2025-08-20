@@ -49,10 +49,6 @@ struct NoopCache<K: Hashable, V>: Cache {
     }
 }
 
-struct SimpleEntityId: EntityId {
-    let value: String
-}
-
 struct NoopGammarayPersistentSession: GammarayPersistentSession {
     func send(payload: String) {
     }

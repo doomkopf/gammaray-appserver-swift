@@ -49,7 +49,7 @@ actor EntitiesPerType: CacheListener {
             await value.store(
                 appId: appId,
                 entityType: type,
-                entityId: try EntityIdImpl(key),
+                entityId: try EntityId(key),
                 db: db
             )
         }
@@ -69,7 +69,7 @@ actor EntitiesPerType: CacheListener {
         for entry in entries {
             let entityId: EntityId
             do {
-                entityId = try EntityIdImpl(entry.key)
+                entityId = try EntityId(entry.key)
             } catch {
                 continue
             }
