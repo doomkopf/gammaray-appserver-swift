@@ -2,13 +2,13 @@ actor ResponseSender: CacheListener {
     private let log: Logger
 
     private var idCounter = 0
-    private let requestsCache: any Cache<GammarayProtocolRequest>
+    private let requestsCache: any Cache<RequestId, GammarayProtocolRequest>
     private let task: ScheduledTask
 
     init(
         loggerFactory: LoggerFactory,
         scheduler: Scheduler,
-        requestsCache: any Cache<GammarayProtocolRequest>
+        requestsCache: any Cache<RequestId, GammarayProtocolRequest>
     ) {
         log = loggerFactory.createForClass(ResponseSender.self)
 

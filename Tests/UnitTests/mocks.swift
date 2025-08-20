@@ -24,21 +24,21 @@ struct NoopGammarayProtocolRequest: GammarayProtocolRequest {
     }
 }
 
-struct NoopCache<V>: Cache {
-    func setListener(_ listener: any CacheListener<V>) {
+struct NoopCache<K: Hashable, V>: Cache {
+    func setListener(_ listener: any CacheListener<K, V>) {
     }
-    func put(key: String, value: V) {
+    func put(key: K, value: V) {
     }
-    func get(key: String) -> V? {
+    func get(key: K) -> V? {
         nil
     }
-    func remove(_ key: String) -> V? {
+    func remove(_ key: K) -> V? {
         nil
     }
     func removeAnyEntry() -> CacheEntry<V>? {
         nil
     }
-    func forEachEntry(fun: (String, V) -> Void) {
+    func forEachEntry(fun: (K, V) -> Void) {
     }
     var size: Int {
         0

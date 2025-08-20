@@ -4,7 +4,7 @@ actor EntitiesPerType: CacheListener {
     private let type: String
     private let entityFactory: EntityFactory
     private let db: AppserverDatabase
-    private let cache: any Cache<EntityContainer>
+    private let cache: any Cache<String, EntityContainer>
 
     init(
         loggerFactory: LoggerFactory,
@@ -12,7 +12,7 @@ actor EntitiesPerType: CacheListener {
         type: String,
         entityFactory: EntityFactory,
         db: AppserverDatabase,
-        cache: any Cache<EntityContainer>
+        cache: any Cache<String, EntityContainer>
     ) {
         log = loggerFactory.createForClass(EntitiesPerType.self)
         self.appId = appId

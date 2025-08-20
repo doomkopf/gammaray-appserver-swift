@@ -18,7 +18,7 @@ final class ResponseSenderTest: XCTestCase {
         struct CacheMock: Cache {
             let request = GammarayProtocolRequestMock()
 
-            func setListener(_ listener: any CacheListener<GammarayProtocolRequest>) {
+            func setListener(_ listener: any CacheListener<RequestId, GammarayProtocolRequest>) {
             }
 
             func put(key: String, value: V) {
@@ -68,7 +68,7 @@ final class ResponseSenderTest: XCTestCase {
         let subject = ResponseSender(
             loggerFactory: LoggerFactory(),
             scheduler: NoopScheduler(),
-            requestsCache: NoopCache<GammarayProtocolRequest>()
+            requestsCache: NoopCache<RequestId, GammarayProtocolRequest>()
         )
 
         var ids = Set<RequestId>()
@@ -119,7 +119,7 @@ final class ResponseSenderTest: XCTestCase {
         struct CacheMock: Cache {
             let state = CacheMutableState()
 
-            func setListener(_ listener: any CacheListener<GammarayProtocolRequest>) {
+            func setListener(_ listener: any CacheListener<RequestId, GammarayProtocolRequest>) {
             }
 
             func put(key: String, value: V) {

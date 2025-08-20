@@ -1,6 +1,7 @@
-protocol CacheListener<V> {
+protocol CacheListener<K, V> {
+    associatedtype K
     associatedtype V
-    func onEntryEvicted(key: String, value: V)
+    func onEntryEvicted(key: K, value: V)
 }
 
 enum CacheError: Error {
@@ -22,25 +23,26 @@ struct CacheEntry<V> {
     let ts: Int64
 }
 
-protocol Cache<V> {
+protocol Cache<K, V> {
+    associatedtype K: Hashable
     associatedtype V
-    func setListener(_ listener: any CacheListener<V>)
-    func put(key: String, value: V)
-    func get(key: String) -> V?
-    func remove(_ key: String) -> V?
+    func setListener(_ listener: any CacheListener<K, V>)
+    func put(key: K, value: V)
+    func get(key: K) -> V?
+    func remove(_ key: K) -> V?
     var size: Int { get }
     func cleanup()
     func clear()
     func removeAnyEntry() -> CacheEntry<V>?
-    func forEachEntry(fun: (_ key: String, _ value: V) -> Void)
+    func forEachEntry(fun: (_ key: K, _ value: V) -> Void)
 }
 
-class CacheImpl<V>: Cache {
+class CacheImpl<K: Hashable, V>: Cache {
     private let entryEvictionTimeMillis: Int64
     private let maxEntries: Int
-    private var listener: (any CacheListener<V>)?
+    private var listener: (any CacheListener<K, V>)?
 
-    private var map: [String: InternalCacheEntry<V>] = [:]
+    private var map: [K: InternalCacheEntry<V>] = [:]
 
     init(entryEvictionTimeMillis: Int64, maxEntries: Int) throws {
         if entryEvictionTimeMillis <= 0 {
@@ -55,15 +57,15 @@ class CacheImpl<V>: Cache {
         self.maxEntries = maxEntries
     }
 
-    func setListener(_ listener: any CacheListener<V>) {
+    func setListener(_ listener: any CacheListener<K, V>) {
         self.listener = listener
     }
 
-    func put(key: String, value: V) {
+    func put(key: K, value: V) {
         putAt(key: key, value: value, now: currentTimeMillis())
     }
 
-    func putAt(key: String, value: V, now: Int64) {
+    func putAt(key: K, value: V, now: Int64) {
         if let entry = map[key] {
             entry.v = value
             entry.ts = now
@@ -73,7 +75,7 @@ class CacheImpl<V>: Cache {
         map[key] = InternalCacheEntry(v: value, ts: now)
 
         if map.count > maxEntries {
-            var minKey: String?
+            var minKey: K?
             var minTs = Int64.max
 
             for entry in map {
@@ -91,11 +93,11 @@ class CacheImpl<V>: Cache {
         }
     }
 
-    func get(key: String) -> V? {
+    func get(key: K) -> V? {
         getAt(key: key, now: currentTimeMillis())
     }
 
-    func getAt(key: String, now: Int64) -> V? {
+    func getAt(key: K, now: Int64) -> V? {
         if let entry = map[key] {
             entry.ts = now
             return entry.v
@@ -104,7 +106,7 @@ class CacheImpl<V>: Cache {
         return nil
     }
 
-    func remove(_ key: String) -> V? {
+    func remove(_ key: K) -> V? {
         if let value = map.removeValue(forKey: key) {
             return value.v
         }
@@ -121,7 +123,7 @@ class CacheImpl<V>: Cache {
     }
 
     func cleanupAt(_ now: Int64) {
-        var keysToDelete: [String] = []
+        var keysToDelete: [K] = []
         for entry in map {
             if entry.value.ts + entryEvictionTimeMillis < now {
                 keysToDelete.append(entry.key)
@@ -152,7 +154,7 @@ class CacheImpl<V>: Cache {
         return nil
     }
 
-    func forEachEntry(fun: (_ key: String, _ value: V) -> Void) {
+    func forEachEntry(fun: (_ key: K, _ value: V) -> Void) {
         for entry in map {
             fun(entry.key, entry.value.v)
         }

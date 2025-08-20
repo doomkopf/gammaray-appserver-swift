@@ -4,7 +4,7 @@ import XCTest
 
 final class CacheTest: XCTestCase {
     func testPutAndGetEntry() throws {
-        let cache = try CacheImpl<String>(entryEvictionTimeMillis: 1, maxEntries: 1)
+        let cache = try CacheImpl<String, String>(entryEvictionTimeMillis: 1, maxEntries: 1)
 
         XCTAssertNil(cache.getAt(key: "key", now: 1))
 
@@ -14,7 +14,7 @@ final class CacheTest: XCTestCase {
     }
 
     func testDropOldestEntryWhenFull() throws {
-        let cache = try CacheImpl<String>(entryEvictionTimeMillis: 1, maxEntries: 2)
+        let cache = try CacheImpl<String, String>(entryEvictionTimeMillis: 1, maxEntries: 2)
         cache.putAt(key: "key2", value: "v2", now: 2)
         cache.putAt(key: "key1", value: "v1", now: 1)
         cache.putAt(key: "key3", value: "v3", now: 3)
@@ -42,7 +42,8 @@ final class CacheTest: XCTestCase {
         let listener = TestListener()
 
         let evictionTime: Int64 = 10
-        let cache = try CacheImpl<String>(entryEvictionTimeMillis: evictionTime, maxEntries: 4)
+        let cache = try CacheImpl<String, String>(
+            entryEvictionTimeMillis: evictionTime, maxEntries: 4)
         cache.setListener(listener)
         cache.putAt(key: "key1", value: "v1", now: 1)
         cache.putAt(key: "key2", value: "v2", now: 3)
@@ -66,7 +67,7 @@ final class CacheTest: XCTestCase {
     }
 
     func testBeEmptyAfterClear() throws {
-        let cache = try CacheImpl<String>(entryEvictionTimeMillis: 1, maxEntries: 2)
+        let cache = try CacheImpl<String, String>(entryEvictionTimeMillis: 1, maxEntries: 2)
         cache.putAt(key: "key1", value: "v1", now: 1)
         cache.putAt(key: "key2", value: "v2", now: 1)
 

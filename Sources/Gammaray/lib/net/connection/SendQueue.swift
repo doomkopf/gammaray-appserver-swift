@@ -16,13 +16,13 @@ struct SendQueueEntry {
 }
 
 actor SendQueue: CacheListener {
-    private let cache: any Cache<SendQueueEntry>
+    private let cache: any Cache<Int, SendQueueEntry>
     private let cacheCleanTask: ScheduledTask
 
     private var keyCounter = 0
 
     init(sendTimeoutMillis: Int64, scheduler: Scheduler) throws {
-        cache = try CacheImpl<SendQueueEntry>(
+        cache = try CacheImpl<Int, SendQueueEntry>(
             entryEvictionTimeMillis: sendTimeoutMillis, maxEntries: 100000)
         cacheCleanTask = scheduler.scheduleInterval(millis: 500)
 
@@ -36,12 +36,12 @@ actor SendQueue: CacheListener {
         cache.cleanup()
     }
 
-    nonisolated func onEntryEvicted(key: String, value: SendQueueEntry) {
+    nonisolated func onEntryEvicted(key: Int, value: SendQueueEntry) {
         value.callback(SendError(type: .TIMEOUT, causedBy: nil))
     }
 
     func enqueue(_ elem: SendQueueEntry) {
-        cache.put(key: String(keyCounter), value: elem)
+        cache.put(key: keyCounter, value: elem)
 
         keyCounter += 1
         if keyCounter > 999999 {

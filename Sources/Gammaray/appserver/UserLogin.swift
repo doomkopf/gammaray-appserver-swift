@@ -1,7 +1,7 @@
 actor UserLogin: CacheListener {
     private let userSender: UserSender
     private var idCounter = 0
-    private let sessionId2UserIdCache: any Cache<EntityId>
+    private let sessionId2UserIdCache: any Cache<SessionId, EntityId>
     private var userId2SessionId: [String: SessionId] = [:]
     private let task: ScheduledTask
 
