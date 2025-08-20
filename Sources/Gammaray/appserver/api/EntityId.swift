@@ -1,6 +1,6 @@
 import Foundation
 
-struct EntityId {
+struct EntityId: Hashable {
     let value: String
 
     init(_ value: String) throws {
