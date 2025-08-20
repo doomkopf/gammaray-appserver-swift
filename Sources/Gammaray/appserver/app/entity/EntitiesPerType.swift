@@ -55,21 +55,30 @@ actor EntitiesPerType: CacheListener {
         }
     }
 
-    func scheduledTasks() {
+    func scheduledTasks() async {
         cache.cleanup()
-        storeEntities()
+        await storeEntities()
     }
 
-    private func storeEntities() {
+    private func storeEntities() async {
+        var entries: [(key: String, value: EntityContainer)] = []
         cache.forEachEntry { key, value in
-            Task {
-                await value.store(
-                    appId: self.appId,
-                    entityType: self.type,
-                    entityId: try EntityIdImpl(key),
-                    db: self.db
-                )
+            entries.append((key: key, value: value))
+        }
+
+        for entry in entries {
+            let entityId: EntityId
+            do {
+                entityId = try EntityIdImpl(entry.key)
+            } catch {
+                continue
             }
+            await entry.value.store(
+                appId: self.appId,
+                entityType: self.type,
+                entityId: entityId,
+                db: self.db,
+            )
         }
     }
 
