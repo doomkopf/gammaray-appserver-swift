@@ -22,4 +22,8 @@ struct App {
     func scheduledTasks() async {
         await appEntities.scheduledTasks()
     }
+
+    func shutdown() async {
+        await appEntities.shutdown()
+    }
 }

@@ -131,4 +131,8 @@ actor EntitiesPerType: CacheListener {
         _ = cache.remove(key.value)
         await db.removeAppEntity(appId: appId, entityType: type, entityId: key)
     }
+
+    func shutdown() async {
+        await storeEntities()
+    }
 }

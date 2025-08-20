@@ -44,4 +44,10 @@ final class AppEntities: Sendable {
             id: entityParams.id
         )
     }
+
+    func shutdown() async {
+        for entry in typeToEntities {
+            await entry.value.shutdown()
+        }
+    }
 }

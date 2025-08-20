@@ -64,5 +64,9 @@ actor Apps {
 
     func shutdown() async {
         await appsTask.cancel()
+
+        for app in apps {
+            await app.value.shutdown()
+        }
     }
 }
