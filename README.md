@@ -2,7 +2,7 @@
 
 A (later distributed) “cache” or stateful application server where the state transition happens directly and atomically at the addressed state(=entity). The state is not read and written back by an external application like in traditional caches or databases. This eliminates all the classical performance issues and problems with locking, transactions and waiting on I/O.
 
-Or in other words: It eliminates the problem that in databases you can't program complex state transactions.
+Or in other words: It eliminates the problem that in databases you can't program complex state transitions.
 
 It basically is an inversion of the classical processing flow:
 
