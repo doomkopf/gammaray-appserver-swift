@@ -19,3 +19,15 @@ Basically the same as the js version, but written in Swift, still supporting js 
 I like node.js but sometimes this whole node/js/npm thing feels a bit unstable, wild and still it is an interpreted script language. After researching other modern languages, I found out that Swift is a very nice, stable and clear language with a fantastic concurrency model and a clear build process. No need for linter rules, typescript rules, webpack - it is all handled by SourceKit with clear rules. And it compiles to native binaries.
 
 The first goal is to learn Swift better and the other is rewriting the appserver with an even better design. In the previous version I used a top-down approach first starting with the webserver part to have an executable application as early as possible. This wasn't helpful for the design since I didn't know the requirements of the SDK/API for an app yet. This time I'm starting from the bottom(core) first specifying exactly how functions of an application are executed. The application is not executable yet, but there are unit- and integration tests that prove the functionality of independant components even better. The last thing that will be implemented this time is the webserver on top of everything, which will eventually make the application executable and usable. But first things first...
+
+## Micro-Services
+First of all: Gammaray is not Micro-Services.
+
+But one important aspect of Micro-Services is: If a bug or crash occurs, it only affects one logical service. While Gammaray eliminates most problems already without being a Micro-Service architecture, this is the only problem that still remains.
+
+I'm gonna use the word "application" here very often and what I mean by that is a backend application covering business data. A client/frontend application does synchronous requests to APIs of course.
+
+Building a Micro-Service architecture with Gammaray could be done by writing multiple applications while one logical application represents one logical service - no matter if you separate them logically or physically.
+What’s needed here is some sort of communication between those applications, with the important point to only publish domain events that can be consumed by other services to enforce asynchronous communication (and also DDD) - NO requests to APIs (which can still be done with the http client, but that’s not the official way to build the architecture).
+
+Just a side note from my experience: A very important point that many companies with multiple backend applications are doing wrong: As soon as you start doing requests to other services to get needed data, you're acting against the whole idea of Micro-Services. People argue with "... but we're not doing Micro-Services" - then my question is always "Why do you have multiple applications then?". The point is: If you need data from another application you either have both applications as one or you communicate asynchronously through domain events - anything else makes no sense.
