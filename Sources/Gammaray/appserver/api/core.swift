@@ -5,7 +5,7 @@ struct GammarayApp {
 
 typealias RequestId = String
 typealias SessionId = String
-typealias GammarayEntity = Encodable
+typealias GammarayEntity = Codable
 typealias FuncPayload = Encodable
 
 enum FuncVisibility {
@@ -27,7 +27,7 @@ enum EntityFuncResult {
     case deleteEntity
 }
 
-struct EntityFunc {
+struct EntityFunc: Sendable {
     let vis: FuncVisibility
     let payloadType: Decodable.Type
     let f:

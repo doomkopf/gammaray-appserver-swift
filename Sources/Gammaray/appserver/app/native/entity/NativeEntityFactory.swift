@@ -1,27 +1,40 @@
-struct NativeEntityFactory: EntityFactory {
-    let entityType: Codable.Type
-    let entityFuncs: [String: EntityFunc]
-    let libFactory: LibFactory
-    let responseSender: ResponseSender
-    let jsonEncoder: StringJSONEncoder
-    let jsonDecoder: StringJSONDecoder
+actor NativeEntityFactory: EntityFactory {
+    private let entityType: Codable.Type
+    private let entityFuncs: [String: EntityFunc]
+    private let libFactory: LibFactory
+    private let responseSender: ResponseSender
+    private let jsonEncoder: StringJSONEncoder
+    private let jsonDecoder: StringJSONDecoder
+
+    init(
+        entityType: Codable.Type,
+        entityFuncs: [String: EntityFunc],
+        libFactory: LibFactory,
+        responseSender: ResponseSender,
+        jsonEncoder: StringJSONEncoder,
+        jsonDecoder: StringJSONDecoder,
+    ) {
+        self.entityType = entityType
+        self.entityFuncs = entityFuncs
+        self.libFactory = libFactory
+        self.responseSender = responseSender
+        self.jsonEncoder = jsonEncoder
+        self.jsonDecoder = jsonDecoder
+    }
 
     func create(appId: String, type: String, id: EntityId, databaseEntity: String?) async throws
         -> Entity
     {
-        var entity: Encodable?
-        if let databaseEntity {
-            entity = try jsonDecoder.decode(entityType, databaseEntity)
-        }
         let lib = try await libFactory.create()
-        return NativeEntity(
+        return try NativeEntity(
             entityFuncs: entityFuncs,
             id: id,
             lib: lib,
             responseSender: responseSender,
             jsonEncoder: jsonEncoder,
             jsonDecoder: jsonDecoder,
-            entity: entity
+            entityType: entityType,
+            databaseEntity: databaseEntity,
         )
     }
 }

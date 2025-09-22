@@ -6,7 +6,7 @@ actor NativeEntity: Entity {
     private let jsonEncoder: StringJSONEncoder
     private let jsonDecoder: StringJSONDecoder
 
-    private var entity: Encodable?
+    private var entity: Codable?
 
     init(
         entityFuncs: [String: EntityFunc],
@@ -15,15 +15,19 @@ actor NativeEntity: Entity {
         responseSender: ResponseSender,
         jsonEncoder: StringJSONEncoder,
         jsonDecoder: StringJSONDecoder,
-        entity: Encodable?
-    ) {
+        entityType: Codable.Type,
+        databaseEntity: String?,
+    ) throws {
         self.entityFuncs = entityFuncs
         self.id = id
         self.lib = lib
         self.responseSender = responseSender
         self.jsonEncoder = jsonEncoder
         self.jsonDecoder = jsonDecoder
-        self.entity = entity
+
+        if let databaseEntity {
+            entity = try jsonDecoder.decode(entityType, databaseEntity)
+        }
     }
 
     func invokeFunction(theFunc: String, payload: String?, ctx: RequestContext) throws
