@@ -8,17 +8,17 @@
     },
     "license": "UNLICENSED",
     "dependencies": {
-        "uuid": "^11.0.5",
+        "uuid": "^13.0.0",
         "uuid-by-string": "^4.0.0"
     },
     "devDependencies": {
-        "@types/node": "^22.13.1",
-        "@types/uuid": "^10.0.0",
-        "eslint": "^9.19.0",
+        "@types/node": "^24.5.2",
+        "@types/uuid": "^11.0.0",
+        "eslint": "^9.36.0",
         "ts-node": "^10.9.2",
-        "typescript": "5.7.3",
-        "typescript-eslint": "^8.23.0",
-        "webpack": "^5.97.1",
+        "typescript": "5.9.2",
+        "typescript-eslint": "^8.44.1",
+        "webpack": "^5.101.3",
         "webpack-cli": "^6.0.1"
     },
     "packageManager": "yarn@1.22.21+sha1.1959a18351b811cdeedbd484a8f86c3cc3bbaf72"
