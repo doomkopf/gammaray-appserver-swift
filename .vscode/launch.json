@@ -6,8 +6,9 @@
             "args": [],
             "cwd": "${workspaceFolder:gammaray-appserver-swift}",
             "name": "Debug Gammaray",
-            "program": "${workspaceFolder:gammaray-appserver-swift}/.build/debug/Gammaray",
-            "preLaunchTask": "swift: Build Debug Gammaray"
+            "preLaunchTask": "swift: Build Debug Gammaray",
+            "target": "Gammaray",
+            "configuration": "debug"
         },
         {
             "type": "swift",
@@ -15,8 +16,9 @@
             "args": [],
             "cwd": "${workspaceFolder:gammaray-appserver-swift}",
             "name": "Release Gammaray",
-            "program": "${workspaceFolder:gammaray-appserver-swift}/.build/release/Gammaray",
-            "preLaunchTask": "swift: Build Release Gammaray"
+            "preLaunchTask": "swift: Build Release Gammaray",
+            "target": "Gammaray",
+            "configuration": "release"
         }
     ]
 }
