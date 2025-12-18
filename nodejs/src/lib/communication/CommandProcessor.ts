@@ -11,7 +11,13 @@ export class CommandProcessor implements ReceptionListener {
     }
 
     onReceived(source: ReceptionSource, frame: string) {
-        const cmd: Command = JSON.parse(frame)
+        let cmd: Command
+        try {
+            cmd = JSON.parse(frame)
+        } catch (err) {
+            console.error("Error parsing command from frame", err)
+            return
+        }
 
         if (!cmd.cmd) {
             console.log(`Received invalid commmand: ${frame}`)

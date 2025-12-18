@@ -1,6 +1,6 @@
 import NIO
 
-actor SenderHandler: ChannelInboundHandler {
+class SenderHandler: ChannelInboundHandler {
     typealias InboundIn = ByteBuffer
     typealias OutboundOut = ByteBuffer
 
@@ -11,10 +11,17 @@ actor SenderHandler: ChannelInboundHandler {
         self.receptionListener = receptionListener
     }
 
-    nonisolated func channelRead(context: ChannelHandlerContext, data: NIOAny) {
-        let buffer = unwrapInboundIn(data)
-        Task {
-            await isolatedChannelRead(inBuffer: buffer)
+    func channelRead(context: ChannelHandlerContext, data: NIOAny) {
+        var mutableBuffer = unwrapInboundIn(data)
+
+        if buffer == nil {
+            buffer = mutableBuffer
+        } else {
+            buffer.writeBuffer(&mutableBuffer)
+        }
+
+        while let frame = buffer.readNullTerminatedString() {
+            receptionListener.onReceived(source: ReceptionSource(), frame: frame)
         }
     }
 
@@ -26,7 +33,7 @@ actor SenderHandler: ChannelInboundHandler {
             buffer.writeBuffer(&mutableBuffer)
         }
 
-        if let frame = buffer.readNullTerminatedString() {
+        while let frame = buffer.readNullTerminatedString() {
             receptionListener.onReceived(source: ReceptionSource(), frame: frame)
         }
     }
@@ -67,6 +74,14 @@ actor Sender {
                 ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR), value: 1
             )
             .channelInitializer { channel in
+                /*
+                The NIO design here makes no sense to me:
+                A (ChannelHandler & Sendable) is expected here.
+                The ChannelInboundHandler.channelRead is basically doing the frame decoding.
+                One aspect of frame decoding is to store each chunk of data sequentially until we have a complete frame, but this requires a mutable state.
+                So it expects a Sendable but a synchronous state mutation is usually needed, that's the conflict here to me.
+                However, I'll assume for now that this method is only called by one thread at a time, so I will just ignore the concurrency warning here.
+                */
                 channel.pipeline.addHandler(SenderHandler(receptionListener))
             }
 
