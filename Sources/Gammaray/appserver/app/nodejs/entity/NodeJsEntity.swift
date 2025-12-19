@@ -64,6 +64,7 @@ actor NodeJsEntity: Entity {
             for funcCall in queuedCalls {
                 await nodeCall(funcCall)
             }
+            queuedCalls = []
 
             inJsProcessing = false
         }
