@@ -96,7 +96,9 @@ actor NodeJsEntity: Entity {
             e = json
         }
 
-        await funcResponseHandler.handle(response: response.general, ctx: params.ctx)
+        Task {
+            await funcResponseHandler.handle(response: response.general, ctx: params.ctx)
+        }
 
         params.callback(response.action.toCore())
     }
