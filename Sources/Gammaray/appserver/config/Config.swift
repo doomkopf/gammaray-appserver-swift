@@ -1,5 +1,6 @@
 enum ConfigProperty: String {
     case dummy
+    case logLevel
     case nodeJsBinaryPath
     case nodeJsAppApiRequestTimeoutMillis
     case nodeJsAppApiSendTimeoutMillis
@@ -16,6 +17,7 @@ enum ConfigProperty: String {
 private func defaultValue(_ configProperty: ConfigProperty) -> String {
     switch configProperty {
     case .dummy: "dummyDefaultValue"
+    case .logLevel: "DEBUG"
     case .nodeJsBinaryPath: "pathNotConfigured"
     case .nodeJsAppApiRequestTimeoutMillis: "4000"
     case .nodeJsAppApiSendTimeoutMillis: "3000"

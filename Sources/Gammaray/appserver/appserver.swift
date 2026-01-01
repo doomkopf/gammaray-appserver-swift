@@ -35,7 +35,8 @@ struct AppserverComponents {
 func createComponents() async throws -> AppserverComponents {
     let fileReader = ResourceFileReaderImpl(module: Bundle.module)
     let config = try Config(reader: fileReader, customConfig: [:])
-    let loggerFactory = LoggerFactory()
+    let loggerFactory = LoggerFactory(
+        logLevel: try mapLogLevel(logLevelStr: config.getString(.logLevel)))
     let jsonEncoder = StringJSONEncoder()
     let jsonDecoder = StringJSONDecoder()
     let scheduler = SchedulerImpl()
@@ -45,7 +46,7 @@ func createComponents() async throws -> AppserverComponents {
     )
 
     let nodeApi = try NodeJsAppApiImpl(
-        loggerFactory: LoggerFactory(),
+        loggerFactory: loggerFactory,
         config: config,
         scheduler: scheduler
     )
@@ -123,5 +124,20 @@ private func createDatabase(config: Config) throws -> Database {
         return InMemoryDatabase()
     default:
         throw AppserverError.General("Invalid database type: \(databaseType)")
+    }
+}
+
+private func mapLogLevel(logLevelStr: String) throws -> LogLevel {
+    switch logLevelStr {
+    case "DEBUG":
+        return .DEBUG
+    case "INFO":
+        return .INFO
+    case "WARN":
+        return .WARN
+    case "ERROR":
+        return .ERROR
+    default:
+        throw AppserverError.General("Invalid log level: \(logLevelStr)")
     }
 }
