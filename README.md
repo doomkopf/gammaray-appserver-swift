@@ -1,4 +1,4 @@
-# Gammaray application server engine (attempt in Swift)
+# Gammaray application server engine (in Swift-on-Server)
 
 A (later distributed) “cache” or stateful application server where the state transition happens directly and atomically at the addressed state(=entity). The state is not read and written back by an external application like in traditional caches or databases. This eliminates all the classical performance issues and problems with locking, transactions and waiting on I/O.
 
@@ -18,7 +18,7 @@ Basically the same as the js version, but written in Swift, still supporting js 
 
 I like node.js but sometimes this whole node/js/npm thing feels a bit unstable, wild and still it is an interpreted script language. After researching other modern languages, I found out that Swift is a very nice, stable and clear language with a fantastic concurrency model and a clear build process. No need for linter rules, typescript rules, webpack - it is all handled by SourceKit with clear rules. And it compiles to native binaries.
 
-The first goal is to learn Swift better and the other is rewriting the appserver with an even better design. In the previous version I used a top-down approach first starting with the webserver part to have an executable application as early as possible. This wasn't helpful for the design since I didn't know the requirements of the SDK/API for an app yet. This time I'm starting from the bottom(core) first specifying exactly how functions of an application are executed. The application is not executable yet, but there are unit- and integration tests that prove the functionality of independant components even better. The last thing that will be implemented this time is the webserver on top of everything, which will eventually make the application executable and usable. But first things first...
+The first goal is to learn Swift better and the other is rewriting the appserver with an even better design. In the previous version I used a top-down approach first starting with the webserver part to have an executable application as early as possible. This wasn't helpful for the design since I didn't know the requirements of the SDK/API for an app yet. This time I'm starting from the bottom(core) first specifying exactly how functions of an application are executed. The application was not executable for a long time, but there are unit- and integration tests that prove the functionality of independant components even better. The last thing that was implemented this time was the webserver on top of everything, which eventually made the application executable and usable.
 
 ## Micro-Services
 First of all: Gammaray is not Micro-Services.

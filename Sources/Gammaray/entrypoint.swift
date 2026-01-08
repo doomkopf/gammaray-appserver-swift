@@ -1,6 +1,6 @@
 @main
 struct Main {
-    static func main() {
-        print("gammaray - soon")
+    static func main() async throws {
+        try await runGammaray()
     }
 }
