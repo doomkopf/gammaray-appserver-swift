@@ -21,7 +21,7 @@ final class NodeJsCommunicationTest: XCTestCase {
         let idGen = RequestIdGenerator(localHost: LOCAL_HOST, localPort: NODE_JS_PROCESS_LOCAL_PORT)
         let resultCallbacks = try ResultCallbacks(requestTimeoutMillis: 4000, scheduler: scheduler)
         let cmdProc = CommandProcessor(
-            loggerFactory: LoggerFactory(),
+            loggerFactory: LoggerFactory(logLevel: .ERROR),
             resultCallbacks: resultCallbacks
         )
 

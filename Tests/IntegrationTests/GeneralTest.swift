@@ -46,7 +46,7 @@ final class GeneralTest: XCTestCase {
         let config = try Config(
             reader: reader,
             customConfig: [:])
-        let loggerFactory = LoggerFactory()
+        let loggerFactory = LoggerFactory(logLevel: .ERROR)
         let scheduler = SchedulerImpl()
         let responseSender = try ResponseSender(
             loggerFactory: loggerFactory,

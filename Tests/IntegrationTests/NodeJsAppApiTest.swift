@@ -25,7 +25,7 @@ final class NodeJsAppApiTest: XCTestCase {
         let config = try Config(reader: reader, customConfig: [:])
 
         let nodeApi = try NodeJsAppApiImpl(
-            loggerFactory: LoggerFactory(),
+            loggerFactory: LoggerFactory(logLevel: .ERROR),
             config: config,
             scheduler: scheduler
         )

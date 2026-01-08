@@ -57,7 +57,7 @@ final class NodeJsEntityTest: XCTestCase {
         let funcHandler = NodeJsFuncResponseHandlerMock()
 
         let subject = NodeJsEntity(
-            loggerFactory: LoggerFactory(),
+            loggerFactory: LoggerFactory(logLevel: .ERROR),
             appId: "",
             entityId: "",
             entityType: "",
@@ -112,7 +112,7 @@ final class NodeJsEntityTest: XCTestCase {
         let funcHandler = NoopNodeJsFuncResponseHandler()
 
         let subject = NodeJsEntity(
-            loggerFactory: LoggerFactory(),
+            loggerFactory: LoggerFactory(logLevel: .ERROR),
             appId: "",
             entityId: "",
             entityType: "",
