@@ -4,19 +4,22 @@ actor Apps {
     private let appFactory: AppFactory
     private let appsTask: ScheduledTask
 
-    private var apps: [String: App] = [:]
+    private var apps: [String: App]
 
     init(
         loggerFactory: LoggerFactory,
         config: Config,
         scheduler: Scheduler,
         db: AppserverDatabase,
-        appFactory: AppFactory
+        appFactory: AppFactory,
+        staticApps: [String: App],
     ) {
         log = loggerFactory.createForClass(Apps.self)
 
         self.appFactory = appFactory
         self.db = db
+
+        apps = staticApps
 
         appsTask = scheduler.scheduleInterval(
             millis: config.getInt64(ConfigProperty.appScheduledTasksIntervalMillis))

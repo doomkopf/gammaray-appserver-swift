@@ -69,18 +69,21 @@ func createComponents() async throws -> AppserverComponents {
         db: appserverDb,
         appFactory: AppFactory(
             db: appserverDb,
-            config: config,
-            loggerFactory: loggerFactory,
-            globalAppLibComponents: GlobalAppLibComponents(
-                responseSender: responseSender,
-                userLogin: userLogin,
-                userSender: userSender,
-                httpClient: HttpClientMock()
+            nodeJsAppFactory: NodeJsAppFactory(
+                db: appserverDb,
+                config: config,
+                loggerFactory: loggerFactory,
+                globalAppLibComponents: GlobalAppLibComponents(
+                    responseSender: responseSender,
+                    userLogin: userLogin,
+                    userSender: userSender,
+                    httpClient: HttpClientMock(),
+                ),
+                nodeProcess: nodeApi,
+                jsonEncoder: jsonEncoder,
             ),
-            nodeProcess: nodeApi,
-            jsonEncoder: jsonEncoder,
-            jsonDecoder: jsonDecoder
-        )
+        ),
+        staticApps: [:],
     )
 
     let protocolRequestHandler = GammarayProtocolRequestHandler(

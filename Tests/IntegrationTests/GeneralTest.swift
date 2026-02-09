@@ -80,18 +80,21 @@ final class GeneralTest: XCTestCase {
             db: db,
             appFactory: AppFactory(
                 db: db,
-                config: config,
-                loggerFactory: loggerFactory,
-                globalAppLibComponents: GlobalAppLibComponents(
-                    responseSender: responseSender,
-                    userLogin: try UserLogin(userSender: userSender, scheduler: scheduler),
-                    userSender: userSender,
-                    httpClient: HttpClientMock()
+                nodeJsAppFactory: NodeJsAppFactory(
+                    db: db,
+                    config: config,
+                    loggerFactory: loggerFactory,
+                    globalAppLibComponents: GlobalAppLibComponents(
+                        responseSender: responseSender,
+                        userLogin: try UserLogin(userSender: userSender, scheduler: scheduler),
+                        userSender: userSender,
+                        httpClient: HttpClientMock()
+                    ),
+                    nodeProcess: nodeApi,
+                    jsonEncoder: jsonEncoder,
                 ),
-                nodeProcess: nodeApi,
-                jsonEncoder: jsonEncoder,
-                jsonDecoder: jsonDecoder
-            )
+            ),
+            staticApps: [:],
         )
 
         let admin = AdminCommandProcessor(
