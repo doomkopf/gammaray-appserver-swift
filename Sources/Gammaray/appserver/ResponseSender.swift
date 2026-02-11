@@ -1,5 +1,6 @@
 actor ResponseSender: CacheListener {
     private let log: Logger
+    private let jsonEncoder: StringJSONEncoder
 
     private var idCounter = 0
     private let requestsCache: any Cache<RequestId, GammarayProtocolRequest>
@@ -7,10 +8,12 @@ actor ResponseSender: CacheListener {
 
     init(
         loggerFactory: LoggerFactory,
+        jsonEncoder: StringJSONEncoder,
         scheduler: Scheduler,
         requestsCache: any Cache<RequestId, GammarayProtocolRequest>
     ) {
         log = loggerFactory.createForClass(ResponseSender.self)
+        self.jsonEncoder = jsonEncoder
 
         self.requestsCache = requestsCache
         task = scheduler.scheduleInterval(millis: 5000)
@@ -23,10 +26,12 @@ actor ResponseSender: CacheListener {
 
     init(
         loggerFactory: LoggerFactory,
+        jsonEncoder: StringJSONEncoder,
         scheduler: Scheduler
     ) throws {
         self.init(
             loggerFactory: loggerFactory,
+            jsonEncoder: jsonEncoder,
             scheduler: scheduler,
             requestsCache: try CacheImpl(entryEvictionTimeMillis: 10000, maxEntries: 100000))
     }
@@ -35,12 +40,12 @@ actor ResponseSender: CacheListener {
         requestsCache.cleanup()
     }
 
-    func send(requestId: RequestId, payload: String) async {
+    func send(requestId: RequestId, payload: Encodable) async {
         guard let request = requestsCache.remove(requestId) else {
             return
         }
 
-        await request.respond(payload: payload)
+        await request.respond(payload: jsonEncoder.encode(payload))
         if log.isLevel(.DEBUG) {
             log.log(.DEBUG, "RESP - requestId=\(requestId) payload=\(payload)", nil)
         }

@@ -1,30 +1,34 @@
 actor NativeEntityFactory: EntityFactory {
-    private let entityType: Codable.Type
-    private let entityFuncs: [String: EntityFunc]
+    private let entityTypeFuncs: [String: [String: EntityFunc]]
     private let libFactory: LibFactory
     private let responseSender: ResponseSender
     private let jsonEncoder: StringJSONEncoder
     private let jsonDecoder: StringJSONDecoder
+    private let typeRegistry: NativeTypeRegistry
 
     init(
-        entityType: Codable.Type,
-        entityFuncs: [String: EntityFunc],
+        entityTypeFuncs: [String: [String: EntityFunc]],
         libFactory: LibFactory,
         responseSender: ResponseSender,
         jsonEncoder: StringJSONEncoder,
         jsonDecoder: StringJSONDecoder,
+        typeRegistry: NativeTypeRegistry,
     ) {
-        self.entityType = entityType
-        self.entityFuncs = entityFuncs
+        self.entityTypeFuncs = entityTypeFuncs
         self.libFactory = libFactory
         self.responseSender = responseSender
         self.jsonEncoder = jsonEncoder
         self.jsonDecoder = jsonDecoder
+        self.typeRegistry = typeRegistry
     }
 
     func create(appId: String, type: String, id: EntityId, databaseEntity: String?) async throws
         -> Entity
     {
+        guard let entityFuncs = entityTypeFuncs[type] else {
+            throw AppError.General("Entity type has no functions: \(type)")
+        }
+
         let lib = try await libFactory.create()
         return try NativeEntity(
             entityFuncs: entityFuncs,
@@ -33,7 +37,8 @@ actor NativeEntityFactory: EntityFactory {
             responseSender: responseSender,
             jsonEncoder: jsonEncoder,
             jsonDecoder: jsonDecoder,
-            entityType: entityType,
+            typeRegistry: typeRegistry,
+            entityType: type,
             databaseEntity: databaseEntity,
         )
     }

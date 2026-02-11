@@ -42,6 +42,7 @@ func createComponents() async throws -> AppserverComponents {
     let scheduler = SchedulerImpl()
     let responseSender = try ResponseSender(
         loggerFactory: loggerFactory,
+        jsonEncoder: jsonEncoder,
         scheduler: scheduler,
     )
 

@@ -5,6 +5,7 @@ actor NativeEntity: Entity {
     private let responseSender: ResponseSender
     private let jsonEncoder: StringJSONEncoder
     private let jsonDecoder: StringJSONDecoder
+    private let typeRegistry: NativeTypeRegistry
 
     private var entity: Codable?
 
@@ -15,7 +16,8 @@ actor NativeEntity: Entity {
         responseSender: ResponseSender,
         jsonEncoder: StringJSONEncoder,
         jsonDecoder: StringJSONDecoder,
-        entityType: Codable.Type,
+        typeRegistry: NativeTypeRegistry,
+        entityType: String,
         databaseEntity: String?,
     ) throws {
         self.entityFuncs = entityFuncs
@@ -24,9 +26,14 @@ actor NativeEntity: Entity {
         self.responseSender = responseSender
         self.jsonEncoder = jsonEncoder
         self.jsonDecoder = jsonDecoder
+        self.typeRegistry = typeRegistry
 
         if let databaseEntity {
-            entity = try jsonDecoder.decode(entityType, databaseEntity)
+            guard let type = typeRegistry.getTypeByName(entityType) else {
+                throw AppserverError.General(
+                    "No native type registered for entity type: \(entityType)")
+            }
+            entity = try jsonDecoder.decode(type, databaseEntity)
         }
     }
 
@@ -42,7 +49,7 @@ actor NativeEntity: Entity {
             decodedPayload = try jsonDecoder.decode(entityFunc.payloadType, payload)
         }
 
-        let result = entityFunc.f(
+        let result = try entityFunc.f(
             entity, id, lib, decodedPayload,
             ApiRequestContextImpl(
                 requestId: ctx.requestId,

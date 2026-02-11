@@ -13,8 +13,15 @@ enum FuncVisibility {
     case pub
 }
 
-struct StatelessFunc {
+struct StatelessFunc: Sendable {
     let vis: FuncVisibility
+    let payloadType: Decodable.Type
+    let f:
+        @Sendable (
+            _ lib: Lib,
+            _ payload: Decodable?,
+            _ ctx: ApiRequestContext,
+        ) throws -> Void
 }
 
 struct EntityType {
@@ -38,14 +45,14 @@ struct EntityFunc: Sendable {
             _ lib: Lib,
             _ payload: Any?,
             _ ctx: ApiRequestContext
-        ) -> EntityFuncResult
+        ) throws -> EntityFuncResult
 }
 
 protocol ApiRequestContext: Sendable {
     var requestId: RequestId? { get }
     var requestingUserId: EntityId? { get }
     var clientRequestId: String? { get }
-    func sendResponse(objJson: String)
+    func sendResponse(objJson: Encodable & Sendable)
 }
 
 struct EntityQuery {
