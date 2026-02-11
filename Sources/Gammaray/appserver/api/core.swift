@@ -40,10 +40,10 @@ struct EntityFunc: Sendable {
     let f:
         @Sendable
         (
-            _ entity: Any?,
+            _ entity: GammarayEntity?,
             _ id: EntityId,
             _ lib: Lib,
-            _ payload: Any?,
+            _ payload: Decodable?,
             _ ctx: ApiRequestContext
         ) throws -> EntityFuncResult
 }

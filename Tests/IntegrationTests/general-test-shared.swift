@@ -119,7 +119,7 @@ func echoFuncResponds(apps: Apps, responseSender: ResponseSender) async {
     XCTAssertEqual(echoParamsJson, sentPayload)
 }
 
-private func createPersonEntityAndStoreToDatabase(
+func createPersonEntityAndStoreToDatabase(
     apps: Apps, db: AppserverDatabase, config: Config
 ) async {
     let createPersonParamsJson = "{\"entityName\":\"TestName\"}"

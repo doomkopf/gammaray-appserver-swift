@@ -17,7 +17,7 @@ struct NativeAppFactory {
         let appEntities = try AppEntities(
             loggerFactory: loggerFactory,
             appId: appId,
-            entityTypes: [],
+            entityTypes: entityTypeFuncs.keys.sorted(),
             entityFactory: NativeEntityFactory(
                 entityTypeFuncs: entityTypeFuncs,
                 libFactory: libFactory,

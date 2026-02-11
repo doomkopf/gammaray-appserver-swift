@@ -36,6 +36,40 @@ final class NativeGeneralTest: XCTestCase {
         },
     )
 
+    struct CreatePersonRequest: Decodable {
+        let entityName: String
+    }
+
+    class Person: Codable {
+        private var name: String
+
+        init(name: String) {
+            self.name = name
+        }
+
+        func getName() -> String {
+            name
+        }
+    }
+
+    let createPerson = EntityFunc(
+        vis: .pub,
+        payloadType: CreatePersonRequest.self,
+        f: {
+            @Sendable
+            (
+                entity: GammarayEntity?,
+                id: EntityId,
+                lib: Lib,
+                payload: Decodable?,
+                ctx: any ApiRequestContext,
+            ) throws -> EntityFuncResult in
+            let request = payload as! CreatePersonRequest
+            let person = Person(name: request.entityName)
+            return EntityFuncResult.setEntity(person)
+        }
+    )
+
     func testGeneral() async throws {
         let components = try await createTestComponents()
 
@@ -78,12 +112,18 @@ final class NativeGeneralTest: XCTestCase {
                     statelessFuncs: [
                         "echo": echo
                     ],
-                    entityTypeFuncs: [:],
+                    entityTypeFuncs: [
+                        "person": [
+                            "createPerson": createPerson
+                        ]
+                    ],
                     typeRegistry: NativeTypeRegistry(map: [:]),
                 )
             ],
         )
 
         await echoFuncResponds(apps: apps, responseSender: components.responseSender)
+        await createPersonEntityAndStoreToDatabase(
+            apps: apps, db: components.db, config: components.config)
     }
 }
