@@ -2,6 +2,7 @@ struct ApiRequestContextImpl: ApiRequestContext {
     let requestId: RequestId?
     let requestingUserId: EntityId?
     let clientRequestId: String?
+    let persistentSession: GammarayPersistentSession?
     let responseSender: ResponseSender
 
     func sendResponse(objJson: Encodable & Sendable) {

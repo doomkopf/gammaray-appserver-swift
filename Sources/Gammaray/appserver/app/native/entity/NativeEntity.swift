@@ -55,6 +55,7 @@ actor NativeEntity: Entity {
                 requestId: ctx.requestId,
                 requestingUserId: ctx.requestingUserId,
                 clientRequestId: ctx.clientRequestId,
+                persistentSession: ctx.persistentSession,
                 responseSender: responseSender
             ))
 

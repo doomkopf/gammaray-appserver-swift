@@ -60,7 +60,7 @@ func createComponents() async throws -> AppserverComponents {
         jsonDecoder: jsonDecoder
     )
 
-    let userSender = UserSenderImpl(loggerFactory: loggerFactory)
+    let userSender = UserSenderImpl(loggerFactory: loggerFactory, jsonEncoder: jsonEncoder)
     let userLogin = try UserLogin(userSender: userSender, scheduler: scheduler)
 
     let apps = Apps(

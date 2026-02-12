@@ -8,7 +8,7 @@ final class UserLoginTest: XCTestCase {
             var putSession: GammarayPersistentSession?
             var putUserId: EntityId?
 
-            func send(userId: EntityId, payload: String) {
+            func send(userId: EntityId, payload: Encodable & Sendable) {
             }
 
             func putUserSession(
@@ -49,7 +49,7 @@ final class UserLoginTest: XCTestCase {
         actor UserSenderMock: UserSender {
             var removedUserId: EntityId?
 
-            func send(userId: EntityId, payload: String) {
+            func send(userId: EntityId, payload: Encodable & Sendable) {
             }
 
             func putUserSession(
@@ -86,7 +86,7 @@ final class UserLoginTest: XCTestCase {
         actor UserSenderMock: UserSender {
             var removedUserId: EntityId?
 
-            func send(userId: EntityId, payload: String) {
+            func send(userId: EntityId, payload: Encodable & Sendable) {
             }
 
             func putUserSession(

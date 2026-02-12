@@ -61,7 +61,10 @@ func createTestComponents() async throws -> TestComponents {
         jsonDecoder: jsonDecoder
     )
 
-    let userSender = UserSenderImpl(loggerFactory: loggerFactory)
+    let userSender = UserSenderImpl(
+        loggerFactory: loggerFactory,
+        jsonEncoder: jsonEncoder,
+    )
 
     return TestComponents(
         loggerFactory: loggerFactory,
@@ -169,6 +172,9 @@ private func
         ),
         entityParams: nil,
     )
+
+    // awaiting to process fire-and-forget tasks
+    await gammaraySleep(100)
 
     let sentPayloadString = await request.payload
     let sentPayload = try jsonDecoder.decode(LoginResult.self, sentPayloadString)

@@ -70,6 +70,41 @@ final class NativeGeneralTest: XCTestCase {
         }
     )
 
+    struct CustomCtx: Encodable {
+        let myCustomContext: String
+    }
+
+    let testUserLogin = StatelessFunc(
+        vis: .pub,
+        payloadType: String.self,
+        f: {
+            @Sendable
+            (lib: Lib, payload: Decodable?, ctx: ApiRequestContext) throws -> Void in
+            lib.user.login(
+                userId: try EntityId("myUserId"),
+                loginFinishedFunctionId: "loginFinished",
+                ctxPayload: CustomCtx(myCustomContext: "test"),
+                ctx: ctx,
+            )
+        },
+    )
+
+    struct PushMessage: Encodable {
+        let msg: String
+    }
+
+    let loginFinished = StatelessFunc(
+        vis: .pub,
+        payloadType: LoginResult.self,
+        f: {
+            @Sendable
+            (lib: Lib, payload: Decodable?, ctx: ApiRequestContext) throws -> Void in
+            let loginResult = payload as! LoginResult
+            ctx.sendResponse(objJson: loginResult)
+            lib.user.send(userId: try EntityId("myUserId"), obj: PushMessage(msg: "pushed message"))
+        },
+    )
+
     func testGeneral() async throws {
         let components = try await createTestComponents()
 
@@ -80,6 +115,8 @@ final class NativeGeneralTest: XCTestCase {
             responseSender: components.responseSender,
             jsonEncoder: components.jsonEncoder,
             jsonDecoder: components.jsonDecoder,
+            scheduler: components.scheduler,
+            userSender: components.userSender,
         )
 
         let apps = await Apps(
@@ -110,7 +147,9 @@ final class NativeGeneralTest: XCTestCase {
                 APP_ID: try appFactory.create(
                     appId: APP_ID,
                     statelessFuncs: [
-                        "echo": echo
+                        "echo": echo,
+                        "testUserLogin": testUserLogin,
+                        "loginFinished": loginFinished,
                     ],
                     entityTypeFuncs: [
                         "person": [
@@ -122,8 +161,6 @@ final class NativeGeneralTest: XCTestCase {
             ],
         )
 
-        await echoFuncResponds(apps: apps, responseSender: components.responseSender)
-        await createPersonEntityAndStoreToDatabase(
-            apps: apps, db: components.db, config: components.config)
+        try await generalTests(apps: apps, components: components)
     }
 }

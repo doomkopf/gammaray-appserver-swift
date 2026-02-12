@@ -21,7 +21,7 @@ struct ApiEntityFunctionsImpl: ApiEntityFunctions {
                         requestId: ctx.requestId,
                         requestingUserId: ctx.requestingUserId,
                         clientRequestId: ctx.clientRequestId,
-                        persistentSession: nil,  // TODO solve when continueing native API
+                        persistentSession: (ctx as! ApiRequestContextImpl).persistentSession,
                     ),
                     payload: stringPayload
                 ),

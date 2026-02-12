@@ -5,6 +5,8 @@ struct NativeAppFactory {
     let responseSender: ResponseSender
     let jsonEncoder: StringJSONEncoder
     let jsonDecoder: StringJSONDecoder
+    let scheduler: Scheduler
+    let userSender: UserSender
 
     func create(
         appId: String,
@@ -30,9 +32,35 @@ struct NativeAppFactory {
             config: config,
         )
 
+        let nativeStatelessFunctions = NativeStatelessFunctions(
+            loggerFactory: loggerFactory,
+            libFactory: libFactory,
+            responseSender: responseSender,
+            jsonDecoder: jsonDecoder,
+            funcs: statelessFuncs,
+        )
+
+        let userLogin = try UserLogin(
+            userSender: userSender,
+            scheduler: scheduler,
+        )
+
+        let appUserLogin = AppUserLogin(
+            userLogin: userLogin,
+            statelessFuncs: nativeStatelessFunctions,
+            jsonEncoder: jsonEncoder,
+        )
+
+        let apiUserFunctions = ApiUserFunctionsImpl(
+            jsonEncoder: jsonEncoder,
+            userLogin: userLogin,
+            appUserLogin: appUserLogin,
+            userSender: userSender,
+        )
+
         await libFactory.lateBind(
             responseSender: ApiResponseSenderImpl(responseSender: responseSender),
-            user: ApiUserFunctionsImpl(),
+            user: apiUserFunctions,
             entityFunc: ApiEntityFunctionsImpl(
                 appEntities: appEntities,
                 jsonEncoder: jsonEncoder,
@@ -45,13 +73,7 @@ struct NativeAppFactory {
         )
 
         return App(
-            statelessFunctions: NativeStatelessFunctions(
-                loggerFactory: loggerFactory,
-                lib: try await libFactory.create(),
-                responseSender: responseSender,
-                jsonDecoder: jsonDecoder,
-                funcs: statelessFuncs,
-            ),
+            statelessFunctions: nativeStatelessFunctions,
             appEntities: appEntities,
         )
     }
