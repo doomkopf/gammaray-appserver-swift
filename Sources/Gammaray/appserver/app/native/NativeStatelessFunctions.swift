@@ -1,19 +1,19 @@
 final class NativeStatelessFunctions: StatelessFunctions {
     private let log: Logger
-    private let libFactory: LibFactory
+    private let libContainer: LibContainer
     private let responseSender: ResponseSender
     private let jsonDecoder: StringJSONDecoder
     private let funcs: [String: StatelessFunc]
 
     init(
         loggerFactory: LoggerFactory,
-        libFactory: LibFactory,
+        libContainer: LibContainer,
         responseSender: ResponseSender,
         jsonDecoder: StringJSONDecoder,
         funcs: [String: StatelessFunc],
     ) {
         log = loggerFactory.createForClass(NativeStatelessFunctions.self)
-        self.libFactory = libFactory
+        self.libContainer = libContainer
         self.responseSender = responseSender
         self.jsonDecoder = jsonDecoder
         self.funcs = funcs
@@ -31,7 +31,7 @@ final class NativeStatelessFunctions: StatelessFunctions {
             }
 
             try statelessFunc.f(
-                await libFactory.create(),
+                await libContainer.get(),
                 decodedPayload,
                 ApiRequestContextImpl(
                     requestId: params.ctx.requestId,

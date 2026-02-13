@@ -14,7 +14,7 @@ struct NativeAppFactory {
         entityTypeFuncs: [String: [String: EntityFunc]],
         typeRegistry: NativeTypeRegistry,
     ) async throws -> App {
-        let libFactory = LibFactory()
+        let libContainer = LibContainer()
 
         let appEntities = try AppEntities(
             loggerFactory: loggerFactory,
@@ -22,7 +22,7 @@ struct NativeAppFactory {
             entityTypes: entityTypeFuncs.keys.sorted(),
             entityFactory: NativeEntityFactory(
                 entityTypeFuncs: entityTypeFuncs,
-                libFactory: libFactory,
+                libContainer: libContainer,
                 responseSender: responseSender,
                 jsonEncoder: jsonEncoder,
                 jsonDecoder: jsonDecoder,
@@ -34,7 +34,7 @@ struct NativeAppFactory {
 
         let nativeStatelessFunctions = NativeStatelessFunctions(
             loggerFactory: loggerFactory,
-            libFactory: libFactory,
+            libContainer: libContainer,
             responseSender: responseSender,
             jsonDecoder: jsonDecoder,
             funcs: statelessFuncs,
@@ -58,17 +58,19 @@ struct NativeAppFactory {
             userSender: userSender,
         )
 
-        await libFactory.lateBind(
-            responseSender: ApiResponseSenderImpl(responseSender: responseSender),
-            user: apiUserFunctions,
-            entityFunc: ApiEntityFunctionsImpl(
-                appEntities: appEntities,
-                jsonEncoder: jsonEncoder,
-            ),
-            httpClient: ApiHttpClientImpl(),
-            log: ApiLoggerImpl(
-                appId: appId,
-                loggerFactory: loggerFactory,
+        await libContainer.lateBind(
+            lib: Lib(
+                responseSender: ApiResponseSenderImpl(responseSender: responseSender),
+                user: apiUserFunctions,
+                entityFunc: ApiEntityFunctionsImpl(
+                    appEntities: appEntities,
+                    jsonEncoder: jsonEncoder,
+                ),
+                httpClient: ApiHttpClientImpl(),
+                log: ApiLoggerImpl(
+                    appId: appId,
+                    loggerFactory: loggerFactory,
+                ),
             ),
         )
 

@@ -1,6 +1,6 @@
 actor NativeEntityFactory: EntityFactory {
     private let entityTypeFuncs: [String: [String: EntityFunc]]
-    private let libFactory: LibFactory
+    private let libContainer: LibContainer
     private let responseSender: ResponseSender
     private let jsonEncoder: StringJSONEncoder
     private let jsonDecoder: StringJSONDecoder
@@ -8,14 +8,14 @@ actor NativeEntityFactory: EntityFactory {
 
     init(
         entityTypeFuncs: [String: [String: EntityFunc]],
-        libFactory: LibFactory,
+        libContainer: LibContainer,
         responseSender: ResponseSender,
         jsonEncoder: StringJSONEncoder,
         jsonDecoder: StringJSONDecoder,
         typeRegistry: NativeTypeRegistry,
     ) {
         self.entityTypeFuncs = entityTypeFuncs
-        self.libFactory = libFactory
+        self.libContainer = libContainer
         self.responseSender = responseSender
         self.jsonEncoder = jsonEncoder
         self.jsonDecoder = jsonDecoder
@@ -29,7 +29,7 @@ actor NativeEntityFactory: EntityFactory {
             throw AppError.General("Entity type has no functions: \(type)")
         }
 
-        let lib = try await libFactory.create()
+        let lib = try await libContainer.get()
         return try NativeEntity(
             entityFuncs: entityFuncs,
             id: id,
