@@ -55,7 +55,7 @@ final class NodeJsGeneralTest: XCTestCase {
             ),
         )
 
-        let code = try components.reader.readStringFile(name: "GeneralTest", ext: "js")
+        let code = try components.reader.readStringFile(name: "general-test-app", ext: "js")
         await admin.process(
             request: NoopGammarayProtocolRequest(),
             type: .DEPLOY_NODEJS_APP,
