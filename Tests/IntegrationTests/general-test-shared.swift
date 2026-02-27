@@ -127,6 +127,7 @@ func createPersonEntityAndStoreToDatabase(
 ) async {
     let createPersonParamsJson = "{\"entityName\":\"TestName\"}"
     let entityId = try! EntityId("theEntityId")
+    let entityTypeId = try! EntityTypeId("person")
     await apps.handleFunc(
         appId: APP_ID,
         params: FunctionParams(
@@ -135,7 +136,7 @@ func createPersonEntityAndStoreToDatabase(
             payload: createPersonParamsJson
         ),
         entityParams: EntityParams(
-            type: "person",
+            typeId: entityTypeId,
             id: entityId
         ),
     )
@@ -144,7 +145,7 @@ func createPersonEntityAndStoreToDatabase(
     await gammaraySleep(config.getInt64(.appScheduledTasksIntervalMillis) * 2)
 
     let dbEntity = await db.getAppEntity(
-        appId: APP_ID, entityType: "person", entityId: entityId)
+        appId: APP_ID, entityType: entityTypeId, entityId: entityId)
 
     XCTAssertEqual("{\"name\":\"TestName\"}", dbEntity)
 }

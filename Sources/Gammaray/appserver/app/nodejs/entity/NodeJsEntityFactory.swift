@@ -13,12 +13,13 @@ struct NodeJsEntityFactory: EntityFactory {
         self.funcResponseHandler = funcResponseHandler
     }
 
-    func create(appId: String, type: String, id: EntityId, databaseEntity: String?) -> Entity {
+    func create(appId: String, type: EntityTypeId, id: EntityId, databaseEntity: String?) -> Entity
+    {
         return NodeJsEntity(
             loggerFactory: loggerFactory,
             appId: appId,
             entityId: id.value,
-            entityType: type,
+            entityType: type.value,
             nodeJs: nodeJs,
             funcResponseHandler: funcResponseHandler,
             e: databaseEntity

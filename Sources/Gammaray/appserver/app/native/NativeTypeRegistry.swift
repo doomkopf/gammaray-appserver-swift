@@ -1,7 +1,7 @@
 struct NativeTypeRegistry: Sendable {
-    let map: [String: Codable.Type]
+    let map: [EntityTypeId: Codable.Type]
 
-    func getTypeByName(_ name: String) -> Codable.Type? {
-        map[name]
+    func getTypeById(_ id: EntityTypeId) -> Codable.Type? {
+        map[id]
     }
 }

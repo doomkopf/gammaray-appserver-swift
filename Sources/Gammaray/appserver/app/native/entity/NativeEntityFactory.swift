@@ -1,5 +1,5 @@
 actor NativeEntityFactory: EntityFactory {
-    private let entityTypeFuncs: [String: [String: EntityFunc]]
+    private let entityTypeFuncs: [EntityTypeId: [String: EntityFunc]]
     private let libContainer: LibContainer
     private let responseSender: ResponseSender
     private let jsonEncoder: StringJSONEncoder
@@ -7,7 +7,7 @@ actor NativeEntityFactory: EntityFactory {
     private let typeRegistry: NativeTypeRegistry
 
     init(
-        entityTypeFuncs: [String: [String: EntityFunc]],
+        entityTypeFuncs: [EntityTypeId: [String: EntityFunc]],
         libContainer: LibContainer,
         responseSender: ResponseSender,
         jsonEncoder: StringJSONEncoder,
@@ -22,7 +22,8 @@ actor NativeEntityFactory: EntityFactory {
         self.typeRegistry = typeRegistry
     }
 
-    func create(appId: String, type: String, id: EntityId, databaseEntity: String?) async throws
+    func create(appId: String, type: EntityTypeId, id: EntityId, databaseEntity: String?)
+        async throws
         -> Entity
     {
         guard let entityFuncs = entityTypeFuncs[type] else {

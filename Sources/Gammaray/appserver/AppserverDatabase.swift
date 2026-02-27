@@ -1,8 +1,8 @@
 protocol AppserverDatabase: Sendable {
-    func getAppEntity(appId: String, entityType: String, entityId: EntityId) async -> String?
-    func putAppEntity(appId: String, entityType: String, entityId: EntityId, entityStr: String)
-        async
-    func removeAppEntity(appId: String, entityType: String, entityId: EntityId) async
+    func getAppEntity(appId: String, entityType: EntityTypeId, entityId: EntityId) async -> String?
+    func putAppEntity(
+        appId: String, entityType: EntityTypeId, entityId: EntityId, entityStr: String) async
+    func removeAppEntity(appId: String, entityType: EntityTypeId, entityId: EntityId) async
     func getApp(_ appId: String) async throws -> DatabaseApp?
     func putApp(appId: String, app: DatabaseApp) async
 }
@@ -22,22 +22,27 @@ struct AppserverDatabaseImpl: AppserverDatabase {
         self.jsonDecoder = jsonDecoder
     }
 
-    private func entityFullKey(appId: String, entityType: String, entityId: EntityId) -> String {
+    private func entityFullKey(appId: String, entityType: EntityTypeId, entityId: EntityId)
+        -> String
+    {
         "\(appId)_\(entityType)_\(entityId.value)"
     }
 
-    func getAppEntity(appId: String, entityType: String, entityId: EntityId) async -> String? {
+    func getAppEntity(appId: String, entityType: EntityTypeId, entityId: EntityId) async -> String?
+    {
         await db.get(entityFullKey(appId: appId, entityType: entityType, entityId: entityId))
     }
 
-    func putAppEntity(appId: String, entityType: String, entityId: EntityId, entityStr: String)
+    func putAppEntity(
+        appId: String, entityType: EntityTypeId, entityId: EntityId, entityStr: String
+    )
         async
     {
         await db.put(
             entityFullKey(appId: appId, entityType: entityType, entityId: entityId), entityStr)
     }
 
-    func removeAppEntity(appId: String, entityType: String, entityId: EntityId) async {
+    func removeAppEntity(appId: String, entityType: EntityTypeId, entityId: EntityId) async {
         await db.remove(entityFullKey(appId: appId, entityType: entityType, entityId: entityId))
     }
 

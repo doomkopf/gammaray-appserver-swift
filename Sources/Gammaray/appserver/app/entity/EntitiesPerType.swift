@@ -1,7 +1,7 @@
 actor EntitiesPerType: CacheListener {
     private let log: Logger
     private let appId: String
-    private let type: String
+    private let type: EntityTypeId
     private let entityFactory: EntityFactory
     private let db: AppserverDatabase
     private let cache: any Cache<EntityId, EntityContainer>
@@ -9,7 +9,7 @@ actor EntitiesPerType: CacheListener {
     init(
         loggerFactory: LoggerFactory,
         appId: String,
-        type: String,
+        type: EntityTypeId,
         entityFactory: EntityFactory,
         db: AppserverDatabase,
         cache: any Cache<EntityId, EntityContainer>
@@ -25,7 +25,7 @@ actor EntitiesPerType: CacheListener {
     init(
         loggerFactory: LoggerFactory,
         appId: String,
-        type: String,
+        type: EntityTypeId,
         entityFactory: EntityFactory,
         db: AppserverDatabase,
         config: Config

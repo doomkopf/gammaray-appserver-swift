@@ -6,7 +6,7 @@ struct RequestContext {
 }
 
 struct EntityParams {
-    let type: String
+    let typeId: EntityTypeId
     let id: EntityId
 }
 

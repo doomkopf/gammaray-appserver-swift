@@ -7,7 +7,7 @@ let statelessFuncs = [
 ]
 
 let entityTypeFuncs = [
-    "person": [
+    try! EntityTypeId("person"): [
         "createPerson": createPerson
     ]
 ]

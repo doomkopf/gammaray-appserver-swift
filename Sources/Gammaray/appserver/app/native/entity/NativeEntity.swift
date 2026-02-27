@@ -17,7 +17,7 @@ actor NativeEntity: Entity {
         jsonEncoder: StringJSONEncoder,
         jsonDecoder: StringJSONDecoder,
         typeRegistry: NativeTypeRegistry,
-        entityType: String,
+        entityType: EntityTypeId,
         databaseEntity: String?,
     ) throws {
         self.entityFuncs = entityFuncs
@@ -29,7 +29,7 @@ actor NativeEntity: Entity {
         self.typeRegistry = typeRegistry
 
         if let databaseEntity {
-            guard let type = typeRegistry.getTypeByName(entityType) else {
+            guard let type = typeRegistry.getTypeById(entityType) else {
                 throw AppserverError.General(
                     "No native type registered for entity type: \(entityType)")
             }

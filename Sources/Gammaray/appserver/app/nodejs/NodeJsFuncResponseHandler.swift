@@ -134,6 +134,19 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
                     )
                     continue
                 }
+
+                let entityTypeId: EntityTypeId
+                do {
+                    entityTypeId = try EntityTypeId(invoke.type)
+                } catch {
+                    log.log(
+                        .ERROR,
+                        "Invalid entityTypeId invoking func=\(invoke._func), type=\(invoke.type)",
+                        error,
+                    )
+                    continue
+                }
+
                 await appEntities.invoke(
                     params: FunctionParams(
                         theFunc: invoke._func,
@@ -141,7 +154,7 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
                         payload: invoke.paramsJson
                     ),
                     entityParams: EntityParams(
-                        type: invoke.type,
+                        typeId: entityTypeId,
                         id: entityId
                     )
                 )

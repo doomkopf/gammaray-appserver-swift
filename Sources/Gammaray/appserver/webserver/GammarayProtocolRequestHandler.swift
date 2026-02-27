@@ -91,8 +91,17 @@ final class GammarayProtocolRequestHandler: Sendable {
                 log.log(.ERROR, "Error creating entityId", error)
                 return
             }
+
+            let entityTypeId: EntityTypeId
+            do {
+                entityTypeId = try EntityTypeId(entityMsg.entityType)
+            } catch {
+                log.log(.ERROR, "Error creating entityTypeId", error)
+                return
+            }
+
             entityParams = EntityParams(
-                type: entityMsg.entityType,
+                typeId: entityTypeId,
                 id: entityId
             )
         }

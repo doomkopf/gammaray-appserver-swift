@@ -11,7 +11,7 @@ struct NativeAppFactory {
     func create(
         appId: String,
         statelessFuncs: [String: StatelessFunc],
-        entityTypeFuncs: [String: [String: EntityFunc]],
+        entityTypeFuncs: [EntityTypeId: [String: EntityFunc]],
         typeRegistry: NativeTypeRegistry,
     ) async throws -> App {
         let libContainer = LibContainer()
@@ -19,7 +19,7 @@ struct NativeAppFactory {
         let appEntities = try AppEntities(
             loggerFactory: loggerFactory,
             appId: appId,
-            entityTypes: entityTypeFuncs.keys.sorted(),
+            entityTypes: entityTypeFuncs.keys.shuffled(),
             entityFactory: NativeEntityFactory(
                 entityTypeFuncs: entityTypeFuncs,
                 libContainer: libContainer,

@@ -23,7 +23,9 @@ actor EntityContainer {
         return result
     }
 
-    func store(appId: String, entityType: String, entityId: EntityId, db: AppserverDatabase) async {
+    func store(appId: String, entityType: EntityTypeId, entityId: EntityId, db: AppserverDatabase)
+        async
+    {
         if !dirty {
             return
         }

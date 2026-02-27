@@ -30,7 +30,7 @@ struct NodeJsAppFactory {
             loggerFactory: loggerFactory,
             appId: appId,
             entityTypes: appDef.entity.map { (key, value) in
-                key
+                try EntityTypeId(key)
             },
             entityFactory: NodeJsEntityFactory(
                 loggerFactory: loggerFactory,
