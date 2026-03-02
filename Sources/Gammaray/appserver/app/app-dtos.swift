@@ -11,7 +11,7 @@ struct EntityParams {
 }
 
 struct FunctionParams {
-    let theFunc: String
+    let theFunc: FunctionName
     let ctx: RequestContext
     let payload: String?
 }

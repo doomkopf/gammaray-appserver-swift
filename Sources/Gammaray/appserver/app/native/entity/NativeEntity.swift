@@ -1,5 +1,5 @@
 actor NativeEntity: Entity {
-    private let entityFuncs: [String: EntityFunc]
+    private let entityFuncs: [FunctionName: EntityFunc]
     private let id: EntityId
     private let lib: Lib
     private let responseSender: ResponseSender
@@ -10,7 +10,7 @@ actor NativeEntity: Entity {
     private var entity: Codable?
 
     init(
-        entityFuncs: [String: EntityFunc],
+        entityFuncs: [FunctionName: EntityFunc],
         id: EntityId,
         lib: Lib,
         responseSender: ResponseSender,
@@ -37,7 +37,7 @@ actor NativeEntity: Entity {
         }
     }
 
-    func invokeFunction(theFunc: String, payload: String?, ctx: RequestContext) throws
+    func invokeFunction(theFunc: FunctionName, payload: String?, ctx: RequestContext) throws
         -> EntityAction
     {
         guard let entityFunc = entityFuncs[theFunc] else {

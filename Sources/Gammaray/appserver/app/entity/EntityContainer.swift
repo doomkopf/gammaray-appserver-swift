@@ -10,7 +10,7 @@ actor EntityContainer {
         self.dirty = dirty
     }
 
-    func invokeFunction(theFunc: String, payload: String?, ctx: RequestContext) async throws
+    func invokeFunction(theFunc: FunctionName, payload: String?, ctx: RequestContext) async throws
         -> EntityAction
     {
         let result = try await entity.invokeFunction(

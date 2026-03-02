@@ -1,5 +1,5 @@
 struct GammarayApp {
-    let sfunc: [String: StatelessFunc]
+    let sfunc: [FunctionName: StatelessFunc]
     let entity: [EntityTypeId: EntityType]
 }
 
@@ -25,7 +25,7 @@ struct StatelessFunc: Sendable {
 }
 
 struct EntityType {
-    let efunc: [String: EntityFunc]
+    let efunc: [FunctionName: EntityFunc]
 }
 
 enum EntityFuncResult {
@@ -77,7 +77,7 @@ struct EntityQueryAttributeNumberRange {
 protocol ApiEntityFunctions: Sendable {
     func invoke(
         entityTypeId: EntityTypeId,
-        theFunc: String,
+        theFunc: FunctionName,
         entityId: EntityId,
         payload: FuncPayload?,
         ctx: ApiRequestContext,

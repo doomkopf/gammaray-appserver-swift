@@ -3,14 +3,14 @@ final class NativeStatelessFunctions: StatelessFunctions {
     private let libContainer: LibContainer
     private let responseSender: ResponseSender
     private let jsonDecoder: StringJSONDecoder
-    private let funcs: [String: StatelessFunc]
+    private let funcs: [FunctionName: StatelessFunc]
 
     init(
         loggerFactory: LoggerFactory,
         libContainer: LibContainer,
         responseSender: ResponseSender,
         jsonDecoder: StringJSONDecoder,
-        funcs: [String: StatelessFunc],
+        funcs: [FunctionName: StatelessFunc],
     ) {
         log = loggerFactory.createForClass(NativeStatelessFunctions.self)
         self.libContainer = libContainer

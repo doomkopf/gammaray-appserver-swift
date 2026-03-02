@@ -115,10 +115,18 @@ final class GammarayProtocolRequestHandler: Sendable {
             userId = userIdFromSession
         }
 
+        let theFunc: FunctionName
+        do {
+            theFunc = try FunctionName(appMsg.theFunc)
+        } catch {
+            log.log(.ERROR, "Error creating functionName", error)
+            return
+        }
+
         await apps.handleFunc(
             appId: appMsg.appId,
             params: FunctionParams(
-                theFunc: appMsg.theFunc,
+                theFunc: theFunc,
                 ctx: RequestContext(
                     requestId: requestId,
                     requestingUserId: userId,

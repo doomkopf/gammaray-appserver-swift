@@ -67,7 +67,7 @@ final class NodeJsEntityTest: XCTestCase {
         )
 
         let result = await subject.invokeFunction(
-            theFunc: "",
+            theFunc: try! FunctionName("test"),
             payload: nil,
             ctx: EMPTY_REQUEST_CONTEXT
         )
@@ -122,7 +122,7 @@ final class NodeJsEntityTest: XCTestCase {
         )
 
         let result = await subject.invokeFunction(
-            theFunc: "",
+            theFunc: try! FunctionName("test"),
             payload: nil,
             ctx: EMPTY_REQUEST_CONTEXT,
         )

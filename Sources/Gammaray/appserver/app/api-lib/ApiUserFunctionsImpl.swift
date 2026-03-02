@@ -12,7 +12,7 @@ struct ApiUserFunctionsImpl: ApiUserFunctions {
 
     func login(
         userId: EntityId,
-        loginFinishedFunctionId: String,
+        loginFinishedFunctionId: FunctionName,
         ctxPayload: (Encodable & Sendable)?,
         ctx: ApiRequestContext,
     ) {

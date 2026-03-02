@@ -4,7 +4,7 @@ struct ApiEntityFunctionsImpl: ApiEntityFunctions {
 
     func invoke(
         entityTypeId: EntityTypeId,
-        theFunc: String,
+        theFunc: FunctionName,
         entityId: EntityId,
         payload: FuncPayload?,
         ctx: ApiRequestContext,

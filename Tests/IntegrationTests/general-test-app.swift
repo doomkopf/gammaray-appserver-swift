@@ -2,14 +2,14 @@
 
 let app = GammarayApp(
     sfunc: [
-        "echo": echo,
-        "testUserLogin": testUserLogin,
-        "loginFinished": loginFinished,
+        try! FunctionName("echo"): echo,
+        try! FunctionName("testUserLogin"): testUserLogin,
+        try! FunctionName("loginFinished"): loginFinished,
     ],
     entity: [
         try! EntityTypeId("person"): EntityType(
             efunc: [
-                "createPerson": createPerson
+                try! FunctionName("createPerson"): createPerson
             ],
         )
     ],
@@ -71,7 +71,7 @@ let testUserLogin = StatelessFunc(
         (lib: Lib, payload: Decodable?, ctx: ApiRequestContext) throws -> Void in
         lib.user.login(
             userId: try EntityId("myUserId"),
-            loginFinishedFunctionId: "loginFinished",
+            loginFinishedFunctionId: try FunctionName("loginFinished"),
             ctxPayload: CustomCtx(myCustomContext: "test"),
             ctx: ctx,
         )

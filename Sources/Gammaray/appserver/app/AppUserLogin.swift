@@ -5,7 +5,7 @@ struct AppUserLogin {
 
     func login(
         userId: EntityId,
-        loginFinishedFunctionId: String,
+        loginFinishedFunctionId: FunctionName,
         ctxPayload: String?,
         ctx: RequestContext
     ) async {

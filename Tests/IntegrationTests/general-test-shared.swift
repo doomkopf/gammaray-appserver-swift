@@ -103,7 +103,7 @@ func echoFuncResponds(apps: Apps, responseSender: ResponseSender) async {
     await apps.handleFunc(
         appId: APP_ID,
         params: FunctionParams(
-            theFunc: "echo",
+            theFunc: try! FunctionName("echo"),
             ctx: RequestContext(
                 requestId: requestId,
                 requestingUserId: nil,
@@ -131,7 +131,7 @@ func createPersonEntityAndStoreToDatabase(
     await apps.handleFunc(
         appId: APP_ID,
         params: FunctionParams(
-            theFunc: "createPerson",
+            theFunc: try! FunctionName("createPerson"),
             ctx: EMPTY_REQUEST_CONTEXT,
             payload: createPersonParamsJson
         ),
@@ -162,7 +162,7 @@ private func
     await apps.handleFunc(
         appId: APP_ID,
         params: FunctionParams(
-            theFunc: "testUserLogin",
+            theFunc: try! FunctionName("testUserLogin"),
             ctx: RequestContext(
                 requestId: requestId,
                 requestingUserId: nil,

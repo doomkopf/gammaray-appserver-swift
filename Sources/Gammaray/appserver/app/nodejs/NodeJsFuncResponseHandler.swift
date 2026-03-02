@@ -67,9 +67,18 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
                     log.log(.ERROR, "Invalid userId in login call", error)
                     continue
                 }
+
+                let loginFinishedFunctionId: FunctionName
+                do {
+                    loginFinishedFunctionId = try FunctionName(userLoginCall.funcId)
+                } catch {
+                    log.log(.ERROR, "Invalid functionName in login call", error)
+                    continue
+                }
+
                 await appUserLogin.login(
                     userId: userId,
-                    loginFinishedFunctionId: userLoginCall.funcId,
+                    loginFinishedFunctionId: loginFinishedFunctionId,
                     ctxPayload: userLoginCall.customCtxJson,
                     ctx: ctx
                 )
@@ -147,9 +156,21 @@ actor NodeJsFuncResponseHandlerImpl: NodeJsFuncResponseHandler {
                     continue
                 }
 
+                let functionName: FunctionName
+                do {
+                    functionName = try FunctionName(invoke._func)
+                } catch {
+                    log.log(
+                        .ERROR,
+                        "Invalid functionName invoking func=\(invoke._func), type=\(invoke.type)",
+                        error,
+                    )
+                    continue
+                }
+
                 await appEntities.invoke(
                     params: FunctionParams(
-                        theFunc: invoke._func,
+                        theFunc: functionName,
                         ctx: ctx,
                         payload: invoke.paramsJson
                     ),
