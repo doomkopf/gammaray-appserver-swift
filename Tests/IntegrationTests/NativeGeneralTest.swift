@@ -67,8 +67,7 @@ final class NativeGeneralTest: XCTestCase {
             staticApps: [
                 APP_ID: try appFactory.create(
                     appId: APP_ID,
-                    statelessFuncs: statelessFuncs,
-                    entityTypeFuncs: entityTypeFuncs,
+                    appApi: app,
                     typeRegistry: NativeTypeRegistry(map: [:]),
                 )
             ],

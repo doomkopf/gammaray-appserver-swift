@@ -106,7 +106,7 @@ actor EntitiesPerType: CacheListener {
             let entityContainer = EntityContainer(
                 entity: try await entityFactory.create(
                     appId: appId,
-                    type: type,
+                    typeId: type,
                     id: key,
                     databaseEntity: databaseEntity
                 ),

@@ -10,8 +10,7 @@ struct NativeAppFactory {
 
     func create(
         appId: String,
-        statelessFuncs: [String: StatelessFunc],
-        entityTypeFuncs: [EntityTypeId: [String: EntityFunc]],
+        appApi: GammarayApp,
         typeRegistry: NativeTypeRegistry,
     ) async throws -> App {
         let libContainer = LibContainer()
@@ -19,9 +18,9 @@ struct NativeAppFactory {
         let appEntities = try AppEntities(
             loggerFactory: loggerFactory,
             appId: appId,
-            entityTypes: entityTypeFuncs.keys.shuffled(),
+            entityTypes: appApi.entity.keys.shuffled(),
             entityFactory: NativeEntityFactory(
-                entityTypeFuncs: entityTypeFuncs,
+                entityTypes: appApi.entity,
                 libContainer: libContainer,
                 responseSender: responseSender,
                 jsonEncoder: jsonEncoder,
@@ -37,7 +36,7 @@ struct NativeAppFactory {
             libContainer: libContainer,
             responseSender: responseSender,
             jsonDecoder: jsonDecoder,
-            funcs: statelessFuncs,
+            funcs: appApi.sfunc,
         )
 
         let userLogin = try UserLogin(

@@ -1,16 +1,19 @@
 @testable import Gammaray
 
-let statelessFuncs = [
-    "echo": echo,
-    "testUserLogin": testUserLogin,
-    "loginFinished": loginFinished,
-]
-
-let entityTypeFuncs = [
-    try! EntityTypeId("person"): [
-        "createPerson": createPerson
-    ]
-]
+let app = GammarayApp(
+    sfunc: [
+        "echo": echo,
+        "testUserLogin": testUserLogin,
+        "loginFinished": loginFinished,
+    ],
+    entity: [
+        try! EntityTypeId("person"): EntityType(
+            efunc: [
+                "createPerson": createPerson
+            ],
+        )
+    ],
+)
 
 let echo = StatelessFunc(
     vis: .pub,

@@ -1,5 +1,5 @@
 actor NativeEntityFactory: EntityFactory {
-    private let entityTypeFuncs: [EntityTypeId: [String: EntityFunc]]
+    private let entityTypes: [EntityTypeId: EntityType]
     private let libContainer: LibContainer
     private let responseSender: ResponseSender
     private let jsonEncoder: StringJSONEncoder
@@ -7,14 +7,14 @@ actor NativeEntityFactory: EntityFactory {
     private let typeRegistry: NativeTypeRegistry
 
     init(
-        entityTypeFuncs: [EntityTypeId: [String: EntityFunc]],
+        entityTypes: [EntityTypeId: EntityType],
         libContainer: LibContainer,
         responseSender: ResponseSender,
         jsonEncoder: StringJSONEncoder,
         jsonDecoder: StringJSONDecoder,
         typeRegistry: NativeTypeRegistry,
     ) {
-        self.entityTypeFuncs = entityTypeFuncs
+        self.entityTypes = entityTypes
         self.libContainer = libContainer
         self.responseSender = responseSender
         self.jsonEncoder = jsonEncoder
@@ -22,24 +22,24 @@ actor NativeEntityFactory: EntityFactory {
         self.typeRegistry = typeRegistry
     }
 
-    func create(appId: String, type: EntityTypeId, id: EntityId, databaseEntity: String?)
+    func create(appId: String, typeId: EntityTypeId, id: EntityId, databaseEntity: String?)
         async throws
         -> Entity
     {
-        guard let entityFuncs = entityTypeFuncs[type] else {
-            throw AppError.General("Entity type has no functions: \(type)")
+        guard let entityType = entityTypes[typeId] else {
+            throw AppError.General("Entity type has no functions: \(typeId)")
         }
 
         let lib = try await libContainer.get()
         return try NativeEntity(
-            entityFuncs: entityFuncs,
+            entityFuncs: entityType.efunc,
             id: id,
             lib: lib,
             responseSender: responseSender,
             jsonEncoder: jsonEncoder,
             jsonDecoder: jsonDecoder,
             typeRegistry: typeRegistry,
-            entityType: type,
+            entityTypeId: typeId,
             databaseEntity: databaseEntity,
         )
     }

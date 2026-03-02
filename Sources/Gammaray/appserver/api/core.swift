@@ -1,6 +1,6 @@
 struct GammarayApp {
     let sfunc: [String: StatelessFunc]
-    let entity: [String: EntityType]
+    let entity: [EntityTypeId: EntityType]
 }
 
 typealias RequestId = String
