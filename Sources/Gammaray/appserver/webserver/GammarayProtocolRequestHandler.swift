@@ -123,8 +123,16 @@ final class GammarayProtocolRequestHandler: Sendable {
             return
         }
 
+        let appId: AppId
+        do {
+            appId = try AppId(appMsg.appId)
+        } catch {
+            log.log(.ERROR, "Error creating appId", error)
+            return
+        }
+
         await apps.handleFunc(
-            appId: appMsg.appId,
+            appId: appId,
             params: FunctionParams(
                 theFunc: theFunc,
                 ctx: RequestContext(

@@ -1,12 +1,12 @@
 final class NodeJsStatelessFunctions: StatelessFunctions {
     private let log: Logger
-    private let appId: String
+    private let appId: AppId
     private let funcResponseHandler: NodeJsFuncResponseHandler
     private let nodeProcess: NodeJsAppApi
 
     init(
         loggerFactory: LoggerFactory,
-        appId: String,
+        appId: AppId,
         funcResponseHandler: NodeJsFuncResponseHandler,
         nodeProcess: NodeJsAppApi
     ) {
@@ -21,7 +21,7 @@ final class NodeJsStatelessFunctions: StatelessFunctions {
         do {
             let response = try await nodeProcess.statelessFunc(
                 NodeJsFuncRequest(
-                    appId: appId,
+                    appId: appId.value,
                     requestId: params.ctx.requestId,
                     requestingUserId: params.ctx.requestingUserId?.value,
                     clientRequestId: params.ctx.clientRequestId,

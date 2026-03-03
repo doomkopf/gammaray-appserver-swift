@@ -22,7 +22,7 @@ actor NativeEntityFactory: EntityFactory {
         self.typeRegistry = typeRegistry
     }
 
-    func create(appId: String, typeId: EntityTypeId, id: EntityId, databaseEntity: String?)
+    func create(appId: AppId, typeId: EntityTypeId, id: EntityId, databaseEntity: String?)
         async throws
         -> Entity
     {

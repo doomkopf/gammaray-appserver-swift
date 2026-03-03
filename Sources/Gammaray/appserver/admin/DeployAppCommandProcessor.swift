@@ -25,7 +25,15 @@ final class DeployAppCommandProcessor: Sendable {
             return
         }
 
-        await apps.deployNodeJsApp(appId: payload.appId, code: payload.script)
+        let appId: AppId
+        do {
+            appId = try AppId(payload.appId)
+        } catch {
+            log.log(.ERROR, "Invalid appId while deploying app", error)
+            return
+        }
+
+        await apps.deployNodeJsApp(appId: appId, code: payload.script)
 
         await request.respond(
             payload: jsonEncoder.encode(DeployNodeJsAppCommandResponse(errorMsg: nil)))

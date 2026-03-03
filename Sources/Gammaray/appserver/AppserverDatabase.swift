@@ -1,10 +1,10 @@
 protocol AppserverDatabase: Sendable {
-    func getAppEntity(appId: String, entityType: EntityTypeId, entityId: EntityId) async -> String?
+    func getAppEntity(appId: AppId, entityType: EntityTypeId, entityId: EntityId) async -> String?
     func putAppEntity(
-        appId: String, entityType: EntityTypeId, entityId: EntityId, entityStr: String) async
-    func removeAppEntity(appId: String, entityType: EntityTypeId, entityId: EntityId) async
-    func getApp(_ appId: String) async throws -> DatabaseApp?
-    func putApp(appId: String, app: DatabaseApp) async
+        appId: AppId, entityType: EntityTypeId, entityId: EntityId, entityStr: String) async
+    func removeAppEntity(appId: AppId, entityType: EntityTypeId, entityId: EntityId) async
+    func getApp(_ appId: AppId) async throws -> DatabaseApp?
+    func putApp(appId: AppId, app: DatabaseApp) async
 }
 
 struct AppserverDatabaseImpl: AppserverDatabase {
@@ -22,19 +22,18 @@ struct AppserverDatabaseImpl: AppserverDatabase {
         self.jsonDecoder = jsonDecoder
     }
 
-    private func entityFullKey(appId: String, entityType: EntityTypeId, entityId: EntityId)
+    private func entityFullKey(appId: AppId, entityType: EntityTypeId, entityId: EntityId)
         -> String
     {
         "\(appId)_\(entityType)_\(entityId.value)"
     }
 
-    func getAppEntity(appId: String, entityType: EntityTypeId, entityId: EntityId) async -> String?
-    {
+    func getAppEntity(appId: AppId, entityType: EntityTypeId, entityId: EntityId) async -> String? {
         await db.get(entityFullKey(appId: appId, entityType: entityType, entityId: entityId))
     }
 
     func putAppEntity(
-        appId: String, entityType: EntityTypeId, entityId: EntityId, entityStr: String
+        appId: AppId, entityType: EntityTypeId, entityId: EntityId, entityStr: String
     )
         async
     {
@@ -42,15 +41,15 @@ struct AppserverDatabaseImpl: AppserverDatabase {
             entityFullKey(appId: appId, entityType: entityType, entityId: entityId), entityStr)
     }
 
-    func removeAppEntity(appId: String, entityType: EntityTypeId, entityId: EntityId) async {
+    func removeAppEntity(appId: AppId, entityType: EntityTypeId, entityId: EntityId) async {
         await db.remove(entityFullKey(appId: appId, entityType: entityType, entityId: entityId))
     }
 
-    private func appCodeKey(_ appId: String) -> String {
+    private func appCodeKey(_ appId: AppId) -> String {
         "\(appId)_code"
     }
 
-    func getApp(_ appId: String) async throws -> DatabaseApp? {
+    func getApp(_ appId: AppId) async throws -> DatabaseApp? {
         guard let result = await db.get(appCodeKey(appId)) else {
             return nil
         }
@@ -58,7 +57,7 @@ struct AppserverDatabaseImpl: AppserverDatabase {
         return try jsonDecoder.decode(DatabaseApp.self, result)
     }
 
-    func putApp(appId: String, app: DatabaseApp) async {
+    func putApp(appId: AppId, app: DatabaseApp) async {
         await db.put(appCodeKey(appId), jsonEncoder.encode(app))
     }
 }

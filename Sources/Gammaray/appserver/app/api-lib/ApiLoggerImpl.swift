@@ -1,9 +1,9 @@
 final class ApiLoggerImpl: ApiLogger {
     private let log: Logger
-    private let appId: String
+    private let appId: AppId
 
     init(
-        appId: String,
+        appId: AppId,
         loggerFactory: LoggerFactory
     ) {
         log = loggerFactory.createForClass(ApiLoggerImpl.self)

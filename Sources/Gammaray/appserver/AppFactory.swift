@@ -10,7 +10,7 @@ struct AppFactory {
         self.nodeJsAppFactory = nodeJsAppFactory
     }
 
-    func create(_ id: String) async throws -> App? {
+    func create(_ id: AppId) async throws -> App? {
         guard let dbApp = try await db.getApp(id) else {
             return nil
         }

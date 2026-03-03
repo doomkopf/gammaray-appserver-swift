@@ -4,7 +4,7 @@ final class AppEntities: Sendable {
 
     init(
         loggerFactory: LoggerFactory,
-        appId: String,
+        appId: AppId,
         entityTypes: [EntityTypeId],
         entityFactory: EntityFactory,
         db: AppserverDatabase,

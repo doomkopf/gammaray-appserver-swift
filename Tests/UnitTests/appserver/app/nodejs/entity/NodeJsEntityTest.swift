@@ -58,7 +58,7 @@ final class NodeJsEntityTest: XCTestCase {
 
         let subject = NodeJsEntity(
             loggerFactory: LoggerFactory(logLevel: .ERROR),
-            appId: "",
+            appId: try! AppId("appId"),
             entityId: "",
             entityType: "",
             nodeJs: nodeProc,
@@ -113,7 +113,7 @@ final class NodeJsEntityTest: XCTestCase {
 
         let subject = NodeJsEntity(
             loggerFactory: LoggerFactory(logLevel: .ERROR),
-            appId: "",
+            appId: try! AppId("appId"),
             entityId: "",
             entityType: "",
             nodeJs: nodeProc,

@@ -4,7 +4,7 @@ actor Apps {
     private let appFactory: AppFactory
     private let appsTask: ScheduledTask
 
-    private var apps: [String: App]
+    private var apps: [AppId: App]
 
     init(
         loggerFactory: LoggerFactory,
@@ -12,7 +12,7 @@ actor Apps {
         scheduler: Scheduler,
         db: AppserverDatabase,
         appFactory: AppFactory,
-        staticApps: [String: App],
+        staticApps: [AppId: App],
     ) {
         log = loggerFactory.createForClass(Apps.self)
 
@@ -34,7 +34,7 @@ actor Apps {
         }
     }
 
-    func handleFunc(appId: String, params: FunctionParams, entityParams: EntityParams?) async {
+    func handleFunc(appId: AppId, params: FunctionParams, entityParams: EntityParams?) async {
         let app: App
         if let loadedApp = apps[appId] {
             app = loadedApp
@@ -60,7 +60,7 @@ actor Apps {
         await app.handleFunc(params: params, entityParams: entityParams)
     }
 
-    func deployNodeJsApp(appId: String, code: String) async {
+    func deployNodeJsApp(appId: AppId, code: String) async {
         await db.putApp(appId: appId, app: DatabaseApp(type: .NODEJS, code: code))
         apps.removeValue(forKey: appId)
     }

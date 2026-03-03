@@ -2,7 +2,7 @@ import XCTest
 
 @testable import Gammaray
 
-let APP_ID = "test"
+let APP_ID = try! AppId("test")
 
 actor TestRequest: GammarayProtocolRequest {
     var payload = ""

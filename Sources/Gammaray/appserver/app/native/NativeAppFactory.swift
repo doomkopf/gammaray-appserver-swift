@@ -9,7 +9,7 @@ struct NativeAppFactory {
     let userSender: UserSender
 
     func create(
-        appId: String,
+        appId: AppId,
         appApi: GammarayApp,
         typeRegistry: NativeTypeRegistry,
     ) async throws -> App {

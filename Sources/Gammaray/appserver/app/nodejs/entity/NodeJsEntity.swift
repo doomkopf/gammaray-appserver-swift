@@ -7,7 +7,7 @@ private struct FuncCall {
 
 actor NodeJsEntity: Entity {
     private let log: Logger
-    private let appId: String
+    private let appId: AppId
     private let entityId: String
     private let entityType: String
     private let nodeJs: NodeJsAppApi
@@ -19,7 +19,7 @@ actor NodeJsEntity: Entity {
 
     init(
         loggerFactory: LoggerFactory,
-        appId: String,
+        appId: AppId,
         entityId: String,
         entityType: String,
         nodeJs: NodeJsAppApi,
@@ -76,7 +76,7 @@ actor NodeJsEntity: Entity {
             response = try await nodeJs.entityFunc(
                 NodeJsEntityFuncRequest(
                     funcRequest: NodeJsFuncRequest(
-                        appId: appId,
+                        appId: appId.value,
                         requestId: params.ctx.requestId,
                         requestingUserId: params.ctx.requestingUserId?.value,
                         clientRequestId: params.ctx.clientRequestId,

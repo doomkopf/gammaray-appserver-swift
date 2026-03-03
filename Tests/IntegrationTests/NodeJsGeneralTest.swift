@@ -61,7 +61,7 @@ final class NodeJsGeneralTest: XCTestCase {
             type: .DEPLOY_NODEJS_APP,
             payload: components.jsonEncoder.encode(
                 DeployNodeJsAppCommandRequest(
-                    appId: APP_ID, pw: "thisdefaultpasswordshouldnotbeused", script: code
+                    appId: APP_ID.value, pw: "thisdefaultpasswordshouldnotbeused", script: code
                 ),
             ),
         )

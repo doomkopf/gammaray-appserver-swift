@@ -7,13 +7,13 @@ struct NodeJsAppFactory {
     let jsonEncoder: StringJSONEncoder
 
     func create(
-        appId: String,
+        appId: AppId,
         code: String,
     )
         async throws -> App
     {
         let setAppResponse = try await nodeProcess.setApp(
-            NodeJsSetAppRequest(id: appId, code: code))
+            NodeJsSetAppRequest(id: appId.value, code: code))
 
         if let setAppError = setAppResponse.error {
             throw AppserverError.NodeJsApp(
@@ -22,7 +22,7 @@ struct NodeJsAppFactory {
         }
 
         let appDef = try await nodeProcess.getAppDefinition(
-            NodeJsGetAppDefinitionRequest(appId: appId))
+            NodeJsGetAppDefinitionRequest(appId: appId.value))
 
         let funcResponseHandler = NodeJsFuncResponseHandlerImpl(loggerFactory: loggerFactory)
 
