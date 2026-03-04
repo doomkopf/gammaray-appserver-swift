@@ -131,6 +131,16 @@ final class GammarayProtocolRequestHandler: Sendable {
             return
         }
 
+        var clientRequestId: ClientRequestId?
+        if let rid = appMsg.rid {
+            do {
+                clientRequestId = try ClientRequestId(rid)
+            } catch {
+                log.log(.ERROR, "Error creating clientRequestId", error)
+                return
+            }
+        }
+
         await apps.handleFunc(
             appId: appId,
             params: FunctionParams(
@@ -138,7 +148,7 @@ final class GammarayProtocolRequestHandler: Sendable {
                 ctx: RequestContext(
                     requestId: requestId,
                     requestingUserId: userId,
-                    clientRequestId: appMsg.rid,
+                    clientRequestId: clientRequestId,
                     persistentSession: persistentSession,
                 ),
                 payload: appMsg.payload

@@ -1,7 +1,7 @@
 struct RequestContext {
     let requestId: RequestId?
     let requestingUserId: EntityId?
-    let clientRequestId: String?
+    let clientRequestId: ClientRequestId?
     let persistentSession: GammarayPersistentSession?
 }
 

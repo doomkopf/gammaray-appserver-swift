@@ -79,7 +79,7 @@ actor NodeJsEntity: Entity {
                         appId: appId.value,
                         requestId: params.ctx.requestId,
                         requestingUserId: params.ctx.requestingUserId?.value,
-                        clientRequestId: params.ctx.clientRequestId,
+                        clientRequestId: params.ctx.clientRequestId?.value,
                         fun: params.fun,
                         paramsJson: params.paramsJson,
                     ),

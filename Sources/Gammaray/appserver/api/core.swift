@@ -51,7 +51,7 @@ struct EntityFunc: Sendable {
 protocol ApiRequestContext: Sendable {
     var requestId: RequestId? { get }
     var requestingUserId: EntityId? { get }
-    var clientRequestId: String? { get }
+    var clientRequestId: ClientRequestId? { get }
     func sendResponse(objJson: Encodable & Sendable)
 }
 
