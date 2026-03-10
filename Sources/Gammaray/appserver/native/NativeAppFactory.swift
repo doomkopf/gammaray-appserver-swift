@@ -76,6 +76,33 @@ struct NativeAppFactory {
         return App(
             statelessFunctions: nativeStatelessFunctions,
             appEntities: appEntities,
+            appDescription: mapAppDescription(appApi: appApi),
+        )
+    }
+
+    private func mapAppDescription(appApi: GammarayApp) -> AppDescription {
+        return AppDescription(
+            statelessFuncs: Dictionary(
+                uniqueKeysWithValues: appApi.sfunc.map({
+                    (key: FunctionName, value: StatelessFunc) in
+                    (key, StatelessFuncDescription(visibility: value.vis))
+                })
+            ),
+            entityTypes: Dictionary(
+                uniqueKeysWithValues: appApi.entity.map({ (key: EntityTypeId, value: EntityType) in
+                    (
+                        key,
+                        EntityTypeDescription(
+                            funcs: Dictionary(
+                                uniqueKeysWithValues: value.efunc.map({
+                                    (key: FunctionName, value: EntityFunc) in
+                                    (key, EntityFuncDescription(visibility: value.vis))
+                                })
+                            )
+                        )
+                    )
+                })
+            ),
         )
     }
 }

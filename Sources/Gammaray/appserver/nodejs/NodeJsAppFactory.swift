@@ -67,6 +67,39 @@ struct NodeJsAppFactory {
         return App(
             statelessFunctions: statelessFunctions,
             appEntities: appEntities,
+            appDescription: mapAppDescription(appDef: appDef),
+        )
+    }
+
+    private func mapAppDescription(appDef: NodeJsGammarayApp) -> AppDescription {
+        return AppDescription(
+            statelessFuncs: Dictionary(
+                uniqueKeysWithValues: appDef.sfunc.map({
+                    (key: String, value: NodeJsStatelessFunc) in
+                    (
+                        try! FunctionName(key),
+                        StatelessFuncDescription(visibility: value.vis.toCore())
+                    )
+                })
+            ),
+            entityTypes: Dictionary(
+                uniqueKeysWithValues: appDef.entity.map({ (key: String, value: NodeJsEntityType) in
+                    (
+                        try! EntityTypeId(key),
+                        EntityTypeDescription(
+                            funcs: Dictionary(
+                                uniqueKeysWithValues: value.efunc.map({
+                                    (key: String, value: NodeJsEntityFunc) in
+                                    (
+                                        try! FunctionName(key),
+                                        EntityFuncDescription(visibility: value.vis.toCore())
+                                    )
+                                })
+                            )
+                        )
+                    )
+                })
+            ),
         )
     }
 }

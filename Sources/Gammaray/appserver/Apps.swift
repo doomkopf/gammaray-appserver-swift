@@ -57,6 +57,10 @@ actor Apps {
             }
         }
 
+        if !app.appDescription.isFunctionPublic(params: params, entityParams: entityParams) {
+            return
+        }
+
         await app.handleFunc(params: params, entityParams: entityParams)
     }
 

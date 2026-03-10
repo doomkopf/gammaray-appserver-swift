@@ -106,7 +106,7 @@ struct PushMessage: Encodable {
 }
 
 let loginFinished = StatelessFunc(
-    vis: .pub,
+    vis: .pri,
     payloadType: LoginResult.self,
     f: {
         @Sendable

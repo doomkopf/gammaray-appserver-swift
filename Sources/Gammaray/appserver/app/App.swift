@@ -2,12 +2,16 @@ struct App {
     private let statelessFunctions: StatelessFunctions
     private let appEntities: AppEntities
 
+    let appDescription: AppDescription
+
     init(
         statelessFunctions: StatelessFunctions,
-        appEntities: AppEntities
+        appEntities: AppEntities,
+        appDescription: AppDescription,
     ) {
         self.statelessFunctions = statelessFunctions
         self.appEntities = appEntities
+        self.appDescription = appDescription
     }
 
     func handleFunc(params: FunctionParams, entityParams: EntityParams?) async {
