@@ -9,7 +9,8 @@ let app = GammarayApp(
     entity: [
         try! EntityTypeId("person"): EntityType(
             efunc: [
-                try! FunctionName("createPerson"): createPerson
+                try! FunctionName("createPerson"): createPerson,
+                try! FunctionName("loadPerson"): loadPerson,
             ],
         )
     ],
@@ -56,6 +57,28 @@ let createPerson = EntityFunc(
         let request = payload as! CreatePersonRequest
         let person = Person(name: request.entityName)
         return EntityFuncResult.setEntity(person)
+    }
+)
+
+struct PersonResponse: Encodable {
+    let name: String
+}
+
+let loadPerson = EntityFunc(
+    vis: .pub,
+    payloadType: String.self,
+    f: {
+        @Sendable
+        (
+            entity: GammarayEntity?,
+            id: EntityId,
+            lib: Lib,
+            payload: Decodable?,
+            ctx: any ApiRequestContext,
+        ) throws -> EntityFuncResult in
+        let person = entity as! Person
+        ctx.sendResponse(objJson: PersonResponse(name: person.getName()))
+        return EntityFuncResult.none
     }
 )
 

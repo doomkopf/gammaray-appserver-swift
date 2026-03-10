@@ -15,6 +15,13 @@ const createPerson = {
     },
 }
 
+const loadPerson = {
+    vis: 1,
+    func: (entity, id, lib, params, ctx) => {
+        ctx.sendResponse(entity)
+    },
+}
+
 const testUserLogin = {
     vis: 1,
     func(lib, params, ctx) {
@@ -41,6 +48,7 @@ const app = {
             currentVersion: 1,
             func: {
                 createPerson,
+                loadPerson,
             },
         },
     },

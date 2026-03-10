@@ -68,7 +68,7 @@ final class NativeGeneralTest: XCTestCase {
                 APP_ID: try appFactory.create(
                     appId: APP_ID,
                     appApi: app,
-                    typeRegistry: NativeTypeRegistry(map: [:]),
+                    typeRegistry: NativeTypeRegistry(map: [EntityTypeId("person"): Person.self]),
                 )
             ],
         )

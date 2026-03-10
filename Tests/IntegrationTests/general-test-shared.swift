@@ -87,6 +87,12 @@ func generalTests(apps: Apps, components: TestComponents) async throws {
         db: components.db,
         config: components.config,
     )
+    await loadPersonEntity(
+        apps: apps,
+        db: components.db,
+        config: components.config,
+        responseSender: components.responseSender,
+    )
     try await
         userLoginCallsLoginFinishedFunctionWithSessionIdAndSetsUserIdToPersistentSessionAndPushesExtraMessageToUser(
             apps: apps,
@@ -148,6 +154,44 @@ func createPersonEntityAndStoreToDatabase(
         appId: APP_ID, entityType: entityTypeId, entityId: entityId)
 
     XCTAssertEqual("{\"name\":\"TestName\"}", dbEntity)
+}
+
+func loadPersonEntity(
+    apps: Apps, db: AppserverDatabase, config: Config, responseSender: ResponseSender
+) async {
+    let request = TestRequest()
+    let requestId = await responseSender.addRequest(request: request)
+
+    let dbEntity = "{\"name\":\"AnotherTestName\"}"
+    let entityId = try! EntityId("anotherEntityId")
+    let entityTypeId = try! EntityTypeId("person")
+
+    await db.putAppEntity(
+        appId: APP_ID, entityType: entityTypeId, entityId: entityId, entityStr: dbEntity)
+
+    await apps.handleFunc(
+        appId: APP_ID,
+        params: FunctionParams(
+            theFunc: try! FunctionName("loadPerson"),
+            ctx: RequestContext(
+                requestId: requestId,
+                requestingUserId: nil,
+                clientRequestId: nil,
+                persistentSession: nil,
+            ),
+            payload: nil,
+        ),
+        entityParams: EntityParams(
+            typeId: entityTypeId,
+            id: entityId,
+        ),
+    )
+
+    // awaiting to process fire-and-forget tasks
+    await gammaraySleep(100)
+
+    let sentPayload = await request.payload
+    XCTAssertEqual(dbEntity, sentPayload)
 }
 
 private func
