@@ -45,8 +45,8 @@ actor NativeEntity: Entity {
         }
 
         var decodedPayload: Decodable?
-        if let payload {
-            decodedPayload = try jsonDecoder.decode(entityFunc.payloadType, payload)
+        if let payload, let payloadType = entityFunc.payloadType {
+            decodedPayload = try jsonDecoder.decode(payloadType, payload)
         }
 
         let result = try entityFunc.f(

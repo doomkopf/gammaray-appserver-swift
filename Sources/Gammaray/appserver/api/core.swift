@@ -15,7 +15,7 @@ enum FuncVisibility {
 
 struct StatelessFunc: Sendable {
     let vis: FuncVisibility
-    let payloadType: Decodable.Type
+    let payloadType: Decodable.Type?
     let f:
         @Sendable (
             _ lib: Lib,
@@ -36,7 +36,7 @@ enum EntityFuncResult {
 
 struct EntityFunc: Sendable {
     let vis: FuncVisibility
-    let payloadType: Decodable.Type
+    let payloadType: Decodable.Type?
     let f:
         @Sendable
         (

@@ -26,8 +26,8 @@ final class NativeStatelessFunctions: StatelessFunctions {
 
         do {
             var decodedPayload: Decodable?
-            if let payload = params.payload {
-                decodedPayload = try jsonDecoder.decode(statelessFunc.payloadType, payload)
+            if let payload = params.payload, let payloadType = statelessFunc.payloadType {
+                decodedPayload = try jsonDecoder.decode(payloadType, payload)
             }
 
             try statelessFunc.f(

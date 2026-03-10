@@ -66,7 +66,7 @@ struct PersonResponse: Encodable {
 
 let loadPerson = EntityFunc(
     vis: .pub,
-    payloadType: String.self,
+    payloadType: nil,
     f: {
         @Sendable
         (
@@ -88,7 +88,7 @@ struct CustomCtx: Encodable {
 
 let testUserLogin = StatelessFunc(
     vis: .pub,
-    payloadType: String.self,
+    payloadType: nil,
     f: {
         @Sendable
         (lib: Lib, payload: Decodable?, ctx: ApiRequestContext) throws -> Void in
