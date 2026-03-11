@@ -5,6 +5,7 @@ actor Apps {
     private let appsTask: ScheduledTask
 
     private var apps: [AppId: App]
+    private var appsInMaintenance = Set<AppId>()
 
     init(
         loggerFactory: LoggerFactory,
@@ -35,12 +36,21 @@ actor Apps {
     }
 
     func handleFunc(appId: AppId, params: FunctionParams, entityParams: EntityParams?) async {
+        if isAppInMaintenance(appId: appId) {
+            return
+        }
+
         let app: App
         if let loadedApp = apps[appId] {
             app = loadedApp
         } else {
             do {
                 if let createdApp = try await appFactory.create(appId) {
+                    // re-check after returning to actor consistency boundary (await)
+                    if isAppInMaintenance(appId: appId) {
+                        return
+                    }
+
                     if let meanWhileCreatedApp = apps[appId] {
                         app = meanWhileCreatedApp
                     } else {
@@ -64,9 +74,28 @@ actor Apps {
         await app.handleFunc(params: params, entityParams: entityParams)
     }
 
+    func enableAppMaintenance(appId: AppId) {
+        appsInMaintenance.insert(appId)
+    }
+
+    func disableAppMaintenance(appId: AppId) {
+        appsInMaintenance.remove(appId)
+    }
+
+    private func isAppInMaintenance(appId: AppId) -> Bool {
+        appsInMaintenance.contains(appId)
+    }
+
     func deployNodeJsApp(appId: AppId, code: String) async {
+        enableAppMaintenance(appId: appId)
+
+        if let loadedApp = apps.removeValue(forKey: appId) {
+            await loadedApp.shutdown()
+        }
+
         await db.putApp(appId: appId, app: DatabaseApp(type: .NODEJS, code: code))
-        apps.removeValue(forKey: appId)
+
+        disableAppMaintenance(appId: appId)
     }
 
     func shutdown() async {
