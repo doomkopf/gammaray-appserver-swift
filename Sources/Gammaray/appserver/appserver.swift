@@ -13,6 +13,7 @@ struct HttpClientMock: HttpClient {
 }
 
 struct AppserverComponents {
+    let loggerFactory: LoggerFactory
     let apps: Apps
     let fileReader: ResourceFileReader
     let config: Config
@@ -53,7 +54,7 @@ func createComponents() async throws -> AppserverComponents {
     )
     await nodeApi.start()
 
-    let db = try createDatabase(config: config)
+    let db = try createDatabase(config: config, loggerFactory: loggerFactory)
     let appserverDb = AppserverDatabaseImpl(
         db: db,
         jsonEncoder: jsonEncoder,
@@ -108,6 +109,7 @@ func createComponents() async throws -> AppserverComponents {
     )
 
     return AppserverComponents(
+        loggerFactory: loggerFactory,
         apps: apps,
         fileReader: fileReader,
         config: config,
@@ -119,11 +121,12 @@ func createComponents() async throws -> AppserverComponents {
     )
 }
 
-private func createDatabase(config: Config) throws -> Database {
+private func createDatabase(config: Config, loggerFactory: LoggerFactory) throws -> Database {
     let databaseType = config.getString(.databaseType)
     switch databaseType {
     case CONFIG_DATABASETYPE_FILE:
-        return FileDatabase(path: config.getString(.fileDatabasePath), ext: "json")
+        return FileDatabase(
+            loggerFactory: loggerFactory, path: config.getString(.fileDatabasePath), ext: "json")
     case CONFIG_DATABASETYPE_INMEMORY:
         return InMemoryDatabase()
     default:

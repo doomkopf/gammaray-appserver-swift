@@ -1,12 +1,15 @@
 import HummingbirdWebSocket
 
 actor HummingbirdGammarayPersistentSession: GammarayPersistentSession, GammarayProtocolRequest {
+    private let log: Logger
     private let outbound: WebSocketOutboundWriter
     private var userId: EntityId?
 
     init(
+        loggerFactory: LoggerFactory,
         outbound: WebSocketOutboundWriter,
     ) {
+        log = loggerFactory.createForClass(HummingbirdGammarayPersistentSession.self)
         self.outbound = outbound
     }
 
@@ -22,7 +25,7 @@ actor HummingbirdGammarayPersistentSession: GammarayPersistentSession, GammarayP
         do {
             try await outbound.write(.text(payload))
         } catch {
-            // TODO log
+            log.log(.ERROR, "Error writing to websocket", error)
         }
     }
 

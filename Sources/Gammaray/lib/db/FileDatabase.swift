@@ -1,8 +1,19 @@
 import Foundation
 
-struct FileDatabase: Database {
-    let path: String
-    let ext: String
+final class FileDatabase: Database, Sendable {
+    private let log: Logger
+    private let path: String
+    private let ext: String
+
+    init(
+        loggerFactory: LoggerFactory,
+        path: String,
+        ext: String,
+    ) {
+        log = loggerFactory.createForClass(FileDatabase.self)
+        self.path = path
+        self.ext = ext
+    }
 
     func get(_ key: String) async -> String? {
         await withCheckedContinuation { c in
@@ -41,8 +52,7 @@ struct FileDatabase: Database {
         do {
             try content.write(toFile: path, atomically: true, encoding: .utf8)
         } catch {
-            // TODO logger
-            print(error)
+            log.log(.ERROR, "Error writing file", error)
         }
     }
 
@@ -58,8 +68,7 @@ struct FileDatabase: Database {
         do {
             try FileManager.default.removeItem(atPath: path)
         } catch {
-            // TODO logger
-            print(error)
+            log.log(.ERROR, "Error deleting file", error)
         }
     }
 }

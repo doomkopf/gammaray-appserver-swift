@@ -38,7 +38,8 @@ func runWebserver(components: AppserverComponents) async throws {
             }
             return .upgrade([:]) { inbound, outbound, context in
                 // channel connected
-                let session = HummingbirdGammarayPersistentSession(outbound: outbound)
+                let session = HummingbirdGammarayPersistentSession(
+                    loggerFactory: components.loggerFactory, outbound: outbound)
                 do {
                     for try await frame in inbound {
                         var buf = frame.data
