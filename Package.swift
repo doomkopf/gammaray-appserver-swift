@@ -1,4 +1,4 @@
-// swift-tools-version: 6.2.0
+// swift-tools-version: 6.2.4
 import PackageDescription
 
 let package = Package(
@@ -14,7 +14,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/hummingbird-project/hummingbird.git",
-            from: "2.18.1"
+            from: "2.21.0"
         ),
         .package(
             url: "https://github.com/hummingbird-project/hummingbird-websocket.git",
