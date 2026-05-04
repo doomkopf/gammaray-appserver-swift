@@ -59,15 +59,8 @@ actor NativeEntity: Entity {
                 responseSender: responseSender
             ))
 
-        // figure out how to do this with a single if statement
-        switch result {
-        case .setEntity(let e):
+        if case .setEntity(let e) = result {
             entity = e
-            break
-        case .none:
-            break
-        case .deleteEntity:
-            break
         }
 
         return map(result)
