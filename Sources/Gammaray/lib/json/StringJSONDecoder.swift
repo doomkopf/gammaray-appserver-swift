@@ -7,6 +7,6 @@ struct StringJSONDecoder {
         if type == String.self {
             return str as! T
         }
-        return try dec.decode(type, from: str.data(using: .utf8)!)
+        return try decodeStringToJson(dec, type, str)
     }
 }

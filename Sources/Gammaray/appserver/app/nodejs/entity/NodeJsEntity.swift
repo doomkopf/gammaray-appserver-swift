@@ -24,7 +24,7 @@ actor NodeJsEntity: Entity {
         entityType: String,
         nodeJs: NodeJsAppApi,
         funcResponseHandler: NodeJsFuncResponseHandler,
-        e: String?,
+        e: JSON?,
     ) {
         log = loggerFactory.createForClass(NodeJsEntity.self)
         self.appId = appId
@@ -32,7 +32,7 @@ actor NodeJsEntity: Entity {
         self.entityType = entityType
         self.nodeJs = nodeJs
         self.funcResponseHandler = funcResponseHandler
-        self.e = e
+        self.e = e?.buildString()
     }
 
     func invokeFunction(theFunc: FunctionName, payload: String?, ctx: RequestContext) async
@@ -104,7 +104,15 @@ actor NodeJsEntity: Entity {
         params.callback(response.action.toCore())
     }
 
-    func toString() -> String? {
-        e
+    func toJSON() -> JSON? {
+        guard let e else {
+            return nil
+        }
+        do {
+            return try JSON.fromString(e)
+        } catch {
+            log.log(.ERROR, "Error parsing JSON from string", error)
+            return nil
+        }
     }
 }

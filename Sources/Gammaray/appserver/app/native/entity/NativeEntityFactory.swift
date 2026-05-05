@@ -1,4 +1,5 @@
 actor NativeEntityFactory: EntityFactory {
+    private let loggerFactory: LoggerFactory
     private let entityTypes: [EntityTypeId: EntityType]
     private let libContainer: LibContainer
     private let responseSender: ResponseSender
@@ -7,6 +8,7 @@ actor NativeEntityFactory: EntityFactory {
     private let typeRegistry: NativeTypeRegistry
 
     init(
+        loggerFactory: LoggerFactory,
         entityTypes: [EntityTypeId: EntityType],
         libContainer: LibContainer,
         responseSender: ResponseSender,
@@ -14,6 +16,7 @@ actor NativeEntityFactory: EntityFactory {
         jsonDecoder: StringJSONDecoder,
         typeRegistry: NativeTypeRegistry,
     ) {
+        self.loggerFactory = loggerFactory
         self.entityTypes = entityTypes
         self.libContainer = libContainer
         self.responseSender = responseSender
@@ -22,7 +25,7 @@ actor NativeEntityFactory: EntityFactory {
         self.typeRegistry = typeRegistry
     }
 
-    func create(appId: AppId, typeId: EntityTypeId, id: EntityId, databaseEntity: String?)
+    func create(appId: AppId, typeId: EntityTypeId, id: EntityId, databaseEntity: JSON?)
         async throws
         -> Entity
     {
@@ -32,6 +35,7 @@ actor NativeEntityFactory: EntityFactory {
 
         let lib = try await libContainer.get()
         return try NativeEntity(
+            loggerFactory: loggerFactory,
             entityFuncs: entityType.efunc,
             id: id,
             lib: lib,

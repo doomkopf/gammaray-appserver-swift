@@ -35,10 +35,10 @@ actor EntityContainer {
 
         dirty = false
 
-        if let entityStr = await entity.toString() {
+        if let entity = await entity.toJSON() {
             do {
                 try await db.putAppEntity(
-                    appId: appId, entityType: entityType, entityId: entityId, entityStr: entityStr)
+                    appId: appId, entityType: entityType, entityId: entityId, entity: entity)
             } catch {
                 log.log(
                     .ERROR,

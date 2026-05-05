@@ -1,8 +1,8 @@
 protocol AppserverDatabase: Sendable {
     func getAppEntity(appId: AppId, entityType: EntityTypeId, entityId: EntityId) async throws
-        -> String?
+        -> JSON?
     func putAppEntity(
-        appId: AppId, entityType: EntityTypeId, entityId: EntityId, entityStr: String) async throws
+        appId: AppId, entityType: EntityTypeId, entityId: EntityId, entity: JSON) async throws
     func removeAppEntity(appId: AppId, entityType: EntityTypeId, entityId: EntityId) async throws
     func getApp(_ appId: AppId) async throws -> DatabaseApp?
     func putApp(appId: AppId, app: DatabaseApp) async throws
@@ -30,18 +30,25 @@ struct AppserverDatabaseImpl: AppserverDatabase {
     }
 
     func getAppEntity(appId: AppId, entityType: EntityTypeId, entityId: EntityId) async throws
-        -> String?
+        -> JSON?
     {
-        try await db.get(entityFullKey(appId: appId, entityType: entityType, entityId: entityId))
+        guard
+            let str = try await db.get(
+                entityFullKey(appId: appId, entityType: entityType, entityId: entityId))
+        else {
+            return nil
+        }
+        return try JSON.fromString(str)
     }
 
     func putAppEntity(
-        appId: AppId, entityType: EntityTypeId, entityId: EntityId, entityStr: String
+        appId: AppId, entityType: EntityTypeId, entityId: EntityId, entity: JSON
     )
         async throws
     {
         try await db.put(
-            entityFullKey(appId: appId, entityType: entityType, entityId: entityId), entityStr)
+            entityFullKey(appId: appId, entityType: entityType, entityId: entityId),
+            entity.buildString())
     }
 
     func removeAppEntity(appId: AppId, entityType: EntityTypeId, entityId: EntityId) async throws {

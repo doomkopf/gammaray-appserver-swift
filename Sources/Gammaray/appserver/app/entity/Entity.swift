@@ -1,7 +1,7 @@
 protocol Entity: Sendable {
     func invokeFunction(theFunc: FunctionName, payload: String?, ctx: RequestContext) async throws
         -> EntityAction
-    func toString() async -> String?
+    func toJSON() async -> JSON?
 }
 
 enum EntityAction {

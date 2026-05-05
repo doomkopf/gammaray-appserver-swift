@@ -20,6 +20,7 @@ struct NativeAppFactory {
             appId: appId,
             entityTypes: appApi.entity.keys.shuffled(),
             entityFactory: NativeEntityFactory(
+                loggerFactory: loggerFactory,
                 entityTypes: appApi.entity,
                 libContainer: libContainer,
                 responseSender: responseSender,

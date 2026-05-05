@@ -153,7 +153,7 @@ func createPersonEntityAndStoreToDatabase(
     let dbEntity = try! await db.getAppEntity(
         appId: APP_ID, entityType: entityTypeId, entityId: entityId)
 
-    XCTAssertEqual("{\"name\":\"TestName\"}", dbEntity)
+    XCTAssertEqual("{\"name\":\"TestName\"}", dbEntity?.buildString())
 }
 
 func loadPersonEntity(
@@ -162,12 +162,12 @@ func loadPersonEntity(
     let request = TestRequest()
     let requestId = await responseSender.addRequest(request: request)
 
-    let dbEntity = "{\"name\":\"AnotherTestName\"}"
+    let dbEntity = JSON.object(["name": .string("AnotherTestName")])
     let entityId = try! EntityId("anotherEntityId")
     let entityTypeId = try! EntityTypeId("person")
 
     try! await db.putAppEntity(
-        appId: APP_ID, entityType: entityTypeId, entityId: entityId, entityStr: dbEntity)
+        appId: APP_ID, entityType: entityTypeId, entityId: entityId, entity: dbEntity)
 
     await apps.handleFunc(
         appId: APP_ID,
@@ -191,7 +191,7 @@ func loadPersonEntity(
     await gammaraySleep(100)
 
     let sentPayload = await request.payload
-    XCTAssertEqual(dbEntity, sentPayload)
+    XCTAssertEqual(dbEntity.buildString(), sentPayload)
 }
 
 private func

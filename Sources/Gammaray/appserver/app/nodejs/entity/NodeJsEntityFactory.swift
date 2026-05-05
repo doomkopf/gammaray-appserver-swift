@@ -13,7 +13,7 @@ struct NodeJsEntityFactory: EntityFactory {
         self.funcResponseHandler = funcResponseHandler
     }
 
-    func create(appId: AppId, typeId: EntityTypeId, id: EntityId, databaseEntity: String?)
+    func create(appId: AppId, typeId: EntityTypeId, id: EntityId, databaseEntity: JSON?)
         -> Entity
     {
         return NodeJsEntity(

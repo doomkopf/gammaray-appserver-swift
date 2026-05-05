@@ -1,4 +1,5 @@
 actor NativeEntity: Entity {
+    private let log: Logger
     private let entityFuncs: [FunctionName: EntityFunc]
     private let id: EntityId
     private let lib: Lib
@@ -10,6 +11,7 @@ actor NativeEntity: Entity {
     private var entity: Codable?
 
     init(
+        loggerFactory: LoggerFactory,
         entityFuncs: [FunctionName: EntityFunc],
         id: EntityId,
         lib: Lib,
@@ -18,8 +20,9 @@ actor NativeEntity: Entity {
         jsonDecoder: StringJSONDecoder,
         typeRegistry: NativeTypeRegistry,
         entityTypeId: EntityTypeId,
-        databaseEntity: String?,
+        databaseEntity: JSON?,
     ) throws {
+        log = loggerFactory.createForClass(NativeEntity.self)
         self.entityFuncs = entityFuncs
         self.id = id
         self.lib = lib
@@ -33,7 +36,7 @@ actor NativeEntity: Entity {
                 throw AppserverError.General(
                     "No native type registered for entity type: \(entityTypeId)")
             }
-            entity = try jsonDecoder.decode(type, databaseEntity)
+            entity = try jsonDecoder.decode(type, databaseEntity.buildString())
         }
     }
 
@@ -66,12 +69,17 @@ actor NativeEntity: Entity {
         return map(result)
     }
 
-    func toString() async -> String? {
+    func toJSON() async -> JSON? {
         guard let entity else {
             return nil
         }
 
-        return jsonEncoder.encode(entity)
+        do {
+            return try JSON.fromString(jsonEncoder.encode(entity))
+        } catch {
+            log.log(.ERROR, "Error parsing JSON from string", error)
+            return nil
+        }
     }
 
     private func map(_ result: EntityFuncResult) -> EntityAction {
