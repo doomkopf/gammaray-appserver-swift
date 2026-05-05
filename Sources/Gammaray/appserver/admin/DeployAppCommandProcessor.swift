@@ -33,7 +33,12 @@ final class DeployAppCommandProcessor: Sendable {
             return
         }
 
-        await apps.deployNodeJsApp(appId: appId, code: payload.script)
+        do {
+            try await apps.deployNodeJsApp(appId: appId, code: payload.script)
+        } catch {
+            log.log(.ERROR, "Error deploying app: \(payload.appId)", error)
+            return
+        }
 
         await request.respond(
             payload: jsonEncoder.encode(DeployNodeJsAppCommandResponse(errorMsg: nil)))

@@ -86,14 +86,14 @@ actor Apps {
         appsInMaintenance.contains(appId)
     }
 
-    func deployNodeJsApp(appId: AppId, code: String) async {
+    func deployNodeJsApp(appId: AppId, code: String) async throws {
         enableAppMaintenance(appId: appId)
 
         if let loadedApp = apps.removeValue(forKey: appId) {
             await loadedApp.shutdown()
         }
 
-        await db.putApp(appId: appId, app: DatabaseApp(type: .NODEJS, code: code))
+        try await db.putApp(appId: appId, app: DatabaseApp(type: .NODEJS, code: code))
 
         disableAppMaintenance(appId: appId)
     }

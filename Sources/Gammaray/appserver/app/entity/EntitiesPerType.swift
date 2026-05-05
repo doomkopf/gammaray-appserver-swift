@@ -1,4 +1,5 @@
 actor EntitiesPerType: CacheListener {
+    private let loggerFactory: LoggerFactory
     private let log: Logger
     private let appId: AppId
     private let type: EntityTypeId
@@ -14,6 +15,7 @@ actor EntitiesPerType: CacheListener {
         db: AppserverDatabase,
         cache: any Cache<EntityId, EntityContainer>
     ) {
+        self.loggerFactory = loggerFactory
         log = loggerFactory.createForClass(EntitiesPerType.self)
         self.appId = appId
         self.type = type
@@ -82,7 +84,7 @@ actor EntitiesPerType: CacheListener {
             let result = try await entityContainer.invokeFunction(
                 theFunc: params.theFunc, payload: params.payload, ctx: params.ctx)
             if result == .deleteEntity {
-                await deleteEntity(id)
+                try await deleteEntity(id)
             }
         } catch {
             log.log(
@@ -96,7 +98,7 @@ actor EntitiesPerType: CacheListener {
     private func retrieveEntity(_ key: EntityId) async throws -> EntityContainer {
         guard let entityContainer = cache.get(key: key)
         else {
-            let databaseEntity = await db.getAppEntity(
+            let databaseEntity = try await db.getAppEntity(
                 appId: appId, entityType: type, entityId: key)
 
             if let meanwhileCreatedEntityContainer = cache.get(key: key) {
@@ -104,6 +106,7 @@ actor EntitiesPerType: CacheListener {
             }
 
             let entityContainer = EntityContainer(
+                loggerFactory: loggerFactory,
                 entity: try await entityFactory.create(
                     appId: appId,
                     typeId: type,
@@ -121,9 +124,9 @@ actor EntitiesPerType: CacheListener {
         return entityContainer
     }
 
-    private func deleteEntity(_ key: EntityId) async {
+    private func deleteEntity(_ key: EntityId) async throws {
         _ = cache.remove(key)
-        await db.removeAppEntity(appId: appId, entityType: type, entityId: key)
+        try await db.removeAppEntity(appId: appId, entityType: type, entityId: key)
     }
 
     func shutdown() async {

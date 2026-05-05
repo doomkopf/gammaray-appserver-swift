@@ -150,7 +150,7 @@ func createPersonEntityAndStoreToDatabase(
     // sleep twice the amount to be sure the entity was stored
     await gammaraySleep(config.getInt64(.appScheduledTasksIntervalMillis) * 2)
 
-    let dbEntity = await db.getAppEntity(
+    let dbEntity = try! await db.getAppEntity(
         appId: APP_ID, entityType: entityTypeId, entityId: entityId)
 
     XCTAssertEqual("{\"name\":\"TestName\"}", dbEntity)
@@ -166,7 +166,7 @@ func loadPersonEntity(
     let entityId = try! EntityId("anotherEntityId")
     let entityTypeId = try! EntityTypeId("person")
 
-    await db.putAppEntity(
+    try! await db.putAppEntity(
         appId: APP_ID, entityType: entityTypeId, entityId: entityId, entityStr: dbEntity)
 
     await apps.handleFunc(

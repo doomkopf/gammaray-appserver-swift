@@ -1,41 +1,53 @@
 import Foundation
 
 final class FileDatabase: Database, Sendable {
-    private let log: Logger
     private let path: String
     private let ext: String
 
     init(
-        loggerFactory: LoggerFactory,
         path: String,
         ext: String,
     ) {
-        log = loggerFactory.createForClass(FileDatabase.self)
         self.path = path
         self.ext = ext
     }
 
-    func get(_ key: String) async -> String? {
-        await withCheckedContinuation { c in
+    func get(_ key: String) async throws -> String? {
+        try await withCheckedThrowingContinuation { c in
             Task {
-                c.resume(returning: readFileSync(path: keyToPath(key)))
+                do {
+                    let str = try readFileSync(path: keyToPath(key))
+                    c.resume(returning: str)
+                } catch {
+                    c.resume(throwing: error)
+                }
             }
         }
     }
 
-    func put(_ key: String, _ value: String) async {
-        await withCheckedContinuation { (c: CheckedContinuation<Void, Never>) in
+    func put(_ key: String, _ value: String) async throws {
+        try await withCheckedThrowingContinuation { (c: CheckedContinuation<Void, Error>) in
             Task {
-                writeFileSync(path: keyToPath(key), content: value)
+                do {
+                    try writeFileSync(path: keyToPath(key), content: value)
+                } catch {
+                    c.resume(throwing: error)
+                    return
+                }
                 c.resume()
             }
         }
     }
 
-    func remove(_ key: String) async {
-        await withCheckedContinuation { (c: CheckedContinuation<Void, Never>) in
+    func remove(_ key: String) async throws {
+        try await withCheckedThrowingContinuation { (c: CheckedContinuation<Void, Error>) in
             Task {
-                deleteFileSync(path: keyToPath(key))
+                do {
+                    try deleteFileSync(path: keyToPath(key))
+                } catch {
+                    c.resume(throwing: error)
+                    return
+                }
                 c.resume()
             }
         }
@@ -48,27 +60,26 @@ final class FileDatabase: Database, Sendable {
         "\(self.path + key).\(self.ext)"
     }
 
-    private func writeFileSync(path: String, content: String) {
-        do {
-            try content.write(toFile: path, atomically: true, encoding: .utf8)
-        } catch {
-            log.log(.ERROR, "Error writing file", error)
-        }
+    private func writeFileSync(path: String, content: String) throws {
+        try content.write(toFile: path, atomically: true, encoding: .utf8)
     }
 
-    private func readFileSync(path: String) -> String? {
+    private func readFileSync(path: String) throws -> String? {
         do {
             return try String(contentsOfFile: path, encoding: .utf8)
+        } catch let error as CocoaError {
+            switch error.code {
+            case .fileReadNoSuchFile:
+                return nil
+            default:
+                throw error
+            }
         } catch {
-            return nil
+            throw error
         }
     }
 
-    private func deleteFileSync(path: String) {
-        do {
-            try FileManager.default.removeItem(atPath: path)
-        } catch {
-            log.log(.ERROR, "Error deleting file", error)
-        }
+    private func deleteFileSync(path: String) throws {
+        try FileManager.default.removeItem(atPath: path)
     }
 }

@@ -1,11 +1,14 @@
 actor EntityContainer {
+    private let log: Logger
     private let entity: Entity
     private var dirty: Bool
 
     init(
+        loggerFactory: LoggerFactory,
         entity: Entity,
         dirty: Bool
     ) {
+        log = loggerFactory.createForClass(EntityContainer.self)
         self.entity = entity
         self.dirty = dirty
     }
@@ -33,8 +36,15 @@ actor EntityContainer {
         dirty = false
 
         if let entityStr = await entity.toString() {
-            await db.putAppEntity(
-                appId: appId, entityType: entityType, entityId: entityId, entityStr: entityStr)
+            do {
+                try await db.putAppEntity(
+                    appId: appId, entityType: entityType, entityId: entityId, entityStr: entityStr)
+            } catch {
+                log.log(
+                    .ERROR,
+                    "Error storing entity: appId=\(appId), entityType=\(entityType), entityId=\(entityId)",
+                    error)
+            }
         }
     }
 }

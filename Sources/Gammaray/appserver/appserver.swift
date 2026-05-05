@@ -125,8 +125,7 @@ private func createDatabase(config: Config, loggerFactory: LoggerFactory) throws
     let databaseType = config.getString(.databaseType)
     switch databaseType {
     case CONFIG_DATABASETYPE_FILE:
-        return FileDatabase(
-            loggerFactory: loggerFactory, path: config.getString(.fileDatabasePath), ext: "json")
+        return FileDatabase(path: config.getString(.fileDatabasePath), ext: "json")
     case CONFIG_DATABASETYPE_INMEMORY:
         return InMemoryDatabase()
     default:
